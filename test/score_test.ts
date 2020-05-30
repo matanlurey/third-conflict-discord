@@ -18,10 +18,9 @@ test('should calculate scores from totals', () => {
 });
 
 test('should calculate totals from fleets', () => {
-  const point: Coordinate = [0, 0];
   const players: Player[] = [
-    { name: 'Player 1', userId: '1234' },
-    { name: 'Player 2', userId: '5678' },
+    { name: 'Player 1', userId: '1234', didEndTurn: false },
+    { name: 'Player 2', userId: '5678', didEndTurn: false },
   ];
   const totals = calculateTotals(
     players,
@@ -35,8 +34,9 @@ test('should calculate totals from fleets', () => {
           missiles: 2,
           troops: 10,
         }),
-        destination: point,
-        remaining: 0,
+        origin: 'Beta',
+        destination: 'Alpha',
+        distance: 0,
       },
       {
         owner: 0,
@@ -47,8 +47,9 @@ test('should calculate totals from fleets', () => {
           missiles: 1,
           troops: 5,
         }),
-        destination: point,
-        remaining: 0,
+        origin: 'Beta',
+        destination: 'Alpha',
+        distance: 0,
       },
     ],
     [],
@@ -69,8 +70,8 @@ test('should calculate totals from fleets', () => {
 test('should calculate totals from systems', () => {
   const point: Coordinate = [0, 0];
   const players: Player[] = [
-    { name: 'Player 1', userId: '1234' },
-    { name: 'Player 2', userId: '5678' },
+    { name: 'Player 1', userId: '1234', didEndTurn: false },
+    { name: 'Player 2', userId: '5678', didEndTurn: false },
   ];
   const totals = calculateTotals(
     players,
@@ -92,7 +93,7 @@ test('should calculate totals from systems', () => {
         owner: 0,
         planets: [{ morale: 0, owner: 0, troops: 10, recruit: 5 }],
         position: point,
-        systemDefenses: 5,
+        defenses: 5,
       },
     ],
   );

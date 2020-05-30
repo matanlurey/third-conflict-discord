@@ -22,10 +22,10 @@ beforeAll(() => {
 
 test('should generate sectors', () => {
   const map = generator.generate([
-    { name: 'Player 1', userId: '1' },
-    { name: 'Player 2', userId: '2' },
-    { name: 'Player 3', userId: '3' },
-    { name: 'Player 4', userId: '4' },
+    { name: 'Player 1', userId: '1', didEndTurn: false },
+    { name: 'Player 2', userId: '2', didEndTurn: false },
+    { name: 'Player 3', userId: '3', didEndTurn: false },
+    { name: 'Player 4', userId: '4', didEndTurn: false },
   ]);
   expect(debugMap(map)).toMatchInlineSnapshot(`
     "
@@ -40,6 +40,7 @@ test('should generate sectors', () => {
     Array [
       Object {
         "buildPoints": 0,
+        "defenses": 0,
         "factories": 10,
         "home": true,
         "name": "Alfa",
@@ -118,10 +119,10 @@ test('should generate sectors', () => {
           0,
           4,
         ],
-        "systemDefenses": 0,
       },
       Object {
         "buildPoints": 0,
+        "defenses": 0,
         "factories": 10,
         "home": true,
         "name": "Bravo",
@@ -200,10 +201,10 @@ test('should generate sectors', () => {
           0,
           0,
         ],
-        "systemDefenses": 0,
       },
       Object {
         "buildPoints": 0,
+        "defenses": 0,
         "factories": 10,
         "home": true,
         "name": "Charlie",
@@ -282,10 +283,10 @@ test('should generate sectors', () => {
           7,
           4,
         ],
-        "systemDefenses": 0,
       },
       Object {
         "buildPoints": 0,
+        "defenses": 0,
         "factories": 10,
         "home": true,
         "name": "Delta",
@@ -364,10 +365,10 @@ test('should generate sectors', () => {
           7,
           0,
         ],
-        "systemDefenses": 0,
       },
       Object {
         "buildPoints": 0,
+        "defenses": 0,
         "factories": 4,
         "home": false,
         "name": "Echo",
@@ -404,10 +405,10 @@ test('should generate sectors', () => {
           4,
           4,
         ],
-        "systemDefenses": 0,
       },
       Object {
         "buildPoints": 0,
+        "defenses": 0,
         "factories": 3,
         "home": false,
         "name": "Foxtrot",
@@ -438,10 +439,10 @@ test('should generate sectors', () => {
           1,
           2,
         ],
-        "systemDefenses": 0,
       },
       Object {
         "buildPoints": 0,
+        "defenses": 0,
         "factories": 3,
         "home": false,
         "name": "Golf",
@@ -472,10 +473,10 @@ test('should generate sectors', () => {
           3,
           0,
         ],
-        "systemDefenses": 0,
       },
       Object {
         "buildPoints": 0,
+        "defenses": 0,
         "factories": 3,
         "home": false,
         "name": "Hotel",
@@ -506,10 +507,10 @@ test('should generate sectors', () => {
           6,
           2,
         ],
-        "systemDefenses": 0,
       },
       Object {
         "buildPoints": 0,
+        "defenses": 0,
         "factories": 4,
         "home": false,
         "name": "India",
@@ -546,10 +547,10 @@ test('should generate sectors', () => {
           4,
           2,
         ],
-        "systemDefenses": 0,
       },
       Object {
         "buildPoints": 0,
+        "defenses": 0,
         "factories": 3,
         "home": false,
         "name": "Juliett",
@@ -598,7 +599,6 @@ test('should generate sectors', () => {
           3,
           2,
         ],
-        "systemDefenses": 0,
       },
     ]
   `);

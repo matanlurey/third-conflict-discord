@@ -10,15 +10,30 @@ export interface InTransitFleet {
   owner: number;
 
   /**
-   * Destination of the fleet.
+   * Origin of the fleet (if recalled).
    */
-  destination: Coordinate;
+  origin: string;
+
+  /**
+   * Destination (system) of the fleet.
+   */
+  destination: string;
 
   /**
    * Distance remaining until the destination is reached.
    */
-  remaining: number;
+  distance: number;
+
+  /**
+   * What the purpose of the movement/transit is.
+   *
+   * Undefined means the fleet is either stationary (if orbiting a
+   * system) or being moved to a friendly location (e.g. not attacking).
+   */
+  mission?: Mission;
 }
+
+export type Mission = 'Conquest' | 'Resource Raid' | 'Probe';
 
 export interface Fleet {
   /**
@@ -123,7 +138,7 @@ export interface System {
    *
    * You need at least 25 defenses to detect enemy fleets.
    */
-  systemDefenses: number;
+  defenses: number;
 
   /**
    * Orbital facilities that construct mobile military units.
@@ -151,6 +166,20 @@ export interface System {
    * Friendly fleet (i.e. the fleet of the owner) in the system.
    */
   orbiting: Fleet;
+
+  /**
+   * What unit type is currently being built.
+   *
+   * A value of undefined means build points are being reserved.
+   */
+  building?:
+    | 'WarShips'
+    | 'StealthShips'
+    | 'Transports'
+    | 'Missiles'
+    | 'Planets'
+    | 'Factories'
+    | 'Defenses';
 }
 
 export type Coordinate = [number, number];
@@ -190,11 +219,20 @@ export interface Planet {
 export interface Player {
   /**
    * Unique ID of the player.
+   *
+   * An undefined value means that the player is not human controlled.
    */
-  readonly userId: string;
+  readonly userId?: string;
 
   /**
    * Screen name of the player.
    */
   readonly name: string;
+
+  /**
+   * Whether the player has ended the current turn.
+   */
+  didEndTurn: boolean;
+
+  // TODO: Add Fog of War.
 }

@@ -166,7 +166,7 @@ export class SimpleMapGenerator {
       }),
       planets: planets,
       position: origin,
-      systemDefenses: 0,
+      defenses: 0,
     };
   }
 
@@ -187,7 +187,7 @@ export class SimpleMapGenerator {
       owner: 0,
       planets,
       position: origin,
-      systemDefenses: 0,
+      defenses: 0,
     };
   }
 }
