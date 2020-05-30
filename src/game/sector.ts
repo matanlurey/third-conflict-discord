@@ -72,6 +72,17 @@ export interface Fleet {
   buildPoints: number;
 }
 
+export function createFleet(has: Partial<Fleet>): Fleet {
+  return {
+    buildPoints: has.buildPoints || 0,
+    missiles: has.missiles || 0,
+    stealthShips: has.stealthShips || 0,
+    transports: has.transports || 0,
+    troops: has.troops || 0,
+    warShips: has.warShips || 0,
+  };
+}
+
 export interface System {
   /**
    * Name of the star.
@@ -163,6 +174,10 @@ export interface Planet {
 
   /**
    * How many troops are recruited per turn.
+   *
+   * This number is meant to represent (roughly) the population of the planet
+   * and can be reduced permanently due to bombardment. Most planets will have
+   * a recruitment amount of around 4, with 10 as the max and 1 as the minimum.
    */
   recruit: number;
 
@@ -173,13 +188,6 @@ export interface Planet {
 }
 
 export interface Player {
-  /**
-   * Which player # this player is.
-   *
-   * Used as a unique ID in the context of a game.
-   */
-  readonly index: number;
-
   /**
    * Unique ID of the player.
    */

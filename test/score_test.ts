@@ -1,5 +1,5 @@
 import { calculateScore, calculateTotals } from '../src/game/score';
-import { Coordinate, Player } from '../src/game/sector';
+import { Coordinate, createFleet, Player } from '../src/game/sector';
 
 test('should calculate scores from totals', () => {
   expect(
@@ -20,35 +20,33 @@ test('should calculate scores from totals', () => {
 test('should calculate totals from fleets', () => {
   const point: Coordinate = [0, 0];
   const players: Player[] = [
-    { index: 0, name: 'Player 1', userId: '1234' },
-    { index: 1, name: 'Player 2', userId: '5678' },
+    { name: 'Player 1', userId: '1234' },
+    { name: 'Player 2', userId: '5678' },
   ];
   const totals = calculateTotals(
     players,
     [
       {
         owner: 0,
-        contents: {
+        contents: createFleet({
           warShips: 10,
           stealthShips: 5,
           transports: 3,
-          buildPoints: 0,
           missiles: 2,
           troops: 10,
-        },
+        }),
         destination: point,
         remaining: 0,
       },
       {
         owner: 0,
-        contents: {
+        contents: createFleet({
           warShips: 4,
           stealthShips: 5,
           transports: 5,
-          buildPoints: 0,
           missiles: 1,
           troops: 5,
-        },
+        }),
         destination: point,
         remaining: 0,
       },
@@ -71,8 +69,8 @@ test('should calculate totals from fleets', () => {
 test('should calculate totals from systems', () => {
   const point: Coordinate = [0, 0];
   const players: Player[] = [
-    { index: 0, name: 'Player 1', userId: '1234' },
-    { index: 1, name: 'Player 2', userId: '5678' },
+    { name: 'Player 1', userId: '1234' },
+    { name: 'Player 2', userId: '5678' },
   ];
   const totals = calculateTotals(
     players,
