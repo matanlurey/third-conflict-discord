@@ -16,6 +16,7 @@
   "keywords": [],
   "license": "MIT",
   "devDependencies": {
+    "@types/chance": "^1.1.0",
     "@types/fs-extra": "^8.1.0",
     "@types/jest": "^25.2.1",
     "@typescript-eslint/eslint-plugin": "^2.30.0",
@@ -30,5 +31,8 @@
     "ts-jest": "^25.4.0",
     "ts-node": "^8.9.1",
     "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "chance": "^1.1.6"
   }
 }

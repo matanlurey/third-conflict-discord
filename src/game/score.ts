@@ -48,12 +48,8 @@ function addFleetContents(fleet: Fleet, totals: Totals): void {
 }
 
 function addSystemContents(system: System, totals: Totals): void {
+  addFleetContents(system.orbiting, totals);
   totals.starSystems += 1;
-  totals.warShips += system.orbiting.warShips;
-  totals.transports += system.orbiting.transports;
-  totals.stealthShips += system.orbiting.stealthShips;
-  totals.troops += system.orbiting.troops;
-  totals.missiles += system.orbiting.missiles;
   totals.factories += system.factories;
 }
 
