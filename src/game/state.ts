@@ -318,6 +318,10 @@ export class GameState {
     }
   }
 
+  get turn(): number {
+    return this.data.turn;
+  }
+
   async save(file: string): Promise<void> {
     return fs.writeJsonSync(file, this.data, { spaces: 2 });
   }
