@@ -20,6 +20,7 @@ beforeEach(() => {
   state = new GameState(
     {
       fleets: [],
+      scouts: [],
       players: [
         {
           didEndTurn: false,
@@ -28,6 +29,7 @@ beforeEach(() => {
             ground: 50,
             naval: 50,
           },
+          fogOfWar: {},
         },
         {
           didEndTurn: false,
@@ -36,6 +38,7 @@ beforeEach(() => {
             ground: 50,
             naval: 50,
           },
+          fogOfWar: {},
         },
       ],
       systems: [
@@ -45,7 +48,7 @@ beforeEach(() => {
           factories: 10,
           home: false,
           name: 'Alpha',
-          orbiting: createFleet({}),
+          fleet: createFleet({}),
           owner: 1,
           planets,
           position: [0, 0] as Coordinate,
@@ -56,7 +59,7 @@ beforeEach(() => {
           factories: 10,
           home: false,
           name: 'Beta',
-          orbiting: createFleet({}),
+          fleet: createFleet({}),
           owner: 0,
           planets,
           position: [0, 0] as Coordinate,
@@ -80,35 +83,35 @@ beforeEach(() => {
 });
 
 test('should build WarShips', () => {
-  expect(system.orbiting.warShips).toEqual(0);
+  expect(system.fleet.warShips).toEqual(0);
   system.building = 'WarShips';
   state.nextTurn();
-  expect(system.orbiting.warShips).toEqual(10);
+  expect(system.fleet.warShips).toEqual(10);
 });
 
 test('should build StealthShips', () => {
-  expect(system.orbiting.stealthShips).toEqual(0);
+  expect(system.fleet.stealthShips).toEqual(0);
   expect(system.buildPoints).toEqual(0);
   system.building = 'StealthShips';
   state.nextTurn();
-  expect(system.orbiting.stealthShips).toEqual(3);
+  expect(system.fleet.stealthShips).toEqual(3);
   expect(system.buildPoints).toEqual(1);
 });
 
 test('should build Transports', () => {
-  expect(system.orbiting.transports).toEqual(0);
+  expect(system.fleet.transports).toEqual(0);
   expect(system.buildPoints).toEqual(0);
   system.building = 'Transports';
   state.nextTurn();
-  expect(system.orbiting.transports).toEqual(3);
+  expect(system.fleet.transports).toEqual(3);
   expect(system.buildPoints).toEqual(1);
 });
 
 test('should build Missiles', () => {
-  expect(system.orbiting.missiles).toEqual(0);
+  expect(system.fleet.missiles).toEqual(0);
   system.building = 'Missiles';
   state.nextTurn();
-  expect(system.orbiting.missiles).toEqual(5);
+  expect(system.fleet.missiles).toEqual(5);
 });
 
 test('should build Defenses', () => {
@@ -126,7 +129,7 @@ test('should reserve Points', () => {
   system.building = 'WarShips';
   state.nextTurn();
   expect(system.buildPoints).toEqual(0);
-  expect(system.orbiting.warShips).toEqual(20);
+  expect(system.fleet.warShips).toEqual(20);
 });
 
 describe('should build Planets', () => {

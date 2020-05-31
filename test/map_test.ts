@@ -62,9 +62,7 @@ test('should generate sectors', () => {
         "buildPoints": 0,
         "defenses": 0,
         "factories": 10,
-        "home": true,
-        "name": "Alfa",
-        "orbiting": Object {
+        "fleet": Object {
           "buildPoints": 0,
           "missiles": 0,
           "stealthShips": 0,
@@ -72,6 +70,8 @@ test('should generate sectors', () => {
           "troops": 1000,
           "warShips": 182,
         },
+        "home": true,
+        "name": "Alfa",
         "owner": 1,
         "planets": Array [
           Object {
@@ -144,9 +144,7 @@ test('should generate sectors', () => {
         "buildPoints": 0,
         "defenses": 0,
         "factories": 10,
-        "home": true,
-        "name": "Bravo",
-        "orbiting": Object {
+        "fleet": Object {
           "buildPoints": 0,
           "missiles": 0,
           "stealthShips": 0,
@@ -154,6 +152,8 @@ test('should generate sectors', () => {
           "troops": 1150,
           "warShips": 203,
         },
+        "home": true,
+        "name": "Bravo",
         "owner": 2,
         "planets": Array [
           Object {
@@ -226,9 +226,7 @@ test('should generate sectors', () => {
         "buildPoints": 0,
         "defenses": 0,
         "factories": 10,
-        "home": true,
-        "name": "Charlie",
-        "orbiting": Object {
+        "fleet": Object {
           "buildPoints": 0,
           "missiles": 0,
           "stealthShips": 0,
@@ -236,6 +234,8 @@ test('should generate sectors', () => {
           "troops": 900,
           "warShips": 210,
         },
+        "home": true,
+        "name": "Charlie",
         "owner": 3,
         "planets": Array [
           Object {
@@ -308,9 +308,7 @@ test('should generate sectors', () => {
         "buildPoints": 0,
         "defenses": 0,
         "factories": 10,
-        "home": true,
-        "name": "Delta",
-        "orbiting": Object {
+        "fleet": Object {
           "buildPoints": 0,
           "missiles": 0,
           "stealthShips": 0,
@@ -318,6 +316,8 @@ test('should generate sectors', () => {
           "troops": 1250,
           "warShips": 217,
         },
+        "home": true,
+        "name": "Delta",
         "owner": 4,
         "planets": Array [
           Object {
@@ -390,9 +390,7 @@ test('should generate sectors', () => {
         "buildPoints": 0,
         "defenses": 0,
         "factories": 4,
-        "home": false,
-        "name": "Echo",
-        "orbiting": Object {
+        "fleet": Object {
           "buildPoints": 0,
           "missiles": 0,
           "stealthShips": 0,
@@ -400,6 +398,8 @@ test('should generate sectors', () => {
           "troops": 0,
           "warShips": 16,
         },
+        "home": false,
+        "name": "Echo",
         "owner": 0,
         "planets": Array [
           Object {
@@ -430,9 +430,7 @@ test('should generate sectors', () => {
         "buildPoints": 0,
         "defenses": 0,
         "factories": 3,
-        "home": false,
-        "name": "Foxtrot",
-        "orbiting": Object {
+        "fleet": Object {
           "buildPoints": 0,
           "missiles": 0,
           "stealthShips": 0,
@@ -440,6 +438,8 @@ test('should generate sectors', () => {
           "troops": 0,
           "warShips": 13,
         },
+        "home": false,
+        "name": "Foxtrot",
         "owner": 0,
         "planets": Array [
           Object {
@@ -464,9 +464,7 @@ test('should generate sectors', () => {
         "buildPoints": 0,
         "defenses": 0,
         "factories": 3,
-        "home": false,
-        "name": "Golf",
-        "orbiting": Object {
+        "fleet": Object {
           "buildPoints": 0,
           "missiles": 0,
           "stealthShips": 0,
@@ -474,6 +472,8 @@ test('should generate sectors', () => {
           "troops": 0,
           "warShips": 19,
         },
+        "home": false,
+        "name": "Golf",
         "owner": 0,
         "planets": Array [
           Object {
@@ -498,9 +498,7 @@ test('should generate sectors', () => {
         "buildPoints": 0,
         "defenses": 0,
         "factories": 3,
-        "home": false,
-        "name": "Hotel",
-        "orbiting": Object {
+        "fleet": Object {
           "buildPoints": 0,
           "missiles": 0,
           "stealthShips": 0,
@@ -508,6 +506,8 @@ test('should generate sectors', () => {
           "troops": 0,
           "warShips": 24,
         },
+        "home": false,
+        "name": "Hotel",
         "owner": 0,
         "planets": Array [
           Object {
@@ -532,9 +532,7 @@ test('should generate sectors', () => {
         "buildPoints": 0,
         "defenses": 0,
         "factories": 4,
-        "home": false,
-        "name": "India",
-        "orbiting": Object {
+        "fleet": Object {
           "buildPoints": 0,
           "missiles": 0,
           "stealthShips": 0,
@@ -542,6 +540,8 @@ test('should generate sectors', () => {
           "troops": 0,
           "warShips": 36,
         },
+        "home": false,
+        "name": "India",
         "owner": 0,
         "planets": Array [
           Object {
@@ -572,9 +572,7 @@ test('should generate sectors', () => {
         "buildPoints": 0,
         "defenses": 0,
         "factories": 3,
-        "home": false,
-        "name": "Juliett",
-        "orbiting": Object {
+        "fleet": Object {
           "buildPoints": 0,
           "missiles": 0,
           "stealthShips": 0,
@@ -582,6 +580,8 @@ test('should generate sectors', () => {
           "troops": 0,
           "warShips": 19,
         },
+        "home": false,
+        "name": "Juliett",
         "owner": 0,
         "planets": Array [
           Object {

@@ -7,7 +7,7 @@ test('should calculate scores from totals', () => {
       warShips: 5, // 1
       transports: 5, // 3
       stealthShips: 5, // 3
-      defenseUnits: 5, // 2
+      defenses: 5, // 2
       troops: 20, // 1
       missiles: 5, // 2
       starSystems: 1, // 25
@@ -24,12 +24,14 @@ test('should calculate totals from fleets', () => {
       userId: '1234',
       didEndTurn: false,
       combatRatings: { naval: 90, ground: 90 },
+      fogOfWar: {},
     },
     {
       name: 'Player 2',
       userId: '5678',
       didEndTurn: false,
       combatRatings: { naval: 90, ground: 90 },
+      fogOfWar: {},
     },
   ];
   const totals = calculateTotals(
@@ -70,7 +72,7 @@ test('should calculate totals from fleets', () => {
     transports: 8,
     missiles: 3,
     troops: 15,
-    defenseUnits: 0,
+    defenses: 0,
     factories: 0,
     planets: 0,
     starSystems: 0,
@@ -85,12 +87,14 @@ test('should calculate totals from systems', () => {
       userId: '1234',
       didEndTurn: false,
       combatRatings: { naval: 90, ground: 90 },
+      fogOfWar: {},
     },
     {
       name: 'Player 2',
       userId: '5678',
       didEndTurn: false,
       combatRatings: { naval: 90, ground: 90 },
+      fogOfWar: {},
     },
   ];
   const totals = calculateTotals(
@@ -102,7 +106,7 @@ test('should calculate totals from systems', () => {
         factories: 5,
         home: true,
         name: 'Alpha',
-        orbiting: {
+        fleet: {
           buildPoints: 0,
           missiles: 3,
           stealthShips: 2,
@@ -118,7 +122,7 @@ test('should calculate totals from systems', () => {
     ],
   );
   expect(totals.get(players[0])).toEqual({
-    defenseUnits: 0,
+    defenses: 0,
     factories: 5,
     missiles: 3,
     planets: 1,

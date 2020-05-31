@@ -4,7 +4,7 @@ export interface Totals {
   warShips: number;
   transports: number;
   stealthShips: number;
-  defenseUnits: number;
+  defenses: number;
   troops: number;
   missiles: number;
   starSystems: number;
@@ -30,7 +30,7 @@ export function calculateScore(total: Totals): number {
       total.warShips * oneFifth +
       total.transports * threeFifths +
       total.stealthShips * threeFifths +
-      total.defenseUnits * twoFifths +
+      total.defenses * twoFifths +
       total.troops * oneTwentieth +
       total.missiles * twoFifths +
       total.starSystems * 25 +
@@ -48,7 +48,7 @@ function addFleetContents(fleet: Fleet, totals: Totals): void {
 }
 
 function addSystemContents(system: System, totals: Totals): void {
-  addFleetContents(system.orbiting, totals);
+  addFleetContents(system.fleet, totals);
   totals.starSystems += 1;
   totals.factories += system.factories;
 }
@@ -79,7 +79,7 @@ export function calculateTotals(
       factories: 0,
       starSystems: 0,
       planets: 0,
-      defenseUnits: 0,
+      defenses: 0,
     };
   }
   fleets.forEach((f) => {

@@ -1,5 +1,27 @@
 import { Ratings } from './combat';
 
+export interface Scout {
+  /**
+   * Who owns the scout.
+   */
+  owner: number;
+
+  /**
+   * Whether a WarShip or StealthShip was sent.
+   */
+  type: 'WarShip' | 'StealthShip';
+
+  /**
+   * Destination (system) of the fleet.
+   */
+  destination: string;
+
+  /**
+   * Distance remaining until the destination is reached.
+   */
+  distance: number;
+}
+
 export interface InTransitFleet {
   /**
    * Contents of the fleet.
@@ -167,7 +189,7 @@ export interface System {
   /**
    * Friendly fleet (i.e. the fleet of the owner) in the system.
    */
-  orbiting: Fleet;
+  fleet: Fleet;
 
   /**
    * What unit type is currently being built.
@@ -182,6 +204,30 @@ export interface System {
     | 'Planets'
     | 'Factories'
     | 'Defenses';
+}
+
+export function createSystem(has: {
+  name: string;
+  owner?: number;
+  home?: boolean;
+  position?: Coordinate;
+  planets?: Planet[];
+  defenses?: number;
+  factories?: number;
+  buildPoints?: number;
+  fleet?: Fleet;
+}): System {
+  return {
+    name: has.name,
+    owner: has.owner || 0,
+    home: has.home || false,
+    position: has.position || ([0, 0] as Coordinate),
+    planets: has.planets || [],
+    defenses: has.defenses || 0,
+    factories: has.factories || 0,
+    buildPoints: has.buildPoints || 0,
+    fleet: has.fleet || createFleet({}),
+  };
 }
 
 export type Coordinate = [number, number];
@@ -241,5 +287,15 @@ export interface Player {
    */
   readonly combatRatings: Ratings;
 
-  // TODO: Add Fog of War.
+  /**
+   * Latest intelligence report of what a system looks like.
+   */
+  readonly fogOfWar: {
+    [key: string]:
+      | {
+          readonly system: Partial<System>;
+          readonly updated: Date;
+        }
+      | undefined;
+  };
 }

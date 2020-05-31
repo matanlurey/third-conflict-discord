@@ -30,11 +30,44 @@ export function startingCombatRatings(chance = new Chance()): Ratings {
 }
 
 export class NavalCombatSimulator {
+  /**
+   * Copy of the fleet that was attacking.
+   */
   private readonly originalAttacker: Fleet;
+
+  /**
+   * Copy of the fleet that was defending.
+   */
   private readonly originalDefender: System;
+
+  /**
+   * Current combat round.
+   */
   private combatRound = 1;
 
-  constructor(
+  /**
+   * Create a conquest mission.
+   *
+   * @param between
+   * @param chance
+   */
+  static conquest(
+    between: {
+      attacker: {
+        rating: number;
+        contents: Fleet;
+      };
+      defender: {
+        rating: number;
+        contents: System;
+      };
+    },
+    chance?: Chance.Chance,
+  ): NavalCombatSimulator {
+    return new NavalCombatSimulator(between.attacker, between.defender, chance);
+  }
+
+  private constructor(
     private readonly attacker: {
       rating: number;
       contents: Fleet;
@@ -49,6 +82,9 @@ export class NavalCombatSimulator {
     this.originalDefender = deepClone(defender.contents);
   }
 
+  /**
+   * Simulates a full round of combat.
+   */
   simulateRound(): void {
     this.defendingMissiles();
     this.attackingStealthShips();
@@ -56,17 +92,71 @@ export class NavalCombatSimulator {
     this.defendingStealthShips();
     this.defendingWarShips();
     this.attackingWarShips();
+    this.eliminateTransportsIfDefeated();
+    this.combatRound++;
   }
 
-  get winner():
+  private eliminateTransportsIfDefeated(): void {
+    if (this.isDefenderEliminated) {
+      const defender = this.defender.contents;
+      defender.fleet.transports = 0;
+      defender.fleet.troops = 0;
+      defender.fleet.buildPoints = 0;
+    }
+    if (this.isAttackerEliminated) {
+      const attacker = this.attacker.contents;
+      attacker.transports = 0;
+      attacker.troops = 0;
+      attacker.buildPoints = 0;
+    }
+  }
 
+  /**
+   * Whether the defender has no more combat units.
+   */
+  get isDefenderEliminated(): boolean {
+    const defender = this.defender.contents;
+    return (
+      defender.defenses +
+        defender.fleet.warShips +
+        defender.fleet.stealthShips ===
+      0
+    );
+  }
+
+  /**
+   * Whether the attacker has no more combat units.
+   */
+  get isAttackerEliminated(): boolean {
+    const attacker = this.attacker.contents;
+    return attacker.warShips + attacker.stealthShips === 0;
+  }
+
+  /**
+   * Return the current results in terms of units lost.
+   */
   get results(): {
-    attacker: Totals,
-    defender: Totals,
+    attacker: Partial<Totals>;
+    defender: Partial<Totals>;
   } {
+    const attacker = this.attacker.contents;
+    const oAttacker = this.originalAttacker;
+    const defender = this.defender.contents;
+    const oDefender = this.originalDefender;
     return {
       attacker: {
-        
+        warShips: oAttacker.warShips - attacker.warShips,
+        stealthShips: oAttacker.stealthShips - attacker.stealthShips,
+        missiles: oAttacker.missiles - attacker.missiles,
+        transports: oAttacker.transports - attacker.transports,
+      },
+      defender: {
+        warShips: oDefender.fleet.warShips - defender.fleet.warShips,
+        stealthShips:
+          oDefender.fleet.stealthShips - defender.fleet.stealthShips,
+        missiles: oDefender.fleet.missiles - defender.fleet.missiles,
+        transports: oDefender.fleet.transports - defender.fleet.transports,
+        defenses: oDefender.defenses - defender.defenses,
       },
     };
   }
@@ -83,19 +173,13 @@ export class NavalCombatSimulator {
     const defender = this.defender.contents;
     const attacker = this.attacker.contents;
 
-    function hasTargets(): boolean {
-      return (
-        attacker.stealthShips + attacker.warShips + attacker.transports > 0
-      );
-    }
-
     // Not eligible for defensive missile fire.
     if (defender.defenses < 50) {
       return;
     }
 
     // Launch defensive missiles. Priority: StealthShips > WarShips > Transports.
-    while (hasTargets() && defender.orbiting.missiles--) {
+    while (!this.isAttackerEliminated && defender.fleet.missiles--) {
       if (!this.didAttackerHit()) {
         continue;
       }
@@ -103,8 +187,6 @@ export class NavalCombatSimulator {
         attacker.stealthShips--;
       } else if (attacker.warShips) {
         attacker.warShips--;
-      } else if (attacker.transports) {
-        attacker.transports--;
       }
     }
   }
@@ -122,17 +204,17 @@ export class NavalCombatSimulator {
         defender.defenses--;
       },
       (): void => {
-        defender.orbiting.warShips--;
+        defender.fleet.warShips--;
       },
       (): void => {
-        defender.orbiting.stealthShips -= damageToStealthShips;
+        defender.fleet.stealthShips -= damageToStealthShips;
       },
     ];
-    while (hits--) {
+    while (!this.isDefenderEliminated && hits--) {
       const destroy = this.chance.weighted(doDamage, [
         defender.defenses,
-        defender.orbiting.warShips,
-        defender.orbiting.stealthShips,
+        defender.fleet.warShips,
+        defender.fleet.stealthShips,
       ]);
       destroy();
     }
@@ -154,7 +236,7 @@ export class NavalCombatSimulator {
         attacker.stealthShips -= damageToStealthShips;
       },
     ];
-    while (hits--) {
+    while (!this.isAttackerEliminated && hits--) {
       const destroy = this.chance.weighted(doDamage, [
         attacker.warShips,
         attacker.stealthShips,
@@ -177,11 +259,11 @@ export class NavalCombatSimulator {
   }
 
   private defendingStealthShips(): void {
-    this.doDefense(this.defender.contents.orbiting.stealthShips);
+    this.doDefense(this.defender.contents.fleet.stealthShips);
   }
 
   private defendingWarShips(): void {
-    this.doDefense(this.defender.contents.orbiting.warShips, 0.5);
+    this.doDefense(this.defender.contents.fleet.warShips, 0.5);
   }
 
   private attackingWarShips(): void {

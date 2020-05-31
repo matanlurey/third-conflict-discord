@@ -6,6 +6,7 @@ import {
   Mission,
   Planet,
   Player,
+  Scout,
   System,
 } from './sector';
 import { Settings } from './settings';
@@ -27,6 +28,11 @@ interface GameStateData {
    * Fleets in-transit (not orbiting a system).
    */
   readonly fleets: InTransitFleet[];
+
+  /**
+   * Scoutting missions in progress.
+   */
+  readonly scouts: Scout[];
 
   /**
    * Initial settings of the game.
@@ -56,7 +62,7 @@ export class OwnedSystemFacade {
   }
 
   private createFleet(amounts: Fleet): Fleet | undefined {
-    const current = this.system.orbiting;
+    const current = this.system.fleet;
     const invalid = [];
     if (amounts.buildPoints > current.buildPoints) {
       invalid.push(
@@ -341,16 +347,16 @@ export class GameState {
 
     switch (system.building) {
       case 'WarShips':
-        system.orbiting.warShips += asManyAsPossible(1);
+        system.fleet.warShips += asManyAsPossible(1);
         return;
       case 'StealthShips':
-        system.orbiting.stealthShips += asManyAsPossible(3);
+        system.fleet.stealthShips += asManyAsPossible(3);
         return;
       case 'Transports':
-        system.orbiting.transports += asManyAsPossible(3);
+        system.fleet.transports += asManyAsPossible(3);
         return;
       case 'Missiles':
-        system.orbiting.missiles += asManyAsPossible(2);
+        system.fleet.missiles += asManyAsPossible(2);
         return;
       case 'Planets':
         if (system.planets.length >= 10) {

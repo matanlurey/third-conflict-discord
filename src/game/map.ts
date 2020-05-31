@@ -159,7 +159,7 @@ export class SimpleMapGenerator {
       home: true,
       owner,
       name,
-      orbiting: createFleet({
+      fleet: createFleet({
         warShips: this.chance.integer({ min: 180, max: 220 }),
         transports,
         troops: transports * 50,
@@ -181,7 +181,7 @@ export class SimpleMapGenerator {
       factories: this.chance.integer({ min: 2, max: 4 }),
       home: false,
       name,
-      orbiting: createFleet({
+      fleet: createFleet({
         warShips: this.chance.integer({ min: 10, max: 40 }),
       }),
       owner: 0,
