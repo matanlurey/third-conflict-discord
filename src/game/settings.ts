@@ -18,7 +18,7 @@ export interface Settings {
   /**
    * Game difficulty, which controls a lot of things.
    *
-   * Primarily, this determines how will computer playesr play, the production
+   * Primarily, this determines how will computer players play, the production
    * level, and the severity of privateer attacks.
    */
   readonly gameDifficulty: 'Easy' | 'Hard' | 'Tough';
@@ -68,7 +68,7 @@ export interface Settings {
   /**
    * Whether to enable or disable imperial systems producing new units.
    *
-   * If true, imperial sysetms will produce ships, defenses, and troops at 1/2
+   * If true, imperial systems will produce ships, defenses, and troops at 1/2
    * the rate of player systems. Turning on this option makes expanding more
    * difficult, since imperial systesm are more heavily defended as the game
    * progresses.
