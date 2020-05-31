@@ -1,4 +1,6 @@
+import fs from 'fs-extra';
 import { fixedFloat } from '../common';
+import { SimpleMapGenerator } from './map';
 import {
   Coordinate,
   Fleet,
@@ -259,6 +261,45 @@ export class PlayerFacade {
 }
 
 export class GameState {
+  static async create(options: {
+    generator: SimpleMapGenerator;
+    players: Player[];
+    settings: Settings;
+    message: (message: string, player?: Player) => void;
+  }): Promise<GameState> {
+    const players = [
+      {
+        combatRatings: { naval: 50, ground: 50 },
+        didEndTurn: false,
+        fogOfWar: {},
+        name: 'Empire',
+      },
+      ...options.players,
+    ];
+    return new GameState(
+      {
+        fleets: [],
+        scouts: [],
+        players,
+        settings: options.settings,
+        systems: options.generator.generate(players),
+        turn: 1,
+      },
+      options.message,
+    );
+  }
+
+  static async load(
+    file: string,
+    options: {
+      message: (message: string, player?: Player) => void;
+    },
+  ): Promise<GameState | undefined> {
+    if (await fs.pathExists(file)) {
+      return new GameState(await fs.readJson(file), options.message);
+    }
+  }
+
   constructor(
     public readonly data: GameStateData,
     public readonly message: (message: string, player?: Player) => void,
@@ -275,6 +316,10 @@ export class GameState {
         } systems expected, got ${data.systems.length}.`,
       );
     }
+  }
+
+  async save(file: string): Promise<void> {
+    return fs.writeJsonSync(file, this.data, { spaces: 2 });
   }
 
   /**
