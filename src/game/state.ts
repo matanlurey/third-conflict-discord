@@ -32,7 +32,7 @@ interface GameStateData {
   /**
    * Scoutting missions in progress.
    */
-  readonly scouts: Scout[];
+  scouts: Scout[];
 
   /**
    * Initial settings of the game.
@@ -164,6 +164,33 @@ export class OwnedSystemFacade {
       this.message(`Moving fleet to ${target.name}, ETA \`${eta}\` turns.`);
     }
   }
+
+  scout(target: System): void {
+    const fleet = this.system.fleet;
+    if (fleet.warShips === 0 && fleet.stealthShips === 0) {
+      this.message(`You do not have any ships suitable for scouting.`);
+      return;
+    }
+    let type: 'StealthShip' | 'WarShip';
+    if (fleet.stealthShips) {
+      fleet.stealthShips--;
+      type = 'StealthShip';
+    } else {
+      fleet.warShips--;
+      type = 'WarShip';
+    }
+    const distance = this.state.distance(target, this.system);
+    const eta = this.state.timeScout(distance);
+    this.state.data.scouts.push({
+      destination: target.name,
+      distance,
+      owner: this.system.owner,
+      type,
+    });
+    this.message(
+      `\`${type}\` scout heading to \`${target.name}\`, ETA \`${eta}\` turns.`,
+    );
+  }
 }
 
 export class PlayerFacade {
@@ -180,6 +207,20 @@ export class PlayerFacade {
     return this.state.data.players[this.index];
   }
 
+  /**
+   * Finds a system on behalf of a player.
+   *
+   * @param system
+   */
+  find(system: string): System | undefined {
+    const found = this.state.find(system);
+    if (!found) {
+      this.state.message(`No system found: \`${system}\`.`, this.player);
+    } else {
+      return found;
+    }
+  }
+
   endTurn(): void {
     if (!this.player.didEndTurn) {
       this.player.didEndTurn = true;
@@ -187,11 +228,33 @@ export class PlayerFacade {
     }
   }
 
-  source(system: System): OwnedSystemFacade {
+  source(system: System): OwnedSystemFacade | undefined {
     if (system.owner !== this.index) {
-      throw new Error(`${system.name} is not owned by the player.`);
+      this.state.message(
+        `You must control \`${system.name}\` to issue orders from it.`,
+        this.player,
+      );
+      return;
     }
     return new OwnedSystemFacade(this.state, system);
+  }
+
+  /**
+   * Returns the latest intelligence report about a system.
+   *
+   * @param name
+   */
+  scan(system: System): Partial<System> {
+    const data = this.state.data.players[this.index];
+    const result = data.fogOfWar[system.name];
+    if (!result) {
+      return {
+        name: system.name,
+        position: system.position,
+      };
+    } else {
+      return result.system;
+    }
   }
 }
 
@@ -205,9 +268,11 @@ export class GameState {
         `Invalid game, at least 2 players expected, got ${data.players.length}.`,
       );
     }
-    if (data.systems.length < data.players.length) {
+    if (data.systems.length < data.players.length - 1) {
       throw new Error(
-        `Invalid game, at least ${data.players.length} systems expected, got ${data.systems.length}.`,
+        `Invalid game, at least ${
+          data.players.length - 1
+        } systems expected, got ${data.systems.length}.`,
       );
     }
   }
@@ -255,6 +320,20 @@ export class GameState {
     return fixedFloat(Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)));
   }
 
+  find(system: string): System | undefined {
+    let isEqual: (name: string) => boolean;
+    if (system.length === 1) {
+      isEqual = (name): boolean => name[0] === system;
+    } else {
+      isEqual = (name): boolean => name === system;
+    }
+    for (const data of this.data.systems) {
+      if (isEqual(data.name)) {
+        return data;
+      }
+    }
+  }
+
   /**
    * Returns the ETA of how long it will take to travel a distance.
    *
@@ -284,6 +363,9 @@ export class GameState {
     return Math.ceil(distance / speed);
   }
 
+  /**
+   * Check if all players have ended their turn, and if so, move to the next.
+   */
   checkEndTurn(): void {
     // TODO: Make this asynchronous?
     if (this.data.players.every((p) => !p.userId || p.didEndTurn)) {
@@ -291,13 +373,39 @@ export class GameState {
     }
   }
 
-  endGame(): void {
+  /**
+   * Forcefully ends the game, announcing the winner.
+   */
+  private endGame(): void {
     // TODO: Implement.
   }
 
+  /**
+   * Whether at most a single player "remains" in the game.
+   */
+  private get lessThanTwoPlayersRemain(): boolean {
+    const active = new Set<number>();
+    this.data.fleets.forEach((f) => {
+      if (f.owner !== 0) {
+        active.add(f.owner);
+      }
+    });
+    this.data.systems.forEach((f) => {
+      // TODO: Should holding a planet still count?
+      if (f.owner !== 0) {
+        active.add(f.owner);
+      }
+    });
+    return active.size < 2;
+  }
+
+  /**
+   * Moves forward the turn by 1.
+   */
   nextTurn(): void {
     this.data.turn++;
     this.data.players.forEach((p) => (p.didEndTurn = false));
+    this.data.scouts = this.data.scouts.filter((s) => this.resolveScout(s));
     this.data.fleets.forEach((f) => {
       this.resolveMovementAndCombat(f);
     });
@@ -305,7 +413,10 @@ export class GameState {
       this.newProducton(s);
       s.planets.forEach((p) => this.recruitTroops(p));
     });
-    if (this.data.turn >= this.data.settings.maxGameLength) {
+    if (
+      this.data.turn >= this.data.settings.maxGameLength ||
+      this.lessThanTwoPlayersRemain
+    ) {
       this.endGame();
     }
     if (this.data.settings.enableRandomEvents) {
@@ -316,21 +427,73 @@ export class GameState {
     });
   }
 
+  private resolveScout(scout: Scout): boolean {
+    // Move forward at 1.5* the normal speed.
+    const speed = this.data.settings.shipSpeedATurn * 1.5;
+    scout.distance -= speed;
+    if (scout.distance <= 0) {
+      // Add intelligence report.
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const report = this.find(scout.destination)!;
+      this.data.players[scout.owner].fogOfWar[scout.destination] = {
+        updated: this.data.turn,
+        system: {
+          defenses: report.defenses,
+          factories: report.factories,
+          owner: report.owner,
+          planets: Array(report.planets.length),
+          name: report.name,
+          position: report.position,
+          fleet: {
+            buildPoints: 0,
+            missiles: report.fleet.missiles,
+            // TODO: Should this be known? Inaccurate?
+            stealthShips: report.fleet.stealthShips,
+            transports: report.fleet.transports,
+            troops: report.fleet.troops,
+            warShips: report.fleet.warShips,
+          },
+        },
+      };
+      // Chance of scanning a WarShip
+      // TODO: Implement.
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private resolveMovementAndCombat(_fleet: InTransitFleet): void {
     // TODO: Implement.
   }
 
+  /**
+   * Recruits troops at the current planet, capping at 1000.
+   *
+   * @param planet
+   */
   private recruitTroops(planet: Planet): void {
     planet.troops = Math.min(1000, planet.troops + planet.recruit);
   }
 
+  /**
+   * Returns the average morale for the system.
+   *
+   * @param system
+   */
   private computeMorale(system: System): number {
+    // TODO: Consider the inverse of morale for enemy systems?
     const owned = system.planets.filter((p) => p.owner === system.owner);
     const sum = owned.reduce((p, c) => p + c.morale, 0);
     return Math.round(sum / owned.length) || 0;
   }
 
+  /**
+   * Builds more units at the provided system.
+   *
+   * @param system
+   */
   private newProducton(system: System): void {
     const morale = this.computeMorale(system);
     const perTurn = system.factories > 0 ? system.factories + morale : 0;

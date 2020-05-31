@@ -1,22 +1,11 @@
-import { Coordinate, createFleet, Planet, System } from '../../src/game/sector';
+import { Coordinate, createFleet, System } from '../../src/game/sector';
 import { GameState } from '../../src/game/state';
+import { noMessaging, simpleSettings, tenEmptyPlanets } from '../common';
 
 let state: GameState;
 let system: System;
 
-// Disable messaging.
-function noMessaging(): void {
-  return;
-}
-
 beforeEach(() => {
-  const planets: Planet[] = Array(10);
-  planets.fill({
-    morale: 0,
-    owner: 1,
-    recruit: 10,
-    troops: 0,
-  });
   state = new GameState(
     {
       fleets: [],
@@ -50,7 +39,7 @@ beforeEach(() => {
           name: 'Alpha',
           fleet: createFleet({}),
           owner: 1,
-          planets,
+          planets: tenEmptyPlanets(1),
           position: [0, 0] as Coordinate,
         }),
         {
@@ -61,21 +50,11 @@ beforeEach(() => {
           name: 'Beta',
           fleet: createFleet({}),
           owner: 0,
-          planets,
+          planets: tenEmptyPlanets(0),
           position: [0, 0] as Coordinate,
         },
       ],
-      settings: {
-        displayLevel: 'Show Nothing',
-        enableEmpireBuilds: false,
-        enableNoviceMode: false,
-        enableRandomEvents: false,
-        enableSystemDefenses: true,
-        gameDifficulty: 'Easy',
-        initialFactories: 10,
-        maxGameLength: 100,
-        shipSpeedATurn: 4,
-      },
+      settings: simpleSettings(),
       turn: 1,
     },
     noMessaging,

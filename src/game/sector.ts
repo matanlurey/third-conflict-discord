@@ -294,7 +294,7 @@ export interface Player {
     [key: string]:
       | {
           readonly system: Partial<System>;
-          readonly updated: Date;
+          readonly updated: number;
         }
       | undefined;
   };

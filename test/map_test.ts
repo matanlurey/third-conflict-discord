@@ -27,24 +27,28 @@ test('should generate sectors', () => {
       userId: '1',
       didEndTurn: false,
       combatRatings: { naval: 90, ground: 90 },
+      fogOfWar: {},
     },
     {
       name: 'Player 2',
       userId: '2',
       didEndTurn: false,
       combatRatings: { naval: 90, ground: 90 },
+      fogOfWar: {},
     },
     {
       name: 'Player 3',
       userId: '3',
       didEndTurn: false,
       combatRatings: { naval: 90, ground: 90 },
+      fogOfWar: {},
     },
     {
       name: 'Player 4',
       userId: '4',
       didEndTurn: false,
       combatRatings: { naval: 90, ground: 90 },
+      fogOfWar: {},
     },
   ]);
   expect(debugMap(map)).toMatchInlineSnapshot(`
