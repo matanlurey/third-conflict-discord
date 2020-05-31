@@ -1,5 +1,6 @@
 import { Chance } from 'chance';
 import { deepClone } from '../common';
+import { Totals } from './score';
 import { Fleet, System } from './sector';
 
 /**
@@ -55,6 +56,19 @@ export class NavalCombatSimulator {
     this.defendingStealthShips();
     this.defendingWarShips();
     this.attackingWarShips();
+  }
+
+  get winner():
+
+  get results(): {
+    attacker: Totals,
+    defender: Totals,
+  } {
+    return {
+      attacker: {
+        
+      },
+    };
   }
 
   private didAttackerHit(): boolean {
