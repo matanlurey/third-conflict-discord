@@ -24,10 +24,18 @@ beforeEach(() => {
         {
           didEndTurn: false,
           name: 'Empire',
+          combatRatings: {
+            ground: 50,
+            naval: 50,
+          },
         },
         {
           didEndTurn: false,
           name: 'Player',
+          combatRatings: {
+            ground: 50,
+            naval: 50,
+          },
         },
       ],
       systems: [

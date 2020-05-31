@@ -1,3 +1,5 @@
+import { Ratings } from './combat';
+
 export interface InTransitFleet {
   /**
    * Contents of the fleet.
@@ -233,6 +235,11 @@ export interface Player {
    * Whether the player has ended the current turn.
    */
   didEndTurn: boolean;
+
+  /**
+   * Chance of attack hitting in a fleet (nava) or planetary (ground) combat.
+   */
+  readonly combatRatings: Ratings;
 
   // TODO: Add Fog of War.
 }
