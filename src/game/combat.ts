@@ -95,12 +95,7 @@ export class NavalCombatSimulator {
     }
   }
 
-  private attackingStealthShips(): void {
-    let amount = this.attacker.contents.stealthShips;
-    if (this.combatRound === 1 && this.defender.contents.defenses >= 150) {
-      // Reduce attacking stealth ships by 25%.
-      amount = Math.floor(amount * 0.75);
-    }
+  private doAttack(amount: number, damageToStealthShips = 1): void {
     let hits = 0;
     for (let i = 0; i < amount; i++) {
       if (this.didAttackerHit()) {
@@ -116,7 +111,7 @@ export class NavalCombatSimulator {
         defender.orbiting.warShips--;
       },
       (): void => {
-        defender.orbiting.stealthShips--;
+        defender.orbiting.stealthShips -= damageToStealthShips;
       },
     ];
     while (hits--) {
@@ -129,19 +124,53 @@ export class NavalCombatSimulator {
     }
   }
 
+  private doDefense(amount: number, damageToStealthShips = 1): void {
+    let hits = 0;
+    for (let i = 0; i < amount; i++) {
+      if (this.didDefenderHit()) {
+        hits++;
+      }
+    }
+    const attacker = this.attacker.contents;
+    const doDamage = [
+      (): void => {
+        attacker.warShips--;
+      },
+      (): void => {
+        attacker.stealthShips -= damageToStealthShips;
+      },
+    ];
+    while (hits--) {
+      const destroy = this.chance.weighted(doDamage, [
+        attacker.warShips,
+        attacker.stealthShips,
+      ]);
+      destroy();
+    }
+  }
+
+  private attackingStealthShips(): void {
+    let amount = this.attacker.contents.stealthShips;
+    if (this.combatRound === 1 && this.defender.contents.defenses >= 150) {
+      // Reduce attacking stealth ships by 25%.
+      amount = Math.floor(amount * 0.75);
+    }
+    return this.doAttack(amount);
+  }
+
   private systemDefenseUnits(): void {
-    // TODO: Implement.
+    this.doDefense(this.defender.contents.defenses);
   }
 
   private defendingStealthShips(): void {
-    // TODO: Implement.
+    this.doDefense(this.defender.contents.orbiting.stealthShips);
   }
 
   private defendingWarShips(): void {
-    // TODO: Implement.
+    this.doDefense(this.defender.contents.orbiting.warShips, 0.5);
   }
 
   private attackingWarShips(): void {
-    // TODO: Implement.
+    this.doAttack(this.attacker.contents.warShips, 0.5);
   }
 }

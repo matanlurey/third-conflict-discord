@@ -22,10 +22,30 @@ beforeAll(() => {
 
 test('should generate sectors', () => {
   const map = generator.generate([
-    { name: 'Player 1', userId: '1', didEndTurn: false },
-    { name: 'Player 2', userId: '2', didEndTurn: false },
-    { name: 'Player 3', userId: '3', didEndTurn: false },
-    { name: 'Player 4', userId: '4', didEndTurn: false },
+    {
+      name: 'Player 1',
+      userId: '1',
+      didEndTurn: false,
+      combatRatings: { naval: 90, ground: 90 },
+    },
+    {
+      name: 'Player 2',
+      userId: '2',
+      didEndTurn: false,
+      combatRatings: { naval: 90, ground: 90 },
+    },
+    {
+      name: 'Player 3',
+      userId: '3',
+      didEndTurn: false,
+      combatRatings: { naval: 90, ground: 90 },
+    },
+    {
+      name: 'Player 4',
+      userId: '4',
+      didEndTurn: false,
+      combatRatings: { naval: 90, ground: 90 },
+    },
   ]);
   expect(debugMap(map)).toMatchInlineSnapshot(`
     "

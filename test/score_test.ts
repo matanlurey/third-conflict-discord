@@ -19,8 +19,18 @@ test('should calculate scores from totals', () => {
 
 test('should calculate totals from fleets', () => {
   const players: Player[] = [
-    { name: 'Player 1', userId: '1234', didEndTurn: false },
-    { name: 'Player 2', userId: '5678', didEndTurn: false },
+    {
+      name: 'Player 1',
+      userId: '1234',
+      didEndTurn: false,
+      combatRatings: { naval: 90, ground: 90 },
+    },
+    {
+      name: 'Player 2',
+      userId: '5678',
+      didEndTurn: false,
+      combatRatings: { naval: 90, ground: 90 },
+    },
   ];
   const totals = calculateTotals(
     players,
@@ -70,8 +80,18 @@ test('should calculate totals from fleets', () => {
 test('should calculate totals from systems', () => {
   const point: Coordinate = [0, 0];
   const players: Player[] = [
-    { name: 'Player 1', userId: '1234', didEndTurn: false },
-    { name: 'Player 2', userId: '5678', didEndTurn: false },
+    {
+      name: 'Player 1',
+      userId: '1234',
+      didEndTurn: false,
+      combatRatings: { naval: 90, ground: 90 },
+    },
+    {
+      name: 'Player 2',
+      userId: '5678',
+      didEndTurn: false,
+      combatRatings: { naval: 90, ground: 90 },
+    },
   ];
   const totals = calculateTotals(
     players,
