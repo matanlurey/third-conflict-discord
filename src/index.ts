@@ -1,25 +1,32 @@
-import discord from 'discord.js';
+import discord, { TextChannel } from 'discord.js';
 import config from '../data/config';
-import { GameState } from './game/state';
+import { CommandProcessor } from './processor';
 
 const client = new discord.Client();
 client.once('ready', async () => {
-  // Load a game
-  const game = await GameState.load(process.argv[2], {
-    message: (message, player) => {
-      console.log(player?.name, message);
+  const broadcast = (await client.channels.fetch(
+    config.listen[0],
+  )) as TextChannel;
+  const processor = new CommandProcessor({
+    broadcast: (message: string): void => {
+      broadcast.send(message);
+    },
+
+    message: (player: string, message: string): void => {
+      client.users
+        .fetch(player)
+        .then((user) => user.send(message))
+        .catch((error) => {
+          console.error('Could not send message', player, error);
+        });
     },
   });
-  if (!game) {
-    console.error('No game found.');
-    process.exit(1);
-  }
-  console.info('Game loaded!', game.turn);
   client.on('message', (message) => {
     if (config.listen.indexOf(message.channel.id) === -1) {
       return;
+    } else {
+      processor.process(message.author.id, message.cleanContent);
     }
-    console.log(message);
   });
 });
 

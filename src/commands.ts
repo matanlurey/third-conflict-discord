@@ -1,6 +1,6 @@
 import commander from 'commander';
 
-interface AdminCreateOptions {
+export interface GameCreateOptions {
   readonly initialFactories: string;
   readonly shipSpeedATurn: string;
   readonly gameDifficulty: string;
@@ -12,21 +12,24 @@ interface AdminCreateOptions {
   readonly enableEmpireBuilds: boolean;
 }
 
-export function adminCommand(actions: {
-  create: (options: AdminCreateOptions) => void;
+export function gameCommand(actions: {
+  create: (options: GameCreateOptions) => void;
   start: () => void;
   save: (name: string) => void;
   load: (name: string) => void;
+  join: () => void;
 }): commander.Command {
-  const admin = new commander.Command('admin');
+  const game = new commander.Command('game').description(
+    'Various options to start/save/load a game.',
+  );
 
   // Do not call process.exit.
-  admin.exitOverride((err) => {
+  game.exitOverride((err) => {
     throw err;
   });
 
   // admin new ...
-  admin
+  game
     .command('new')
     .description('Creates a new game lobby.')
     .action(actions.create)
@@ -59,19 +62,7 @@ export function adminCommand(actions: {
       'Maximum amount of turns the game will go until a player wins.',
       '100',
     )
-    .option(
-      '-d, --display-level <level>',
-      '' +
-        'How much information players receive about events in the sector. ' +
-        'At the lowest leve ("Show Nothing"), players only receive events ' +
-        'about things they did, and the map will only show your systesms and ' +
-        'systems you have scouted. ' +
-        'Each level above "Show Nothing" tells you a little bit more, with ' +
-        '"Everything including *" being intended for beginner players. The ' +
-        'recommended default is "Combat and Events", which will tell ' +
-        'players when an event occurs and when any combat occurs in the sector.',
-      'Combat and Events',
-    )
+    // TODO: Add --display-level.
     .option(
       '-n, --enable-novice-mode',
       '' +
@@ -105,42 +96,55 @@ export function adminCommand(actions: {
     );
 
   // admin start
-  admin
+  game
     .command('start')
     .description('Starts the current game.')
     .action(actions.start);
 
   // admin save/load
-  admin
+  game
     .command('save <name>')
     .description('Saves the current game.')
     .action(actions.save);
-  admin
+  game
     .command('load <name>')
     .description('Loads a saved game.')
     .action(actions.load);
 
-  return admin;
+  // admin join
+  game
+    .command('join')
+    .description('Join the current game.')
+    .action(actions.join);
+
+  return game;
 }
 
-export function viewCommand(actions: {
-  fleets: {
-    all: () => void;
-    from: (system: string) => void;
-    to: (system: string) => void;
-    missiles: (system: string) => void;
-    scouts: (sysetm: string) => void;
-  };
-  map: () => void;
-  scan: (system: string) => void;
-  productionLimits: () => void;
-  lastTurnResults: () => void;
-  currentPlayerStats: () => void;
-  scoreOfAllPlayers: () => void;
-  systemsWithUnrest: () => void;
-  incomingEnemyFleets: () => void;
-}): commander.Command {
-  const view = new commander.Command('view');
+export function viewCommand(
+  options: {
+    enableNoviceMode: boolean;
+  },
+  actions: {
+    fleets: {
+      all: () => void;
+      from: (system: string) => void;
+      to: (system: string) => void;
+      missiles: () => void;
+      scouts: () => void;
+    };
+    map: () => void;
+    scan: (system: string) => void;
+    productionLimits: () => void;
+    lastTurnResults: () => void;
+    currentPlayerStats: () => void;
+    scoreOfAllPlayers: () => void;
+    systemsWithUnrest: () => void;
+    incomingEnemyFleets: () => void;
+  },
+): commander.Command {
+  const view = new commander.Command('view').description(
+    'View details of the game.',
+  );
   const fleets = new commander.Command('fleets');
 
   // Do not call process.exit.
@@ -152,78 +156,216 @@ export function viewCommand(actions: {
   });
 
   fleets
-    .command(
-      'all',
+    .command('all', { isDefault: true })
+    .description(
       'Displays the location and composition of all fleets you have launched.',
-      { isDefault: true },
     )
     .action(actions.fleets.all);
 
   fleets
-    .command(
-      'from <source>',
-      'Shows only fleets that left the `<source>` system.',
-    )
+    .command('from <source>')
+    .description('Shows only fleets that left the `<source>` system.')
     .action(actions.fleets.from);
 
   fleets
-    .command(
-      'to <target>',
-      'Shows only fleets heading to the `<target>` system.',
-    )
+    .command('to <target>')
+    .description('Shows only fleets heading to the `<target>` system.')
     .action(actions.fleets.to);
 
   fleets
-    .command('missiles', 'Shows only missile-based attack fleets.', {
-      hidden: true,
+    .command('missiles', {
+      hidden: options.enableNoviceMode,
     })
+    .description('Shows only missile-based attack fleets.')
     .action(actions.fleets.missiles);
 
   fleets
-    .command('scouts', 'Shows only scout missions.')
+    .command('scouts')
+    .description('Shows only scout missions.')
     .action(actions.fleets.scouts);
 
-  view.command('map', 'Displays a map of the sector.').action(actions.map);
+  view
+    .command('map')
+    .description('Displays a map of the sector.')
+    .action(actions.map);
 
   view
-    .command(
-      'scan <system>',
+    .command('scan <system>', { isDefault: true })
+    .description(
       '' +
         'Displays information about the provided `system.\n\n' +
         'If this is not a system you control limited information may be ' +
         'available. Attacking or using the scout action can reveal updated ' +
         'information.',
-      { isDefault: true },
     )
     .action(actions.scan);
 
   view
-    .command('limits', 'Display production limits for systems you control.')
+    .command('limits')
+    .description('Display production limits for systems you control.')
     .action(actions.productionLimits);
 
   view
-    .command(
-      'stats',
-      'Display information about your perforamnce as an Admiral.',
-    )
+    .command('stats')
+    .description('Display information about your perforamnce as an Admiral.')
     .action(actions.currentPlayerStats);
 
   view
-    .command('score', 'Display current score of all players in the game.')
+    .command('score')
+    .description('Display current score of all players in the game.')
     .action(actions.scoreOfAllPlayers);
 
   view
-    .command(
-      'unrest',
+    .command('unrest')
+    .description(
       'Display systems and planets that have poor morale and political unrest.',
     )
     .action(actions.systemsWithUnrest);
 
   view
-    .command('detect', 'Display incoming enemy fleets.')
+    .command('detect', {
+      hidden: options.enableNoviceMode,
+    })
+    .description('Display incoming enemy fleets.')
     .action(actions.incomingEnemyFleets);
 
   view.addCommand(fleets);
 
   return view;
+}
+
+export interface AttackOptions {
+  readonly origin?: string;
+  readonly destination: string;
+  readonly warships?: string;
+  readonly stealth?: string;
+  readonly troops?: string;
+  readonly transports?: string;
+  readonly buildPoints?: string;
+  readonly mission?: string;
+}
+
+export interface ScoutOptions {
+  readonly origin?: string;
+  readonly destination: string;
+}
+
+export function launchCommand(
+  options: {
+    enableNoviceMode: boolean;
+  },
+  actions: {
+    attack: (options: AttackOptions) => void;
+    scout: (options: ScoutOptions) => void;
+  },
+): commander.Command {
+  let launch = new commander.Command('launch');
+
+  launch = launch
+    .command('attack', { isDefault: true })
+    .description('Launches an attack at a target.')
+    .option(
+      '-o, --origin',
+      '' +
+        'Origin system. If not specified, defaults to the closest system ' +
+        'you control (assuming you have enough units as specified).',
+    )
+    .option('-d, --destination', 'Destination (target) system.')
+    .option('-w, --warships', 'WarShips to send.', '0')
+    .option('-t, --troops', 'Troops to send. Up to 50 fit in a Transport.', '0')
+    .option('-r, --transports', 'Transport to send.', '0')
+    .option(
+      '-b, --build-points',
+      'Build Points to send. Up to 50 fit in a Transport.',
+      '0',
+    );
+
+  if (options.enableNoviceMode) {
+    launch
+      .option('-s, --stealth', 'StealthShips to send.', '0')
+      .option(
+        '-i, --missiles',
+        'Missiles to send. A missile only attack travels at double speed.',
+        '0',
+      )
+      .option(
+        '-m, --mission',
+        '' +
+          'What type of mission to conduct. Either `conquest` (a standard ' +
+          'mission to attempt to occupy and assume control a system, the most ' +
+          'common type of attack mission), `probe` (a single combat pass ' +
+          'intended to inflict attrition, use them when you are out-gunned), ' +
+          'and `raid` (used to capture ships and resources from the enemy ' +
+          'instead of destroying them).',
+        'conquest',
+      );
+  }
+
+  launch.action(actions.attack);
+
+  launch
+    .command('scout')
+    .description('Launches a scout mission to a destination.')
+    .option(
+      '-o, --origin',
+      'Origin system. If not specified, defaults to the closest system.',
+    )
+    .option('-d, --destination', 'Destination system.');
+
+  return launch;
+}
+
+export function planetCommand(actions: {
+  invade: (system: string) => void;
+  unload: (system: string, planet: string, amount?: string) => void;
+  load: (system: string, planet: string, amount?: string) => void;
+  bombard: (system: string, planet: string) => void;
+}): commander.Command {
+  const planet = new commander.Command('planet');
+
+  planet
+    .command('invade <system>')
+    .description('Unload troops to invade all enemy planets.')
+    .action(actions.invade);
+
+  planet
+    .command('unload <system> <planet> [amount]')
+    .description('Unload troops to a specific planet.')
+    .action(actions.unload);
+
+  planet
+    .command('load <system> <planet> [amount]')
+    .description('Load troops from a specific planet.')
+    .actions(actions.load);
+
+  planet
+    .command('bombard <system> [planet]')
+    .description('Bombard a system or a specific planet.')
+    .actions(actions.bombard);
+
+  return planet;
+}
+
+export function wreckCommand(
+  action: (system: string, type: string, amount: string) => void,
+): commander.Command {
+  return new commander.Command('wreck <unit>')
+    .description(
+      '' +
+        'Voluntarily destroy a unit to return 75% of the construction value. ' +
+        'Wrecking can not take place where system morale is less than zero. ' +
+        'Even planets can be wrecked, returning a large amount of points, but ' +
+        'that has a terrible effect on morale and is not recommended.',
+    )
+    .action(action);
+}
+
+export function endTurnCommand(action: () => void): commander.Command {
+  return new commander.Command('end')
+    .description(
+      '' +
+        'Ends your turn. You may still interact with the game until other ' +
+        'players have ended their turn.',
+    )
+    .action(action);
 }

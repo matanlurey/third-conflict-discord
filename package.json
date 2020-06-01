@@ -6,6 +6,7 @@
     "fix": "prettier --write . --ignore-path .gitignore && eslint --fix src test --ext .ts",
     "lint": "prettier --ignore-path .gitignore --list-different src && eslint src test --ext .ts",
     "start": "ts-node src/index.ts",
+    "watch": "nodemon src/index.ts",
     "test": "jest",
     "tool:repl": "nodemon ./tool/repl.ts"
   },
@@ -40,6 +41,7 @@
     "commander": "^5.1.0",
     "discord.js": "^12.2.0",
     "fs-extra": "^9.0.0",
+    "hook-std": "^2.0.0",
     "string-argv": "^0.3.1"
   }
 }

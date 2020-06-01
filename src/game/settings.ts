@@ -38,13 +38,7 @@ export interface Settings {
    * "Everything including *" being intended for beginner players. The
    * recommended default is "Combat and Events".
    */
-  readonly displayLevel:
-    | 'Show Nothing'
-    | 'Combat and Events'
-    | 'Combat, Events, and Movements'
-    | 'Combat, Events, Moves, and Scouts'
-    | 'Everything including Full Map View'
-    | 'Everything including Map and Free Intel';
+  readonly displayLevel: DisplayLevel;
 
   /**
    * Novice games do not include StealthShips, Missiles, System Defenses,
@@ -75,3 +69,23 @@ export interface Settings {
    */
   readonly enableEmpireBuilds: boolean;
 }
+
+export type DisplayLevel =
+  | 'Show Nothing'
+  | 'Combat and Events'
+  | 'Combat, Events, and Movements'
+  | 'Combat, Events, Moves, and Scouts'
+  | 'Everything including Full Map View'
+  | 'Everything including Map and Free Intel';
+
+export const defaultSettings: Settings = {
+  initialFactories: 10,
+  shipSpeedATurn: 4,
+  gameDifficulty: 'Easy',
+  maxGameLength: 150,
+  displayLevel: 'Combat and Events',
+  enableNoviceMode: false,
+  enableSystemDefenses: true,
+  enableRandomEvents: true,
+  enableEmpireBuilds: true,
+};
