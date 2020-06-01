@@ -28,6 +28,9 @@ export function gameCommand(actions: {
     throw err;
   });
 
+  game.addHelpCommand(false);
+  game.helpOption('help game <command>', 'Displays help for a command.');
+
   // admin new ...
   game
     .command('new')
@@ -145,7 +148,18 @@ export function viewCommand(
   const view = new commander.Command('view').description(
     'View details of the game.',
   );
-  const fleets = new commander.Command('fleets');
+
+  view.addHelpCommand(false);
+  view.helpOption('help view <command>', 'Displays help for a command.');
+
+  const fleets = new commander.Command('fleets').description(
+    'Fleet-specific view options.',
+  );
+  fleets.addHelpCommand(false);
+  fleets.helpOption(
+    'help view fleets <command>',
+    'Displays help for a command.',
+  );
 
   // Do not call process.exit.
   view.exitOverride((err) => {
@@ -193,7 +207,7 @@ export function viewCommand(
     .command('scan <system>', { isDefault: true })
     .description(
       '' +
-        'Displays information about the provided `system.\n\n' +
+        'Displays information about the provided system. ' +
         'If this is not a system you control limited information may be ' +
         'available. Attacking or using the scout action can reveal updated ' +
         'information.',
@@ -261,6 +275,9 @@ export function launchCommand(
 ): commander.Command {
   let launch = new commander.Command('launch');
 
+  launch.addHelpCommand(false);
+  launch.helpOption('help <command>', 'Displays help for a command.');
+
   launch = launch
     .command('attack', { isDefault: true })
     .description('Launches an attack at a target.')
@@ -322,6 +339,8 @@ export function planetCommand(actions: {
   bombard: (system: string, planet: string) => void;
 }): commander.Command {
   const planet = new commander.Command('planet');
+  planet.addHelpCommand(false);
+  planet.helpOption('help <command>', 'Displays help for a command.');
 
   planet
     .command('invade <system>')
@@ -357,7 +376,9 @@ export function wreckCommand(
         'Even planets can be wrecked, returning a large amount of points, but ' +
         'that has a terrible effect on morale and is not recommended.',
     )
-    .action(action);
+    .action(action)
+    .addHelpCommand(false)
+    .helpOption('help wreck', 'Displays help for a command.');
 }
 
 export function endTurnCommand(action: () => void): commander.Command {
@@ -367,5 +388,7 @@ export function endTurnCommand(action: () => void): commander.Command {
         'Ends your turn. You may still interact with the game until other ' +
         'players have ended their turn.',
     )
-    .action(action);
+    .action(action)
+    .addHelpCommand(false)
+    .helpOption('help end', 'Displays help for a command.');
 }

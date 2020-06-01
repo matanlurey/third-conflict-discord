@@ -76,16 +76,35 @@ export class CommandProcessor {
     program.exitOverride((err) => {
       throw err;
     });
+    program.addHelpCommand(false);
+    program.helpOption('help <command>', 'Displays help for a command.');
     process.stdout.columns = 80;
   }
 
   process(user: string, message: string): void {
     this.reply = user;
     try {
-      this.program.parse(stringArgv(message));
+      const argv = stringArgv(message);
+      if (argv[0] === 'help') {
+        let command = this.program;
+        for (const a of argv.slice(1)) {
+          for (const c of command.commands) {
+            if (c.name() === a) {
+              command = c;
+              break;
+            }
+          }
+        }
+        this.send.message(
+          user,
+          '\n```\n' + command.helpInformation() + '\n```',
+        );
+        this.program;
+      } else {
+        this.program.parse(argv);
+      }
     } catch (e) {
       console.warn('Error processing', message, e);
-    } finally {
     }
   }
 

@@ -22,7 +22,10 @@ client.once('ready', async () => {
     },
   });
   client.on('message', (message) => {
-    if (config.listen.indexOf(message.channel.id) === -1) {
+    if (
+      message.channel.type !== 'dm' &&
+      config.listen.indexOf(message.channel.id) === -1
+    ) {
       return;
     } else {
       processor.process(message.author.id, message.cleanContent);
