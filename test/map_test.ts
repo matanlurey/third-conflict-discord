@@ -6,12 +6,12 @@ let generator: SimpleMapGenerator;
 beforeAll(() => {
   generator = new SimpleMapGenerator(
     {
-      displayLevel: 'Combat and Events',
+      displayLevel: 'combat-and-events',
       enableEmpireBuilds: true,
       enableNoviceMode: true,
       enableRandomEvents: true,
       enableSystemDefenses: false,
-      gameDifficulty: 'Easy',
+      gameDifficulty: 'easy',
       initialFactories: 10,
       maxGameLength: 150,
       shipSpeedATurn: 4,

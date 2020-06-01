@@ -21,7 +21,7 @@ export interface Settings {
    * Primarily, this determines how will computer players play, the production
    * level, and the severity of privateer attacks.
    */
-  readonly gameDifficulty: 'Easy' | 'Hard' | 'Tough';
+  readonly gameDifficulty: 'easy' | 'hard' | 'tough';
 
   /**
    * Maximum amount of turns the game will go until a player wins.
@@ -71,19 +71,19 @@ export interface Settings {
 }
 
 export type DisplayLevel =
-  | 'Show Nothing'
-  | 'Combat and Events'
-  | 'Combat, Events, and Movements'
-  | 'Combat, Events, Moves, and Scouts'
-  | 'Everything including Full Map View'
-  | 'Everything including Map and Free Intel';
+  | 'nothing'
+  | 'combat-and-events'
+  | 'combat-events-and-movements'
+  | 'combat-events-moves-and-scouts'
+  | 'everything'
+  | 'everything-and-free-intel';
 
 export const defaultSettings: Settings = {
   initialFactories: 10,
   shipSpeedATurn: 4,
-  gameDifficulty: 'Easy',
+  gameDifficulty: 'easy',
   maxGameLength: 150,
-  displayLevel: 'Combat and Events',
+  displayLevel: 'combat-and-events',
   enableNoviceMode: false,
   enableSystemDefenses: true,
   enableRandomEvents: true,

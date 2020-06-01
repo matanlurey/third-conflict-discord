@@ -29,12 +29,12 @@ export function noRngPlayer(name: string, userId?: string): Player {
 
 export function simpleSettings(): Settings {
   return {
-    displayLevel: 'Show Nothing',
+    displayLevel: 'nothing',
     enableEmpireBuilds: false,
     enableNoviceMode: false,
     enableRandomEvents: false,
     enableSystemDefenses: true,
-    gameDifficulty: 'Easy',
+    gameDifficulty: 'easy',
     initialFactories: 10,
     maxGameLength: 100,
     shipSpeedATurn: 4,

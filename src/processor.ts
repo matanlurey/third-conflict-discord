@@ -1,228 +1,104 @@
-import commander from 'commander';
+import discord from 'discord.js';
+import minimist from 'minimist';
 import stringArgv from 'string-argv';
-import {
-  AttackOptions,
-  endTurnCommand,
-  gameCommand,
-  GameCreateOptions,
-  launchCommand,
-  ScoutOptions,
-  viewCommand,
-  wreckCommand,
-} from './commands';
+import { getUsage, parseArgs, preGameMenu } from './cli/embed';
+import { allCommands, Command } from './cli/options';
 import { defaultSettings } from './game/settings';
-import { GameState } from './game/state';
 
 export class CommandProcessor {
   private reply!: string;
 
   constructor(
     private readonly send: {
-      message: (player: string, message: string) => void;
-      broadcast: (message: string) => void;
+      message: (player: string, message: string | discord.MessageEmbed) => void;
+      broadcast: (message: string | discord.MessageEmbed) => void;
     },
-    private readonly program = commander.program,
     private settings = defaultSettings,
-    private state?: GameState,
-  ) {
-    program.addCommand(
-      gameCommand({
-        create: this.gameCreate.bind(this),
-        load: this.gameLoad.bind(this),
-        save: this.gameSave.bind(this),
-        start: this.gameStart.bind(this),
-        join: this.gameJoin.bind(this),
-      }),
-    );
-    program.addCommand(
-      viewCommand(
-        {
-          enableNoviceMode: settings.enableNoviceMode,
-        },
-        {
-          fleets: {
-            all: this.viewFleetAll.bind(this),
-            from: this.viewFleetFrom.bind(this),
-            to: this.viewFleetTo.bind(this),
-            missiles: this.viewFleetMissiles.bind(this),
-            scouts: this.viewFleetScouts.bind(this),
-          },
-          map: this.viewMap.bind(this),
-          scan: this.viewSystem.bind(this),
-          productionLimits: this.viewProductionLimits.bind(this),
-          lastTurnResults: this.viewLastTurnResults.bind(this),
-          currentPlayerStats: this.viewCurrentPlayerStats.bind(this),
-          scoreOfAllPlayers: this.viewScoreOfAllPlayers.bind(this),
-          systemsWithUnrest: this.viewSystemsWithUnrest.bind(this),
-          incomingEnemyFleets: this.viewIncomingEnemyFleets.bind(this),
-        },
-      ),
-    );
-    program.addCommand(
-      launchCommand(
-        {
-          enableNoviceMode: settings.enableNoviceMode,
-        },
-        {
-          attack: this.attack.bind(this),
-          scout: this.scout.bind(this),
-        },
-      ),
-    );
-    if (!settings.enableNoviceMode) {
-      program.addCommand(wreckCommand(this.wreck.bind(this)));
-    }
-    program.addCommand(endTurnCommand(this.endTurn.bind(this)));
-    program.exitOverride((err) => {
-      throw err;
-    });
-    program.addHelpCommand(false);
-    program.helpOption('help <command>', 'Displays help for a command.');
-    process.stdout.columns = 80;
-  }
+  ) {}
 
+  /**
+   * Process an incoming command from a user.
+   *
+   * It is assumed that the message has already been normalized (e.g. if a
+   * prefix is needed, or mentions are used), and the message is expected to
+   * be a command.
+   *
+   * @param user user ID who sent the message.
+   * @param message message contents.
+   */
   process(user: string, message: string): void {
+    // Store the user to reply to.
     this.reply = user;
-    try {
-      const argv = stringArgv(message);
-      if (argv[0] === 'help') {
-        let command = this.program;
-        for (const a of argv.slice(1)) {
-          for (const c of command.commands) {
-            if (c.name() === a) {
-              command = c;
-              break;
-            }
-          }
-        }
-        this.send.message(
-          user,
-          '\n```\n' + command.helpInformation() + '\n```',
-        );
-        this.program;
-      } else {
-        this.program.parse(argv);
-      }
-    } catch (e) {
-      console.warn('Error processing', message, e);
-    }
-  }
 
-  private replyInvalidArgument(
-    name: string,
-    value: string,
-    details?: string,
-  ): void {
-    let message = `Invalid argument \`${name}\`: ${value}`;
-    if (details) {
-      message = `${message}: ${details}.`;
-    } else {
-      message = `${message}.`;
-    }
-    this.send.message(this.reply, message);
-  }
+    // Avoid dealing with starting/trailing whitespace.
+    message = message.trim();
 
-  private gameCreate(options: GameCreateOptions): void {
-    // TODO: Implement.
-    const displayLevel = 'Combat and Events';
-
-    let initialFactories: 10 | 15 | 20;
-    switch (options.initialFactories) {
-      case '10':
-        initialFactories = 10;
-        break;
-      case '15':
-        initialFactories = 15;
-        break;
-      case '20':
-        initialFactories = 20;
-        break;
-      default:
-        this.replyInvalidArgument(
-          'initial-factories',
-          options.initialFactories,
-          'Only "10", "15", "20" supported',
-        );
-        return;
-    }
-
-    let shipSpeedATurn: 4 | 5 | 6;
-    switch (options.shipSpeedATurn) {
-      case '4':
-        shipSpeedATurn = 4;
-        break;
-      case '5':
-        shipSpeedATurn = 5;
-        break;
-      case '6':
-        shipSpeedATurn = 6;
-        break;
-      default:
-        this.replyInvalidArgument(
-          'ship-speed-a-turn',
-          options.shipSpeedATurn,
-          'Only "4", "5", "6" supported',
-        );
-        return;
-    }
-
-    let gameDifficulty: 'Easy' | 'Hard' | 'Tough';
-    switch (options.gameDifficulty.toLocaleLowerCase()) {
-      case 'easy':
-        gameDifficulty = 'Easy';
-        break;
-      case 'hard':
-        gameDifficulty = 'Hard';
-        break;
-      case 'tough':
-        gameDifficulty = 'Tough';
-        break;
-      default:
-        this.replyInvalidArgument(
-          'game-difficulty',
-          options.gameDifficulty,
-          'Only "Easy", "Hard", "Tough" supported',
-        );
-        return;
-    }
-
-    const maxGameLength = parseInt(options.maxGameLength);
-    if (maxGameLength < 1 || !Number.isSafeInteger(maxGameLength)) {
-      this.replyInvalidArgument(
-        'max-game-length',
-        options.maxGameLength,
-        'Must choose a positive integer >= 1',
-      );
+    // Find the initial command(s).
+    const parse = message.match(/\S+/);
+    if (!parse) {
+      // Ignore.
       return;
     }
 
-    // Reset game.
-    this.state = undefined;
-    this.settings = {
-      initialFactories,
-      shipSpeedATurn,
-      gameDifficulty,
-      maxGameLength,
-      displayLevel,
-      enableNoviceMode: options.enableNoviceMode,
-      enableSystemDefenses:
-        options.enableSystemDefenses && !options.enableNoviceMode,
-      enableEmpireBuilds: options.enableEmpireBuilds,
-      enableRandomEvents: options.enableRandomEvents,
-    };
+    const command = parse[0].toLowerCase();
+    switch (command) {
+      case 'help':
+        return this.displayHelp(...message.toLowerCase().split(' ').slice(1));
+      default:
+        const args = parseArgs(minimist(stringArgv(message)));
+        console.log(args);
+    }
+  }
 
-    this.send.broadcast(
-      '' +
-        `New game created:\n\n` +
-        `\`\`\`\n` +
-        JSON.stringify(this.settings, undefined, 2) +
-        `\n\`\`\``,
-    );
+  private get gameInProgress(): boolean {
+    return false;
+  }
+
+  private displayHelp(...commandTree: string[]): void {
+    if (commandTree.length === 0) {
+      if (this.gameInProgress) {
+        // Send a custom [main] menu explaining how to play.
+        throw new Error('Unimplemented');
+      } else {
+        // Send a custom menu for the game lobby.
+        this.send.message(
+          this.reply,
+          preGameMenu({ waitingForPlayers: false }),
+        );
+      }
+    } else {
+      // Auto-generate a help menu for an inner command.
+      const crumbs: string[] = [];
+      let command: Command | undefined;
+      let start: Command[] = allCommands;
+      commandTree.forEach((name) => {
+        for (const c of start) {
+          if (c.name === name) {
+            command = c;
+            start = c.commands || [];
+            crumbs.push(name);
+          }
+        }
+      });
+      if (command) {
+        this.send.message(
+          this.reply,
+          getUsage(command, crumbs.splice(0, crumbs.length - 1)),
+        );
+      } else {
+        // TODO: Show an error, help the user, etc.
+      }
+    }
+  }
+
+  private gameCreate(): void {
+    // TODO: Implement.
+    console.log('TODO', 'gameCreate');
   }
 
   private gameLoad(file: string): void {
     // TODO: Implement.
-    console.log('TODO', 'gameCreate', file);
+    console.log('TODO', 'gameLoad', file);
   }
 
   private gameSave(file: string): void {
@@ -305,14 +181,14 @@ export class CommandProcessor {
     console.log('TODO', 'viewIncomingEnemyFleets');
   }
 
-  private attack(options: AttackOptions): void {
+  private attack(): void {
     // TODO: Implement.
-    console.log('TODO', 'attack', options);
+    console.log('TODO', 'attack');
   }
 
-  private scout(options: ScoutOptions): void {
+  private scout(): void {
     // TODO: Implement.
-    console.log('TODO', 'scout', options);
+    console.log('TODO', 'scout');
   }
 
   private planetInvade(system: string): void {

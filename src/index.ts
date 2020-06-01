@@ -8,11 +8,11 @@ client.once('ready', async () => {
     config.listen[0],
   )) as TextChannel;
   const processor = new CommandProcessor({
-    broadcast: (message: string): void => {
+    broadcast: (message: string | discord.MessageEmbed): void => {
       broadcast.send(message);
     },
 
-    message: (player: string, message: string): void => {
+    message: (player: string, message: string | discord.MessageEmbed): void => {
       client.users
         .fetch(player)
         .then((user) => user.send(message))
