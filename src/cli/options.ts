@@ -157,6 +157,116 @@ export const allCommands: Command[] = [
       },
     ],
   },
+  {
+    name: 'view',
+    description: 'View details about the game.',
+    commands: [
+      {
+        name: 'summary',
+        description: 'View a summary about the game this turn.',
+        default: true,
+      },
+      {
+        name: 'fleets',
+        description: 'View details about your fleets.',
+      },
+      {
+        name: 'scouts',
+        description: 'View details about your scouts.',
+      },
+      {
+        name: 'system',
+        description: 'View details about a sector.',
+        options: [
+          {
+            name: 0,
+            alias: 'name',
+            description: 'Name or initial of the sector to view.',
+          },
+        ],
+      },
+      {
+        name: 'incoming',
+        description: 'View incoming (detected) enemy fleets.',
+      },
+      {
+        name: 'unrest',
+        description: 'View your sectors or planets in unrest.',
+      },
+      {
+        name: 'score',
+        description: 'View statistics and scores for the game.',
+      },
+    ],
+  },
+  {
+    name: 'attack',
+    description: 'Send an attack fleet to another sector.',
+    options: [
+      {
+        name: 0,
+        alias: 'origin',
+        description: 'Origin sector (name or initial).',
+      },
+      {
+        name: 1,
+        alias: 'target',
+        description: 'Target sector (name or initial).',
+      },
+      {
+        name: 'warships',
+        alias: 'w',
+        default: 0,
+        description: 'Number of WarShips to send.',
+      },
+      {
+        name: 'stealth',
+        alias: 's',
+        default: 0,
+        description: 'Number of StealthShips to send.',
+      },
+      {
+        name: 'missiles',
+        alias: 'm',
+        default: 0,
+        description: 'Number of Missiles to send.',
+      },
+      {
+        name: 'transports',
+        alias: 'r',
+        default: 0,
+        description: 'Number of Transports to send.',
+      },
+      {
+        name: 'build-points',
+        alias: 'b',
+        default: 0,
+        description: 'Number of Build Points to send (50 per Transport).',
+      },
+      {
+        name: 'troops',
+        alias: 't',
+        default: 0,
+        description: 'Number of Troops to send (50 per Transport).',
+      },
+    ],
+  },
+  {
+    name: 'scout',
+    description: 'Send a scout to another sector.',
+    options: [
+      {
+        name: 0,
+        alias: 'origin',
+        description: 'Origin sector (name or initial).',
+      },
+      {
+        name: 1,
+        alias: 'target',
+        description: 'Target sector (name or initial).',
+      },
+    ],
+  },
 ];
 
 export interface Command {

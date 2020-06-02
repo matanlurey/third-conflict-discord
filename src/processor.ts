@@ -5,6 +5,7 @@ import path from 'path';
 import stringArgv from 'string-argv';
 import {
   getUsage,
+  inGameMenu,
   lookup,
   parseArgs,
   preGameMenu,
@@ -22,28 +23,45 @@ interface PendingGame {
 }
 
 export class CommandProcessor {
-  private reply!: string;
+  private replyTo!: string;
+  private wasDm = false;
 
   constructor(
     private readonly send: {
-      message: (player: string, message: string | discord.MessageEmbed) => void;
-      broadcast: (message: string | discord.MessageEmbed) => void;
+      message: (
+        player: string,
+        message: (string | discord.MessageEmbed) | discord.MessageEmbed[],
+      ) => void;
+      broadcast: (
+        messages: (string | discord.MessageEmbed) | discord.MessageEmbed[],
+      ) => void;
     },
     private current?: PendingGame | GameState | undefined,
   ) {}
 
   private get isPrivleged(): boolean {
-    return this.reply === '103004235385307136';
+    return this.replyTo === '103004235385307136';
   }
 
   private lackOfPermissions(): void {
     return this.send.broadcast(
-      `<@${this.reply}> does not have permissions to do that.`,
+      `<@${this.replyTo}> does not have permissions to do that.`,
     );
   }
 
-  process(user: string, message: string): void {
+  private reply(
+    message: (string | discord.MessageEmbed) | discord.MessageEmbed[],
+  ): void {
+    if (this.wasDm) {
+      return this.send.message(this.replyTo, message);
+    } else {
+      return this.send.broadcast(message);
+    }
+  }
+
+  process(user: string, message: string, dm = false): void {
     try {
+      this.wasDm = dm;
       this.doProcess(user, message);
     } catch (e) {
       console.error(e);
@@ -63,7 +81,7 @@ export class CommandProcessor {
    */
   private doProcess(user: string, message: string): void {
     // Store the user to reply to.
-    this.reply = user;
+    this.replyTo = user;
 
     // Avoid dealing with starting/trailing whitespace.
     message = message.trim();
@@ -135,13 +153,10 @@ export class CommandProcessor {
     if (commandTree.length === 0) {
       if (this.gameInProgress) {
         // Send a custom [main] menu explaining how to play.
-        throw new Error('Unimplemented');
+        return this.reply(inGameMenu('How to play'));
       } else {
         // Send a custom menu for the game lobby.
-        this.send.message(
-          this.reply,
-          preGameMenu({ waitingForPlayers: !!this.current }),
-        );
+        this.reply(preGameMenu({ waitingForPlayers: !!this.current }));
       }
     } else {
       // Auto-generate a help menu for an inner command.
@@ -149,10 +164,7 @@ export class CommandProcessor {
       const command = result[0];
       const crumbs = result[1];
       if (command) {
-        this.send.message(
-          this.reply,
-          getUsage(command, crumbs.splice(0, crumbs.length - 1)),
-        );
+        this.reply(getUsage(command, crumbs.splice(0, crumbs.length - 1)));
       } else {
         // TODO: Show an error, help the user, etc.
       }
@@ -259,13 +271,13 @@ export class CommandProcessor {
     if (current instanceof GameState) {
       return this.send.broadcast('Game already in progress.');
     }
-    if (current.players.has(this.reply)) {
+    if (current.players.has(this.replyTo)) {
       return this.send.broadcast(
-        `<@${this.reply}> You already are in the lobby.`,
+        `<@${this.replyTo}> You already are in the lobby.`,
       );
     } else {
-      current.players.set(this.reply, alias);
-      return this.send.broadcast(`<@${this.reply}> joined the game.`);
+      current.players.set(this.replyTo, alias);
+      return this.send.broadcast(`<@${this.replyTo}> joined the game.`);
     }
   }
 
@@ -277,10 +289,10 @@ export class CommandProcessor {
     if (current instanceof GameState) {
       return this.send.broadcast('Game already in progress.');
     }
-    if (!current.players.has(this.reply)) {
+    if (!current.players.has(this.replyTo)) {
       return this.send.broadcast(`<@${this.reply}> You are not in the lobby.`);
     } else {
-      current.players.delete(this.reply);
+      current.players.delete(this.replyTo);
       return this.send.broadcast(`<@${this.reply}> left the game.`);
     }
   }
@@ -336,41 +348,28 @@ export class CommandProcessor {
       );
       // TODO: Nicer start message.
       this.send.broadcast(
-        Array.from(current.players.keys())
-          .map((userId) => `<@${userId}>`)
-          .join(', ') + ' started a game. Good luck Admirals!',
+        inGameMenu(
+          Array.from(current.players.keys())
+            .map((userId) => `<@${userId}>`)
+            .join(', ') + ' started a game. Good luck Admirals!',
+        ),
       );
     }
   }
 
-  private viewFleetAll(): void {
+  private viewSummary(): void {
     // TODO: Implement.
-    console.log('TODO', 'viewFleetAll');
+    console.log('TODO', 'viewSummary');
   }
 
-  private viewFleetFrom(system: string): void {
+  private viewFleets(): void {
     // TODO: Implement.
-    console.log('TODO', 'viewFleetFrom', system);
+    console.log('TODO', 'viewFleets');
   }
 
-  private viewFleetTo(system: string): void {
+  private viewScouts(): void {
     // TODO: Implement.
-    console.log('TODO', 'viewFleetTo', system);
-  }
-
-  private viewFleetMissiles(): void {
-    // TODO: Implement.
-    console.log('TODO', 'viewFleetMissiles');
-  }
-
-  private viewFleetScouts(): void {
-    // TODO: Implement.
-    console.log('TODO', 'viewFleetScouts');
-  }
-
-  private viewMap(): void {
-    // TODO: Implement.
-    console.log('TODO', 'viewMap');
+    console.log('TODO', 'viewScouts');
   }
 
   private viewSystem(system: string): void {
@@ -378,34 +377,19 @@ export class CommandProcessor {
     console.log('TODO', 'viewSystem', system);
   }
 
-  private viewProductionLimits(): void {
+  private viewIncoming(): void {
     // TODO: Implement.
-    console.log('TODO', 'viewProductionLimits');
+    console.log('TODO', 'viewIncoming');
   }
 
-  private viewLastTurnResults(): void {
+  private viewUnrest(): void {
     // TODO: Implement.
-    console.log('TODO', 'viewLastTurnResults');
+    console.log('TODO', 'viewUnrest');
   }
 
-  private viewCurrentPlayerStats(): void {
+  private viewScore(): void {
     // TODO: Implement.
-    console.log('TODO', 'viewCurrentPlayerStats');
-  }
-
-  private viewScoreOfAllPlayers(): void {
-    // TODO: Implement.
-    console.log('TODO', 'viewScoreOfAllPlayers');
-  }
-
-  private viewSystemsWithUnrest(): void {
-    // TODO: Implement.
-    console.log('TODO', 'viewSystemsWithUnrest');
-  }
-
-  private viewIncomingEnemyFleets(): void {
-    // TODO: Implement.
-    console.log('TODO', 'viewIncomingEnemyFleets');
+    console.log('TODO', 'viewScore');
   }
 
   private attack(): void {

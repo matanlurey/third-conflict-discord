@@ -82,8 +82,18 @@ test('help game', () => {
         },
         Object {
           "inline": false,
+          "name": "join <name>",
+          "value": "Joins the current game lobby.",
+        },
+        Object {
+          "inline": false,
           "name": "load <file>",
           "value": "Loads an existing game.",
+        },
+        Object {
+          "inline": false,
+          "name": "quit",
+          "value": "Quits the game.",
         },
         Object {
           "inline": false,
@@ -92,18 +102,8 @@ test('help game', () => {
         },
         Object {
           "inline": false,
-          "name": "join <name>",
-          "value": "Joins the current game lobby.",
-        },
-        Object {
-          "inline": false,
           "name": "start",
           "value": "Starts the current game lobby.",
-        },
-        Object {
-          "inline": false,
-          "name": "quit",
-          "value": "Quits the game.",
         },
       ],
       "footer": null,

@@ -8,14 +8,19 @@ client.once('ready', async () => {
     config.listen[0],
   )) as TextChannel;
   const processor = new CommandProcessor({
-    broadcast: (message: string | discord.MessageEmbed): void => {
-      broadcast.send(message);
+    broadcast: (
+      messages: (string | discord.MessageEmbed) | discord.MessageEmbed[],
+    ): void => {
+      broadcast.send(messages);
     },
 
-    message: (player: string, message: string | discord.MessageEmbed): void => {
+    message: (
+      player: string,
+      messages: (string | discord.MessageEmbed) | discord.MessageEmbed[],
+    ): void => {
       client.users
         .fetch(player)
-        .then((user) => user.send(message))
+        .then((user) => user.send(messages))
         .catch((error) => {
           console.error('Could not send message', player, error);
         });
@@ -28,7 +33,11 @@ client.once('ready', async () => {
     ) {
       return;
     } else if (message.author.id !== client.user?.id) {
-      processor.process(message.author.id, message.cleanContent);
+      processor.process(
+        message.author.id,
+        message.cleanContent,
+        message.channel.type === 'dm',
+      );
     }
   });
 });

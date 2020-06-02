@@ -105,12 +105,17 @@ export function getUsage(
   const embed = new discord.MessageEmbed()
     .setColor('#0099ff')
     .setTitle(`Help`)
-    .setThumbnail('https://i.imgur.com/WBbbYXV.png')
-    .setDescription(
+    .setThumbnail('https://i.imgur.com/WBbbYXV.png');
+
+  if (command.name) {
+    embed.setDescription(
       `\`${crumbs.length ? crumbs.join(' ') + ' ' : ''}${command.name}\`: ${
         command.description || 'Usage'
       }`,
     );
+  } else {
+    embed.setDescription(command.description);
+  }
 
   if (command.commands && command.options) {
     throw new Error('Unsupported: commands and options.');
@@ -118,7 +123,8 @@ export function getUsage(
 
   if (command.commands) {
     embed.setDescription(`${embed.description}\n\n**Commands**:`);
-    command.commands.forEach((c) => {
+    const sorted = command.commands.sort((a, b) => (a.name > b.name ? 1 : -1));
+    sorted.forEach((c) => {
       if (!c.hidden) {
         let name = c.name;
         if (c.options) {
@@ -137,7 +143,8 @@ export function getUsage(
     });
   } else if (command.options) {
     embed.setDescription(`${embed.description}\n\n**Options**:`);
-    command.options.forEach((o) => {
+    const sorted = command.options.sort((a, b) => (a.name > b.name ? 1 : -1));
+    sorted.forEach((o) => {
       if (!o.hidden) {
         let name: string;
         if (typeof o.name === 'string') {
@@ -162,6 +169,14 @@ export function getUsage(
   }
 
   return embed;
+}
+
+export function inGameMenu(description: string): discord.MessageEmbed {
+  return getUsage({
+    name: '',
+    description,
+    commands: allCommands.filter((c) => c.name !== 'game'),
+  });
 }
 
 export function parseArgs(
@@ -196,6 +211,16 @@ export function parseArgs(
     if (!matchArg(a)) {
       noMatch = true;
       break;
+    }
+  }
+
+  if (!noMatch && tree.length) {
+    for (const c of tree) {
+      if (c.default) {
+        command = c;
+        tree = [];
+        break;
+      }
     }
   }
 
