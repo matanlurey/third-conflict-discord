@@ -27,7 +27,7 @@ client.once('ready', async () => {
       config.listen.indexOf(message.channel.id) === -1
     ) {
       return;
-    } else {
+    } else if (message.author.id !== client.user?.id) {
       processor.process(message.author.id, message.cleanContent);
     }
   });

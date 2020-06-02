@@ -10,8 +10,8 @@ export const allCommands: Command[] = [
           {
             name: 'initial-factories',
             alias: 'f',
-            default: '10',
-            allowed: ['10', '15', '20'],
+            default: 10,
+            allowed: [10, 15, 20],
             description:
               '' +
               'How many factories initial systems start with.\n\nThe more ' +
@@ -22,8 +22,8 @@ export const allCommands: Command[] = [
           {
             name: 'ship-speed-a-turn',
             alias: 's',
-            default: '4',
-            allowed: ['4', '5', '6'],
+            default: 4,
+            allowed: [4, 5, 6],
             description:
               '' +
               'How many units of distance a ship moves a turn.\n\n' +
@@ -44,7 +44,7 @@ export const allCommands: Command[] = [
           {
             name: 'max-game-length',
             alias: 'l',
-            default: '100',
+            default: 100,
             description:
               '' +
               'Maximum amount of turns the game will go until a player wins.',
@@ -53,7 +53,7 @@ export const allCommands: Command[] = [
             name: 'display-level',
             alias: 'v',
             hidden: true,
-            default: '',
+            default: 'combat-and-events',
             allowed: [
               'nothing',
               'combat-and-events',
@@ -139,10 +139,21 @@ export const allCommands: Command[] = [
       {
         name: 'join',
         description: 'Joins the current game lobby.',
+        options: [
+          {
+            name: 0,
+            alias: 'name',
+            description: 'Alias for the game.',
+          },
+        ],
+      },
+      {
+        name: 'start',
+        description: 'Starts the current game lobby.',
       },
       {
         name: 'quit',
-        description: 'Quits and ends the current game.',
+        description: 'Quits the game.',
       },
     ],
   },
@@ -199,12 +210,12 @@ export interface Option {
   /**
    * Default value.
    */
-  readonly default?: string | boolean;
+  readonly default?: string | number | boolean;
 
   /**
    * Allowed values.
    */
-  readonly allowed?: string[];
+  readonly allowed?: unknown[];
 
   /**
    * Whether this option should be hidden by default.

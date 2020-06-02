@@ -1,6 +1,45 @@
+import { capitalCase } from 'capital-case';
 import discord from 'discord.js';
 import minimist from 'minimist';
 import { allCommands, Command } from './options';
+
+export function prettyPrintFields(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  options: {},
+): discord.EmbedFieldData[] {
+  const fields: discord.EmbedFieldData[] = [];
+  const entries = Object.entries(options);
+  // eslint-disable-next-line prefer-const
+  for (let [k, v] of entries) {
+    v = v !== undefined && v !== '' ? v : '_Unspecified_';
+    if (v === true) {
+      v = 'Yes';
+    } else if (v === false) {
+      v = 'No';
+    } else if (typeof v === 'string') {
+      v = capitalCase(v);
+    }
+    fields.push({
+      name: capitalCase(k),
+      value: v,
+      inline: true,
+    });
+  }
+  return fields;
+}
+
+export function prettyPrint(
+  title: string,
+  description: string,
+  options: {},
+): discord.MessageEmbed {
+  return new discord.MessageEmbed()
+    .setTitle(title)
+    .setColor('#0099ff')
+    .setThumbnail('https://i.imgur.com/WBbbYXV.png')
+    .setDescription(description)
+    .addFields(prettyPrintFields(options));
+}
 
 /**
  * Main-menu for the game.
@@ -130,12 +169,16 @@ export function parseArgs(
   tree = allCommands,
 ): {
   command: string;
-  options: { [key: string]: unknown | undefined };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  options: { [key: string]: any };
   matched: boolean;
+  terminal: boolean;
+  error?: string;
 } {
   const matched: string[] = [];
   const positional = args._;
   let command: Command | undefined;
+  let noMatch = false;
 
   function matchArg(name: string): boolean {
     for (const c of tree) {
@@ -143,7 +186,7 @@ export function parseArgs(
         matched.push(name);
         command = c;
         tree = c.commands || [];
-        return !!c.commands;
+        return true;
       }
     }
     return false;
@@ -151,20 +194,23 @@ export function parseArgs(
 
   for (const a of positional) {
     if (!matchArg(a)) {
+      noMatch = true;
       break;
     }
   }
 
   const options: { [key: string]: unknown } = {};
+  let error: string | undefined;
 
   if (command && command.options) {
     positional.splice(0, matched.length);
     for (const o of command.options) {
+      let value = o.default;
       if (typeof o.name === 'number') {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         options[o.alias!] = positional[o.name];
+        noMatch = false;
       } else {
-        let value = o.default;
         if (o.name in args) {
           value = args[o.name];
         } else if (o.alias && o.alias in args) {
@@ -178,12 +224,17 @@ export function parseArgs(
           options[o.name] = value;
         }
       }
+      if (o.allowed && o.allowed.indexOf(value) === -1) {
+        error = `Invalid value for \`${command.name}\`: \`${value}\`.`;
+      }
     }
   }
 
   return {
     command: matched.join(' '),
     options,
-    matched: !!command,
+    matched: !!command && !noMatch,
+    terminal: !command?.commands || !!command?.default,
+    error,
   };
 }

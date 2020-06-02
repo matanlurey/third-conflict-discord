@@ -74,3 +74,12 @@ test('should parse "game create" with an alias (negative flag)', () => {
     'random-events': false,
   });
 });
+
+test('should parse "game load" with positional args', () => {
+  const args = parse('game load foo.json');
+  expect(args.command).toBe('game load');
+  expect(args.matched).toBe(true);
+  expect(args.options).toMatchObject({
+    file: 'foo.json',
+  });
+});

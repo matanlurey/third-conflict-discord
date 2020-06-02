@@ -92,13 +92,18 @@ test('help game', () => {
         },
         Object {
           "inline": false,
-          "name": "join",
+          "name": "join <name>",
           "value": "Joins the current game lobby.",
         },
         Object {
           "inline": false,
+          "name": "start",
+          "value": "Starts the current game lobby.",
+        },
+        Object {
+          "inline": false,
           "name": "quit",
-          "value": "Quits and ends the current game.",
+          "value": "Quits the game.",
         },
       ],
       "footer": null,
