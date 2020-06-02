@@ -38,6 +38,22 @@ export function preGameMenu(options: {
   return embed;
 }
 
+export function lookup(tree: string[]): [Command, string[]] {
+  const crumbs: string[] = [];
+  let command!: Command;
+  let start: Command[] = allCommands;
+  tree.forEach((name) => {
+    for (const c of start) {
+      if (c.name === name) {
+        command = c;
+        start = c.commands || [];
+        crumbs.push(name);
+      }
+    }
+  });
+  return [command, crumbs];
+}
+
 /**
  * Explains how to use the provided command.
  *
@@ -139,12 +155,28 @@ export function parseArgs(
     }
   }
 
-  const options = {};
+  const options: { [key: string]: unknown } = {};
 
   if (command && command.options) {
     positional.splice(0, matched.length);
     for (const o of command.options) {
       if (typeof o.name === 'number') {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        options[o.alias!] = positional[o.name];
+      } else {
+        let value = o.default;
+        if (o.name in args) {
+          value = args[o.name];
+        } else if (o.alias && o.alias in args) {
+          if (o.default === true) {
+            value = false;
+          } else {
+            value = args[o.alias];
+          }
+        }
+        if (value !== undefined) {
+          options[o.name] = value;
+        }
       }
     }
   }

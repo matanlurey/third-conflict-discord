@@ -1,8 +1,7 @@
 import discord from 'discord.js';
 import minimist from 'minimist';
 import stringArgv from 'string-argv';
-import { getUsage, parseArgs, preGameMenu } from './cli/embed';
-import { allCommands, Command } from './cli/options';
+import { getUsage, lookup, parseArgs, preGameMenu } from './cli/embed';
 import { defaultSettings } from './game/settings';
 
 export class CommandProcessor {
@@ -68,18 +67,9 @@ export class CommandProcessor {
       }
     } else {
       // Auto-generate a help menu for an inner command.
-      const crumbs: string[] = [];
-      let command: Command | undefined;
-      let start: Command[] = allCommands;
-      commandTree.forEach((name) => {
-        for (const c of start) {
-          if (c.name === name) {
-            command = c;
-            start = c.commands || [];
-            crumbs.push(name);
-          }
-        }
-      });
+      const result = lookup(commandTree);
+      const command = result[0];
+      const crumbs = result[1];
       if (command) {
         this.send.message(
           this.reply,

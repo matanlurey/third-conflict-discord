@@ -86,13 +86,13 @@ export const allCommands: Command[] = [
           },
           {
             name: 'system-defenses',
-            alias: 'xd',
+            alias: 'D',
             default: true,
             description: 'The creation of system defenses.',
           },
           {
             name: 'random-events',
-            alias: 'xr',
+            alias: 'R',
             default: true,
             description:
               '' +
@@ -102,7 +102,7 @@ export const allCommands: Command[] = [
           },
           {
             name: 'empire-builds',
-            alias: 'xe',
+            alias: 'E',
             default: true,
             description:
               '' +
