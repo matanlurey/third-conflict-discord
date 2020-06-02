@@ -10,6 +10,7 @@ import {
   parseArgs,
   preGameMenu,
   prettyPrint,
+  prettyPrintFields,
 } from './cli/embed';
 import { startingCombatRatings } from './game/combat';
 import { debugMap, SimpleMapGenerator } from './game/map';
@@ -138,6 +139,26 @@ export class CommandProcessor {
             return this.gameQuit();
           case 'view summary':
             return this.viewSummary();
+          case 'view system':
+            return this.viewSystem(args.options['system']);
+          case 'attack':
+            return this.attack({
+              origin: args.options['origin'],
+              target: args.options['target'],
+              warships: args.options['warships'],
+              stealthShips: args.options['stealth'],
+              missiles: args.options['missiles'],
+              transports: args.options['transports'],
+              buildPoints: args.options['build-points'],
+              troops: args.options['troops'],
+            });
+          case 'scout':
+            return this.scout({
+              origin: args.options['origin'],
+              target: args.options['target'],
+            });
+          case 'end':
+            return this.endTurn();
         }
     }
   }
@@ -404,18 +425,61 @@ export class CommandProcessor {
     const totals = game.totals();
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const score = calculateScore(totals.get(player)!);
-    return this.reply(
-      new discord.MessageEmbed()
-        .setTitle(`Admiral ${name} (Score: ${score})`)
-        .setDescription(
-          '' +
-            `**Turn**: ${game.turn} of ${game.data.settings.maxGameLength}\n\n` +
-            `**Map**:\n\`\`\`\n${debugMap(
-              game.data.systems,
-            )}\n\`\`\`\n**Alerts**: _None_.\n\n` +
-            `**Systems**: WIP`,
-        ),
-    );
+    const embed = new discord.MessageEmbed()
+      .setTitle(`Admiral ${name}`)
+      .setDescription(`**Systems**, **Fleets**, and **Scouts**:`);
+
+    embed
+      .addField('Score', `${score}`)
+      .addField('Turn', `${game.turn} / ${game.data.settings.maxGameLength}`)
+      .addField('Map', `\`\`\`\n${debugMap(game.data.systems)}\n\`\`\``);
+
+    if (facade.systems.length) {
+      embed.addField('**Systems**', 'Systems controlled by the player.');
+    }
+
+    for (const system of facade.systems) {
+      embed.addField(
+        `${system.data.name} (${system.data.position[0]}, ${system.data.position[1]})`,
+        '' +
+          `Fleet: ${system.totalOffensiveShips}\n` +
+          `Producing: ${system.data.building || '_Nothing_'}\n` +
+          `Morale: ${system.morale}`,
+        true,
+      );
+    }
+
+    if (facade.fleets.length) {
+      embed.addField('**Fleets**', 'Fleets sent by the player.');
+    }
+
+    for (const fleet of facade.fleets) {
+      const total =
+        fleet.contents.warShips +
+        fleet.contents.stealthShips +
+        fleet.contents.missiles;
+      const eta = game.timeMove(fleet.distance, fleet.contents);
+      embed.addField(
+        `${fleet.origin} -> ${fleet.destination}`,
+        `ETA: ${eta} turns.\n${total} Offensive Ships.`,
+        true,
+      );
+    }
+
+    if (facade.scouts.length) {
+      embed.addField('**Scouts**', 'Scouts sent by the player.');
+    }
+
+    for (const scout of facade.scouts) {
+      const eta = game.timeScout(scout.distance);
+      embed.addField(
+        `${scout.origin} -> ${scout.destination}`,
+        `ETA: ${eta} turns.`,
+        true,
+      );
+    }
+
+    return this.reply(embed);
   }
 
   private viewFleets(): void {
@@ -429,8 +493,40 @@ export class CommandProcessor {
   }
 
   private viewSystem(system: string): void {
-    // TODO: Implement.
-    console.log('TODO', 'viewSystem', system);
+    if (!this.gameInProgress) {
+      return this.gameMustBeInProgress();
+    }
+    const game = this.current as GameState;
+    const name = this.isActiveInGame();
+    if (!name) {
+      return this.mustBeInGame();
+    }
+    const facade = game.as(this.replyTo);
+    const target = facade.find(system);
+    if (!target) {
+      return this.notRecognizedSystem(system);
+    }
+    const scanned = facade.scan(target);
+    const embed = new discord.MessageEmbed()
+      .setTitle(`${target.name}`)
+      .setDescription(
+        'This data may not be up to date. Scout a system for details.',
+      );
+
+    if (scanned.planets) {
+      embed.addField('Planets', scanned.planets.length);
+    }
+    if (scanned.factories) {
+      embed.addField('Factories', scanned.factories);
+    }
+    if (scanned.owner) {
+      embed.addField('Owner', game.as(scanned.owner).player.name);
+    }
+    if (scanned.fleet) {
+      embed.addField('**Fleet**', 'Ships and other defenses.');
+      embed.addFields(prettyPrintFields(scanned.fleet));
+    }
+    return this.reply(embed);
   }
 
   private viewIncoming(): void {
@@ -448,14 +544,72 @@ export class CommandProcessor {
     console.log('TODO', 'viewScore');
   }
 
-  private attack(): void {
-    // TODO: Implement.
-    console.log('TODO', 'attack');
+  private notRecognizedSystem(name: string): void {
+    return this.reply(`No system found named: \`${name}\`.`);
   }
 
-  private scout(): void {
-    // TODO: Implement.
-    console.log('TODO', 'scout');
+  private attack(options: {
+    origin: string;
+    target: string;
+    warships: number;
+    stealthShips: number;
+    missiles: number;
+    transports: number;
+    buildPoints: number;
+    troops: number;
+  }): void {
+    if (!this.gameInProgress) {
+      return this.gameMustBeInProgress();
+    }
+    const game = this.current as GameState;
+    const name = this.isActiveInGame();
+    if (!name) {
+      return this.mustBeInGame();
+    }
+    const facade = game.as(this.replyTo);
+    const originS = facade.find(options.origin);
+    if (!originS) {
+      return this.notRecognizedSystem(options.origin);
+    }
+    const targetS = facade.find(options.target);
+    if (!targetS) {
+      return this.notRecognizedSystem(options.target);
+    }
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    facade.source(originS)!.attack(
+      targetS,
+      {
+        warShips: options.warships,
+        stealthShips: options.stealthShips,
+        missiles: options.missiles,
+        transports: options.transports,
+        buildPoints: options.buildPoints,
+        troops: options.troops,
+      },
+      'conquest',
+    );
+  }
+
+  private scout(options: { origin: string; target: string }): void {
+    if (!this.gameInProgress) {
+      return this.gameMustBeInProgress();
+    }
+    const game = this.current as GameState;
+    const name = this.isActiveInGame();
+    if (!name) {
+      return this.mustBeInGame();
+    }
+    const facade = game.as(this.replyTo);
+    const originS = facade.find(options.origin);
+    if (!originS) {
+      return this.notRecognizedSystem(options.origin);
+    }
+    const targetS = facade.find(options.target);
+    if (!targetS) {
+      return this.notRecognizedSystem(options.target);
+    }
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    facade.source(originS)!.scout(targetS);
   }
 
   private planetInvade(system: string): void {
@@ -484,7 +638,20 @@ export class CommandProcessor {
   }
 
   private endTurn(): void {
-    // TODO: Implement.
-    console.log('TODO', 'endTurn');
+    if (!this.gameInProgress) {
+      return this.gameMustBeInProgress();
+    }
+    const game = this.current as GameState;
+    const name = this.isActiveInGame();
+    if (!name) {
+      return this.mustBeInGame();
+    }
+    const facade = game.as(this.replyTo);
+    if (facade.player.didEndTurn) {
+      return this.reply('Already ended your turn.');
+    } else {
+      facade.endTurn();
+      return this.reply('Ended your turn.');
+    }
   }
 }

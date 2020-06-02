@@ -62,6 +62,7 @@ test('Alfa can scout Beta', () => {
     {
       owner: 1,
       type: 'WarShip',
+      origin: 'Alfa',
       destination: 'Bravo',
       distance: 4,
     },

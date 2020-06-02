@@ -18,6 +18,14 @@ export function prettyPrintFields(
       v = 'No';
     } else if (typeof v === 'string') {
       v = capitalCase(v);
+    } else if (v instanceof Array) {
+      if (typeof v[0] === 'object') {
+        v = `${v.length}`;
+      } else {
+        v = v.join(', ');
+      }
+    } else if (typeof v === 'object') {
+      v = '```' + JSON.stringify(v, undefined, 2) + '```';
     }
     fields.push({
       name: capitalCase(k),
@@ -194,6 +202,7 @@ export function parseArgs(
   const positional = args._;
   let command: Command | undefined;
   let noMatch = false;
+  let usedDefault = false;
 
   function matchArg(name: string): boolean {
     for (const c of tree) {
@@ -214,12 +223,13 @@ export function parseArgs(
     }
   }
 
-  if (!noMatch && tree.length) {
+  if (tree.length) {
     for (const c of tree) {
       if (c.default) {
         matched.push(c.name);
         command = c;
         tree = [];
+        usedDefault = true;
         break;
       }
     }
@@ -229,7 +239,7 @@ export function parseArgs(
   let error: string | undefined;
 
   if (command && command.options) {
-    positional.splice(0, matched.length);
+    positional.splice(0, usedDefault ? matched.length - 1 : matched.length);
     for (const o of command.options) {
       let value = o.default;
       if (typeof o.name === 'number') {

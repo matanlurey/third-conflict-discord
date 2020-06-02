@@ -164,7 +164,6 @@ export const allCommands: Command[] = [
       {
         name: 'summary',
         description: 'View a summary about the game this turn.',
-        default: true,
       },
       {
         name: 'fleets',
@@ -180,10 +179,11 @@ export const allCommands: Command[] = [
         options: [
           {
             name: 0,
-            alias: 'name',
+            alias: 'system',
             description: 'Name or initial of the sector to view.',
           },
         ],
+        default: true,
       },
       {
         name: 'incoming',
@@ -266,6 +266,10 @@ export const allCommands: Command[] = [
         description: 'Target sector (name or initial).',
       },
     ],
+  },
+  {
+    name: 'end',
+    description: 'End your turn.',
   },
 ];
 

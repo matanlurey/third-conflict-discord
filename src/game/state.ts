@@ -143,14 +143,14 @@ export class OwnedSystemFacade {
       this.message(`You control \`${target.name}\`, and cannot attack it.`);
       return;
     }
-    if (mission !== 'Conquest' && this.state.data.settings.enableNoviceMode) {
+    if (mission !== 'conquest' && this.state.data.settings.enableNoviceMode) {
       this.message(`Only \`conquest\` attacks are allowed in novice mode.`);
       return;
     }
     const eta = this.assign(target, fleet, mission);
     if (eta) {
       this.message(
-        `\`${mission}\ launched to ${target.name}, ETA \`${eta}\` turns.`,
+        `Sent \`${mission}\` mission to \`${target.name}\` from \`${this.system.name}\`, ETA \`${eta}\` turn(s).`,
       );
     }
   }
@@ -185,6 +185,7 @@ export class OwnedSystemFacade {
     const distance = this.state.distance(target, this.system);
     const eta = this.state.timeScout(distance);
     this.state.data.scouts.push({
+      origin: this.system.name,
       destination: target.name,
       distance,
       owner: this.system.owner,
@@ -193,6 +194,24 @@ export class OwnedSystemFacade {
     this.message(
       `\`${type}\` scout heading to \`${target.name}\`, ETA \`${eta}\` turns.`,
     );
+  }
+}
+
+export class SystemFacade {
+  constructor(public readonly data: System) {}
+
+  get totalOffensiveShips(): number {
+    return (
+      this.data.fleet.warShips +
+      this.data.fleet.stealthShips +
+      this.data.fleet.missiles
+    );
+  }
+
+  get morale(): number {
+    const owned = this.data.planets.filter((p) => p.owner === this.data.owner);
+    const sum = owned.reduce((p, c) => p + c.morale, 0);
+    return Math.round(sum / owned.length) || 0;
   }
 }
 
@@ -208,6 +227,20 @@ export class PlayerFacade {
 
   get player(): Player {
     return this.state.data.players[this.index];
+  }
+
+  get systems(): SystemFacade[] {
+    return this.state.data.systems
+      .filter((s) => s.owner === this.index)
+      .map((s) => new SystemFacade(s));
+  }
+
+  get fleets(): InTransitFleet[] {
+    return this.state.data.fleets.filter((s) => s.owner === this.index);
+  }
+
+  get scouts(): Scout[] {
+    return this.state.data.scouts.filter((s) => s.owner === this.index);
   }
 
   /**
@@ -436,6 +469,9 @@ export class GameState {
   checkEndTurn(): void {
     // TODO: Make this asynchronous?
     if (this.data.players.every((p) => !p.userId || p.didEndTurn)) {
+      this.message(
+        `All players ended their turn... Computing turn \`${this.turn + 1}\`.`,
+      );
       this.nextTurn();
     }
   }

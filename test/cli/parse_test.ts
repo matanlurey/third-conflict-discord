@@ -84,7 +84,24 @@ test('should parse "game load" with positional args', () => {
   });
 });
 
-test('should use a default command', () => {
-  const args = parse('view');
-  expect(args.command).toBe('view summary');
+test('should parse a default command', () => {
+  const args = parse('view A');
+  expect(args.command).toBe('view system');
+  expect(args.options).toMatchObject({
+    system: 'A',
+  });
+});
+
+test('should parse a default command fully spelled out', () => {
+  const args = parse('view system A');
+  expect(args.command).toBe('view system');
+  expect(args.options).toMatchObject({
+    system: 'A',
+  });
+});
+
+test('should parse "end"', () => {
+  const args = parse('end');
+  expect(args.command).toBe('end');
+  expect(args.matched).toBe(true);
 });

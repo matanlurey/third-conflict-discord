@@ -12,6 +12,11 @@ export interface Scout {
   type: 'WarShip' | 'StealthShip';
 
   /**
+   * Origin of the fleet (if recalled).
+   */
+  origin: string;
+
+  /**
    * Destination (system) of the fleet.
    */
   destination: string;
@@ -57,7 +62,7 @@ export interface InTransitFleet {
   mission?: Mission;
 }
 
-export type Mission = 'Conquest' | 'Resource Raid' | 'Probe';
+export type Mission = 'conquest' | 'resource-raid' | 'probe';
 
 export interface Fleet {
   /**
@@ -226,6 +231,7 @@ export function createSystem(has: {
     defenses: has.defenses || 0,
     factories: has.factories || 0,
     buildPoints: has.buildPoints || 0,
+    building: 'WarShips',
     fleet: has.fleet || createFleet({}),
   };
 }
