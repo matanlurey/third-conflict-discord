@@ -12,7 +12,8 @@ import {
   prettyPrint,
 } from './cli/embed';
 import { startingCombatRatings } from './game/combat';
-import { SimpleMapGenerator } from './game/map';
+import { debugMap, SimpleMapGenerator } from './game/map';
+import { calculateScore } from './game/score';
 import { Player } from './game/sector';
 import { Settings } from './game/settings';
 import { GameState } from './game/state';
@@ -28,13 +29,8 @@ export class CommandProcessor {
 
   constructor(
     private readonly send: {
-      message: (
-        player: string,
-        message: (string | discord.MessageEmbed) | discord.MessageEmbed[],
-      ) => void;
-      broadcast: (
-        messages: (string | discord.MessageEmbed) | discord.MessageEmbed[],
-      ) => void;
+      message: (player: string, message: string | discord.MessageEmbed) => void;
+      broadcast: (messages: string | discord.MessageEmbed) => void;
     },
     private current?: PendingGame | GameState | undefined,
   ) {}
@@ -49,9 +45,7 @@ export class CommandProcessor {
     );
   }
 
-  private reply(
-    message: (string | discord.MessageEmbed) | discord.MessageEmbed[],
-  ): void {
+  private reply(message: string | discord.MessageEmbed): void {
     if (this.wasDm) {
       return this.send.message(this.replyTo, message);
     } else {
@@ -100,6 +94,7 @@ export class CommandProcessor {
       default:
         const objs = minimist(stringArgv(message));
         const args = parseArgs(objs);
+        console.log(`> ${args.command}`);
         if (!args.matched) {
           // TODO: Better error message.
           const text = objs._.join(' ');
@@ -141,6 +136,8 @@ export class CommandProcessor {
             return this.gameStart();
           case 'game quit':
             return this.gameQuit();
+          case 'view summary':
+            return this.viewSummary();
         }
     }
   }
@@ -188,6 +185,12 @@ export class CommandProcessor {
     randomEvents: boolean;
     empireBuilds: boolean;
   }): void {
+    if (this.gameInProgress) {
+      return this.reply('Game already in progress!');
+    }
+    if (!this.isPrivleged) {
+      return this.lackOfPermissions();
+    }
     if (options.systemDefenses && options.noviceMode) {
       options.systemDefenses = false;
     }
@@ -219,6 +222,12 @@ export class CommandProcessor {
     if (!file || file.trim().length === 0) {
       return this.send.broadcast(`No file specified. See \`help game load\`.`);
     }
+    if (this.gameInProgress) {
+      return this.reply('Game already in progress!');
+    }
+    if (!this.isPrivleged) {
+      return this.lackOfPermissions();
+    }
     fs.readJson(path.join('data', file))
       .then((result) => {
         this.current = new GameState(result, (message, player) => {
@@ -242,6 +251,12 @@ export class CommandProcessor {
   private gameSave(file: string): void {
     if (!file || file.trim().length === 0) {
       return this.send.broadcast(`No file specified. See \`help game save\`.`);
+    }
+    if (!this.gameInProgress) {
+      return this.reply('Game must be in progress!');
+    }
+    if (!this.isPrivleged) {
+      return this.lackOfPermissions();
     }
     const current = this.current;
     if (current instanceof GameState) {
@@ -299,6 +314,9 @@ export class CommandProcessor {
 
   private gameStart(): void {
     const current = this.current;
+    if (!this.isPrivleged) {
+      return this.lackOfPermissions();
+    }
     if (!current) {
       return this.send.broadcast('No open game lobby.');
     }
@@ -319,7 +337,7 @@ export class CommandProcessor {
           name: 'Empire',
         },
       ];
-      current.players.forEach((userId, name) => {
+      current.players.forEach((name, userId) => {
         players.push({
           combatRatings: startingCombatRatings(),
           didEndTurn: false,
@@ -357,9 +375,47 @@ export class CommandProcessor {
     }
   }
 
+  private gameMustBeInProgress(): void {
+    return this.reply('Game is not in progress.');
+  }
+
+  private isActiveInGame(): string | undefined {
+    const current = this.current;
+    return current instanceof GameState
+      ? current.hasPlayer(this.replyTo)
+      : undefined;
+  }
+
+  private mustBeInGame(): void {
+    return this.reply('You are not in this game.');
+  }
+
   private viewSummary(): void {
-    // TODO: Implement.
-    console.log('TODO', 'viewSummary');
+    if (!this.gameInProgress) {
+      return this.gameMustBeInProgress();
+    }
+    const game = this.current as GameState;
+    const name = this.isActiveInGame();
+    if (!name) {
+      return this.mustBeInGame();
+    }
+    const facade = game.as(this.replyTo);
+    const player = facade.player;
+    const totals = game.totals();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const score = calculateScore(totals.get(player)!);
+    return this.reply(
+      new discord.MessageEmbed()
+        .setTitle(`Admiral ${name} (Score: ${score})`)
+        .setDescription(
+          '' +
+            `**Turn**: ${game.turn} of ${game.data.settings.maxGameLength}\n\n` +
+            `**Map**:\n\`\`\`\n${debugMap(
+              game.data.systems,
+            )}\n\`\`\`\n**Alerts**: _None_.\n\n` +
+            `**Systems**: WIP`,
+        ),
+    );
   }
 
   private viewFleets(): void {

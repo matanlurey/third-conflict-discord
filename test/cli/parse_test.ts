@@ -83,3 +83,8 @@ test('should parse "game load" with positional args', () => {
     file: 'foo.json',
   });
 });
+
+test('should use a default command', () => {
+  const args = parse('view');
+  expect(args.command).toBe('view summary');
+});

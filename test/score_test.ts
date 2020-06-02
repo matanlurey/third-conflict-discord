@@ -65,6 +65,7 @@ test('should calculate totals from fleets', () => {
       },
     ],
     [],
+    [],
   );
   expect(totals.get(players[0])).toEqual({
     warShips: 14,
@@ -99,6 +100,7 @@ test('should calculate totals from systems', () => {
   ];
   const totals = calculateTotals(
     players,
+    [],
     [],
     [
       {

@@ -8,15 +8,13 @@ client.once('ready', async () => {
     config.listen[0],
   )) as TextChannel;
   const processor = new CommandProcessor({
-    broadcast: (
-      messages: (string | discord.MessageEmbed) | discord.MessageEmbed[],
-    ): void => {
+    broadcast: (messages: string | discord.MessageEmbed): void => {
       broadcast.send(messages);
     },
 
     message: (
       player: string,
-      messages: (string | discord.MessageEmbed) | discord.MessageEmbed[],
+      messages: string | discord.MessageEmbed,
     ): void => {
       client.users
         .fetch(player)
@@ -33,11 +31,16 @@ client.once('ready', async () => {
     ) {
       return;
     } else if (message.author.id !== client.user?.id) {
-      processor.process(
-        message.author.id,
-        message.cleanContent,
-        message.channel.type === 'dm',
-      );
+      const isDM = message.channel.type === 'dm';
+      let input = message.cleanContent;
+      if (!isDM) {
+        if (!input.startsWith('!')) {
+          return;
+        } else {
+          input = input.slice(1);
+        }
+      }
+      processor.process(message.author.id, input, isDM);
     }
   });
 });

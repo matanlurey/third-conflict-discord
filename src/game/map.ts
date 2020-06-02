@@ -114,7 +114,7 @@ export class SimpleMapGenerator {
     const names = SimpleMapGenerator.names.slice(0, count);
     const systems: System[] = [];
     this.chance.pick(startPlayers, players.length).forEach((origin, index) => {
-      systems.push(this.fillPlayerStart(names[index], origin, index + 1));
+      systems.push(this.fillPlayerStart(names[index], origin, index));
     });
     // TODO: Include non-included players as Empire planets?
     this.chance.shuffle(startEmpire).forEach((origin, index) => {

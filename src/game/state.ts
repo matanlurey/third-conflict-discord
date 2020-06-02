@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 import { fixedFloat } from '../common';
 import { SimpleMapGenerator } from './map';
+import { calculateTotals, Totals } from './score';
 import {
   Coordinate,
   Fleet,
@@ -326,6 +327,14 @@ export class GameState {
     return fs.writeJsonSync(file, this.data, { spaces: 2 });
   }
 
+  hasPlayer(userId: string): string | undefined {
+    for (let i = 0; i < this.data.players.length; i++) {
+      if (this.data.players[i].userId === userId) {
+        return this.data.players[i].name;
+      }
+    }
+  }
+
   /**
    * Returns a facade interface into the game state as the provided user.
    *
@@ -347,6 +356,15 @@ export class GameState {
       throw new Error(`Invalid player number: "${player}".`);
     }
     return new PlayerFacade(this, player);
+  }
+
+  totals(): Map<Player, Totals> {
+    return calculateTotals(
+      this.data.players,
+      this.data.fleets,
+      this.data.scouts,
+      this.data.systems,
+    );
   }
 
   /**

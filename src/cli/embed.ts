@@ -217,6 +217,7 @@ export function parseArgs(
   if (!noMatch && tree.length) {
     for (const c of tree) {
       if (c.default) {
+        matched.push(c.name);
         command = c;
         tree = [];
         break;

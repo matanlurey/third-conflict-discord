@@ -1,4 +1,4 @@
-import { Fleet, InTransitFleet, Planet, Player, System } from './sector';
+import { Fleet, InTransitFleet, Planet, Player, Scout, System } from './sector';
 
 export interface Totals {
   warShips: number;
@@ -66,6 +66,7 @@ function addPlanetContents(planet: Planet, totals: Totals): void {
 export function calculateTotals(
   players: Player[],
   fleets: InTransitFleet[],
+  scouts: Scout[],
   systems: System[],
 ): Map<Player, Totals> {
   const results: Totals[] = Array(players.length);
@@ -85,10 +86,20 @@ export function calculateTotals(
   fleets.forEach((f) => {
     addFleetContents(f.contents, results[f.owner]);
   });
+  scouts.forEach((s) => {
+    const index = s.owner;
+    if (s.type === 'WarShip') {
+      results[index].warShips++;
+    } else {
+      results[index].stealthShips++;
+    }
+  });
   systems.forEach((s) => {
-    addSystemContents(s, results[s.owner]);
+    const index = s.owner;
+    addSystemContents(s, results[index]);
     s.planets.forEach((p) => {
-      addPlanetContents(p, results[p.owner]);
+      const index = p.owner;
+      addPlanetContents(p, results[index]);
     });
   });
   return new Map(players.map((p, i) => [p, results[i]]));
