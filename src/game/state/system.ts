@@ -1,7 +1,8 @@
 import { Response } from '../../response';
 import { Fleet } from '../sector';
+import { FleetState } from './fleet';
 import { PlayerState } from './player';
-import { PointState } from './point';
+import { Point, PointState } from './point';
 
 /**
  * Possible production types.
@@ -25,6 +26,15 @@ export type Mission = 'conquest' | 'resource-raid' | 'probe' | 'move';
  * Represents a system within the game session.
  */
 export class System {
+  constructor(public readonly state: SystemState) {}
+
+  /**
+   * Position of the system.
+   */
+  get position(): Point {
+    return new Point(this.state.position);
+  }
+
   /**
    * The player that owns the system.
    */
@@ -37,7 +47,7 @@ export class System {
    *
    * @param produce
    */
-  produce(produce: Production): Response {
+  change(produce: Production): Response {
     throw `UNIMPLEMENTED: ${produce}`;
   }
 
@@ -70,15 +80,86 @@ export class System {
   scout(target: SystemState): Response {
     throw `UNIMPLEMENTED: ${target}`;
   }
+
+  /**
+   * Adds troops to planets.
+   */
+  recruit(): void {
+    this.state.planets.forEach((p) => {
+      p.troops = Math.min(1000, p.troops + p.recruit);
+    });
+  }
+
+  produce(options: { buildPlanet: (owner: string) => PlanetState }): void {
+    const state = this.state;
+    const morale = this.morale;
+    const factories = state.factories;
+    const perTurn = factories > 0 ? factories + morale : 0;
+    const available = state.buildPoints + perTurn;
+
+    // Returns how many can be built at the provided cost.
+    //
+    // Automatically adds the remainder to the build points for next turn.
+    function asManyAsPossible(cost: number): number {
+      const remainder = available % cost;
+      state.buildPoints = remainder;
+      return Math.floor(available / cost) || 0;
+    }
+
+    switch (state.production) {
+      case 'warships':
+        state.warShips += asManyAsPossible(1);
+        break;
+      case 'stealthships':
+        state.stealthShips += asManyAsPossible(3);
+        break;
+      case 'transports':
+        state.transports += asManyAsPossible(3);
+        break;
+      case 'missiles':
+        state.missiles += asManyAsPossible(2);
+        break;
+      case 'planets':
+        if (state.planets.length >= 10) {
+          break;
+        }
+        const buildPlanets = asManyAsPossible(100);
+        for (let i = 0; i < buildPlanets; i++) {
+          state.planets.push(options.buildPlanet(state.owner));
+        }
+        break;
+      case 'factories':
+        if (state.factories >= 50) {
+          break;
+        }
+        state.factories += asManyAsPossible(Math.max(1, state.factories) * 3);
+        break;
+      case 'defenses':
+        state.defenses += asManyAsPossible(1);
+        break;
+    }
+
+    state.buildPoints += perTurn;
+  }
+
+  /**
+   * Returns the system morale for the system.
+   */
+  get morale(): number {
+    // TODO: Consider the inverse of morale for enemy systems?
+    return Math.round(
+      this.state.planets
+        .filter((p) => p.owner === this.state.owner)
+        .reduce((p, c) => p + c.morale, 0),
+    );
+  }
 }
 
 export interface PlanetState {
   /**
    * Who owns this planet.
-   *
-   * A value of `0` is a neutral (Empire) planet.
    */
-  owner: number;
+  owner: string;
 
   /**
    * How happy the planet is.
@@ -104,7 +185,7 @@ export interface PlanetState {
   troops: number;
 }
 
-export interface SystemState {
+export interface SystemState extends FleetState {
   /**
    * Name of the system.
    */
@@ -123,6 +204,11 @@ export interface SystemState {
    * Planets may ve wrecked, but this has a terrible effect on morale.
    */
   readonly planets: PlanetState[];
+
+  /**
+   * Player that controls the system.
+   */
+  owner: string;
 
   /**
    * Stationary organizations that defend star systems against attack.
