@@ -356,6 +356,7 @@ export class CommandProcessor {
           didEndTurn: false,
           fogOfWar: {},
           name: 'Empire',
+          reports: [],
         },
       ];
       current.players.forEach((name, userId) => {
@@ -365,6 +366,7 @@ export class CommandProcessor {
           fogOfWar: {},
           name,
           userId,
+          reports: [],
         });
       });
       const generator = new SimpleMapGenerator(current.settings);

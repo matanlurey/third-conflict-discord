@@ -9,6 +9,7 @@ describe('NavalCombatSimulator', () => {
       attacker: {
         // Disable RNG.
         rating: 100,
+        player: 'A',
 
         contents: createFleet({
           warShips: 100,
@@ -17,6 +18,7 @@ describe('NavalCombatSimulator', () => {
       defender: {
         // Disable RNG.
         rating: 100,
+        player: 'B',
 
         contents: createSystem({
           name: 'Alpha',
@@ -31,12 +33,14 @@ describe('NavalCombatSimulator', () => {
     simulator.simulateRound();
     expect(simulator.isAttackerEliminated).toBe(false);
     expect(simulator.isDefenderEliminated).toBe(true);
-    expect(simulator.results).toMatchObject({
-      attacker: {
-        warShips: 30,
-      },
-      defender: {
-        warShips: 30,
+    expect(simulator.results('A')).toMatchObject({
+      losses: {
+        attacker: {
+          warShips: 30,
+        },
+        defender: {
+          warShips: 30,
+        },
       },
     });
   });

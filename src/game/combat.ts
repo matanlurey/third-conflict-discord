@@ -1,7 +1,6 @@
 import { Chance } from 'chance';
 import { deepClone } from '../common';
-import { Totals } from './score';
-import { Fleet, System } from './sector';
+import { CombatReport, Fleet, System } from './sector';
 
 /**
  * Chance of attack hitting in a fleet (nava) or planetary (ground) combat.
@@ -54,10 +53,12 @@ export class NavalCombatSimulator {
   static conquest(
     between: {
       attacker: {
+        player: string;
         rating: number;
         contents: Fleet;
       };
       defender: {
+        player: string;
         rating: number;
         contents: System;
       };
@@ -69,10 +70,12 @@ export class NavalCombatSimulator {
 
   private constructor(
     private readonly attacker: {
+      player: string;
       rating: number;
       contents: Fleet;
     },
     private readonly defender: {
+      player: string;
       rating: number;
       contents: System;
     },
@@ -141,28 +144,39 @@ export class NavalCombatSimulator {
   /**
    * Return the current results in terms of units lost.
    */
-  get results(): {
-    attacker: Partial<Totals>;
-    defender: Partial<Totals>;
-  } {
+  results(perspective: string): CombatReport {
     const attacker = this.attacker.contents;
     const oAttacker = this.originalAttacker;
     const defender = this.defender.contents;
     const oDefender = this.originalDefender;
     return {
-      attacker: {
-        warShips: oAttacker.warShips - attacker.warShips,
-        stealthShips: oAttacker.stealthShips - attacker.stealthShips,
-        missiles: oAttacker.missiles - attacker.missiles,
-        transports: oAttacker.transports - attacker.transports,
-      },
-      defender: {
-        warShips: oDefender.fleet.warShips - defender.fleet.warShips,
-        stealthShips:
-          oDefender.fleet.stealthShips - defender.fleet.stealthShips,
-        missiles: oDefender.fleet.missiles - defender.fleet.missiles,
-        transports: oDefender.fleet.transports - defender.fleet.transports,
-        defenses: oDefender.defenses - defender.defenses,
+      attacking: perspective === this.attacker.player,
+      kind: 'combat',
+      mission: 'conquest',
+      system: this.defender.contents.name,
+      winner: this.isAttackerEliminated
+        ? 'defender'
+        : this.isDefenderEliminated
+        ? 'attacker'
+        : 'none',
+      losses: {
+        attacker: {
+          missiles: oAttacker.missiles - attacker.missiles,
+          stealthShips: oAttacker.stealthShips - attacker.stealthShips,
+          transports: oAttacker.transports - attacker.transports,
+          troops: oAttacker.troops - attacker.troops,
+          warShips: oAttacker.warShips - attacker.warShips,
+        },
+        defender: {
+          defenses: oDefender.defenses - defender.defenses,
+          factories: oDefender.factories - defender.factories,
+          missiles: oDefender.fleet.missiles - defender.fleet.missiles,
+          stealthShips:
+            oDefender.fleet.stealthShips - defender.fleet.stealthShips,
+          transports: oDefender.fleet.transports - defender.fleet.transports,
+          troops: oDefender.fleet.troops - defender.fleet.troops,
+          warShips: oDefender.fleet.warShips - defender.fleet.warShips,
+        },
       },
     };
   }

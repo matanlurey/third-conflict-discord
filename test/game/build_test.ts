@@ -19,6 +19,7 @@ beforeEach(() => {
             naval: 50,
           },
           fogOfWar: {},
+          reports: [],
         },
         {
           didEndTurn: false,
@@ -28,6 +29,7 @@ beforeEach(() => {
             naval: 50,
           },
           fogOfWar: {},
+          reports: [],
         },
       ],
       systems: [

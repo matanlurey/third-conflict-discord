@@ -309,6 +309,7 @@ export class GameState {
         didEndTurn: false,
         fogOfWar: {},
         name: 'Empire',
+        reports: [],
       },
       ...options.players,
     ];
@@ -590,10 +591,14 @@ export class GameState {
       const simulator = NavalCombatSimulator.conquest(
         {
           attacker: {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            player: attacker.player.userId!,
             rating: attacker.player.combatRatings.naval,
             contents: fleet.contents,
           },
           defender: {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            player: defender.player.userId!,
             rating: defender.player.combatRatings.naval,
             contents: system,
           },

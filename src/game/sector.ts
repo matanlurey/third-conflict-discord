@@ -1,4 +1,5 @@
 import { Ratings } from './combat';
+import { Totals } from './score';
 
 export interface Scout {
   /**
@@ -270,6 +271,26 @@ export interface Planet {
   troops: number;
 }
 
+export interface CombatReport extends Report {
+  kind: 'combat';
+  mission: 'conquest';
+  attacking: boolean;
+  winner: 'attacker' | 'defender' | 'none';
+  losses: {
+    attacker: Partial<Totals>;
+    defender: Partial<Totals>;
+  };
+}
+
+export interface IntelReport extends Report {
+  kind: 'intel';
+}
+
+export interface Report {
+  readonly kind: string;
+  readonly system: string;
+}
+
 export interface Player {
   /**
    * Unique ID of the player.
@@ -304,4 +325,6 @@ export interface Player {
         }
       | undefined;
   };
+
+  reports: Report[];
 }
