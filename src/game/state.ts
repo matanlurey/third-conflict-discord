@@ -1,5 +1,7 @@
+import { Chance } from 'chance';
 import fs from 'fs-extra';
 import { fixedFloat } from '../common';
+import { NavalCombatSimulator } from './combat';
 import { SimpleMapGenerator } from './map';
 import { calculateTotals, Totals } from './score';
 import {
@@ -337,6 +339,7 @@ export class GameState {
   constructor(
     public readonly data: GameStateData,
     public readonly message: (message: string, player?: Player) => void,
+    public readonly chance = new Chance(),
   ) {
     if (data.players.length < 2) {
       throw new Error(
@@ -530,34 +533,38 @@ export class GameState {
     });
   }
 
+  private revealSystem(owner: number, report: System): void {
+    // TODO: Add to report.
+    this.data.players[owner].fogOfWar[report.name] = {
+      updated: this.data.turn,
+      system: {
+        defenses: report.defenses,
+        factories: report.factories,
+        owner: report.owner,
+        planets: Array(report.planets.length),
+        name: report.name,
+        position: report.position,
+        fleet: {
+          buildPoints: 0,
+          missiles: report.fleet.missiles,
+          // TODO: Should this be known? Inaccurate?
+          stealthShips: report.fleet.stealthShips,
+          transports: report.fleet.transports,
+          troops: report.fleet.troops,
+          warShips: report.fleet.warShips,
+        },
+      },
+    };
+  }
+
   private resolveScout(scout: Scout): boolean {
     // Move forward at 1.5* the normal speed.
     const speed = this.data.settings.shipSpeedATurn * 1.5;
     scout.distance -= speed;
     if (scout.distance <= 0) {
-      // Add intelligence report.
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const report = this.find(scout.destination)!;
-      this.data.players[scout.owner].fogOfWar[scout.destination] = {
-        updated: this.data.turn,
-        system: {
-          defenses: report.defenses,
-          factories: report.factories,
-          owner: report.owner,
-          planets: Array(report.planets.length),
-          name: report.name,
-          position: report.position,
-          fleet: {
-            buildPoints: 0,
-            missiles: report.fleet.missiles,
-            // TODO: Should this be known? Inaccurate?
-            stealthShips: report.fleet.stealthShips,
-            transports: report.fleet.transports,
-            troops: report.fleet.troops,
-            warShips: report.fleet.warShips,
-          },
-        },
-      };
+      this.revealSystem(scout.owner, report);
       // Chance of scanning a WarShip
       // TODO: Implement.
       return false;
@@ -567,8 +574,58 @@ export class GameState {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private resolveMovementAndCombat(_fleet: InTransitFleet): void {
-    // TODO: Implement.
+  private resolveMovementAndCombat(fleet: InTransitFleet): void {
+    // Move fleet.
+    const speed = this.data.settings.shipSpeedATurn;
+    fleet.distance -= speed;
+    if (fleet.distance <= 0) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const report = this.find(fleet.destination)!;
+
+      // TODO: Support moving allied fleets, gifting fleets.
+      const attacker = this.as(fleet.owner);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const system = this.find(fleet.destination)!;
+      const defender = this.as(system.owner);
+      const simulator = NavalCombatSimulator.conquest(
+        {
+          attacker: {
+            rating: attacker.player.combatRatings.naval,
+            contents: fleet.contents,
+          },
+          defender: {
+            rating: defender.player.combatRatings.naval,
+            contents: system,
+          },
+        },
+        this.chance,
+      );
+
+      // TODO: Add combat to report.
+      simulator.resolve();
+
+      // Transfer control, if needed.
+      // TODO: Do more than this.
+      if (simulator.isDefenderEliminated) {
+        system.owner = fleet.owner;
+        system.fleet = fleet.contents;
+        this.removeTransitFleet(fleet);
+      } else {
+        // TODO: Handle less rounds of combat (by returning).
+        this.removeTransitFleet(fleet);
+      }
+
+      this.revealSystem(fleet.owner, report);
+    }
+  }
+
+  private removeTransitFleet(fleet: InTransitFleet): void {
+    for (let i = 0; i < this.data.fleets.length; i++) {
+      if (this.data.fleets[i] === fleet) {
+        this.data.fleets.splice(i, 1);
+        return;
+      }
+    }
   }
 
   /**

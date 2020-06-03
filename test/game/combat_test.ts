@@ -41,3 +41,5 @@ describe('NavalCombatSimulator', () => {
     });
   });
 });
+
+test('should resolve combats at end of turn', () => {});

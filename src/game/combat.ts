@@ -82,6 +82,12 @@ export class NavalCombatSimulator {
     this.originalDefender = deepClone(defender.contents);
   }
 
+  resolve(): void {
+    while (!this.isAttackerEliminated && !this.isDefenderEliminated) {
+      this.simulateRound();
+    }
+  }
+
   /**
    * Simulates a full round of combat.
    */
