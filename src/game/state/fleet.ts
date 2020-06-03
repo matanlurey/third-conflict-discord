@@ -1,21 +1,18 @@
-export interface ScoutState {
+import { Mixin } from 'ts-mixer';
+
+export interface MoveState {
   /**
    * Who owns the scout.
    */
   readonly owner: string;
 
   /**
-   * Whether a WarShip or StealthShip was sent.
-   */
-  readonly type: 'warship' | 'stealthship';
-
-  /**
-   * Origin of the fleet (if recalled).
+   * Origin of the unit (if recalled).
    */
   readonly source: string;
 
   /**
-   * Destination (system) of the fleet.
+   * Destination (system) of the unit.
    */
   readonly target: string;
 
@@ -25,14 +22,26 @@ export interface ScoutState {
   distance: number;
 }
 
-export class Scout {
-  constructor(readonly state: ScoutState) {}
+export class Moveable {
+  /**
+   * State field.
+   */
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // @ts-ignore: "Abstract methods can only appear within an abstract class"
+  protected abstract get state(): MoveState;
+
+  /**
+   * How much faster this unit should move.
+   */
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // @ts-ignore: "Abstract methods can only appear within an abstract class"
+  protected abstract get speedModifier(): number;
 
   /**
    * Estimated time of arrival.
    */
   eta(speed: number): number {
-    return Math.ceil(this.state.distance / (speed * 1.5));
+    return Math.ceil(this.state.distance / (speed * this.speedModifier));
   }
 
   /**
@@ -48,7 +57,22 @@ export class Scout {
    * @param speed
    */
   move(speed: number): void {
-    this.state.distance -= speed * 1.5;
+    this.state.distance -= speed * this.speedModifier;
+  }
+}
+
+export interface ScoutState extends MoveState {
+  /**
+   * Whether a WarShip or StealthShip was sent.
+   */
+  readonly scout: 'warship' | 'stealthship';
+}
+
+export class Scout extends Moveable {
+  protected readonly speedModifier = 1.5;
+
+  constructor(readonly state: ScoutState) {
+    super();
   }
 }
 
@@ -139,7 +163,7 @@ export class Fleet {
    *
    * @param units
    */
-  forkState(units: Partial<FleetState>): FleetState {
+  fork(units: Partial<FleetState>): FleetState {
     const state = this.state;
     const result = {
       buildPoints: 0,
@@ -185,22 +209,7 @@ export type Mission = 'conquest' | 'resource-raid' | 'probe';
 /**
  * A fleet on its way to another system.
  */
-export interface DispatchState extends FleetState {
-  /**
-   * Which player owns the fleet.
-   */
-  readonly owner: string;
-
-  /**
-   * Name of the origin system.
-   */
-  readonly source: string;
-
-  /**
-   * Destination (system) of the fleet.
-   */
-  readonly target: string;
-
+export interface DispatchState extends FleetState, MoveState {
   /**
    * What the purpose of the movement/transit is.
    *
@@ -208,35 +217,12 @@ export interface DispatchState extends FleetState {
    * system) or being moved to a friendly location (e.g. not attacking).
    */
   readonly mission: Mission;
-
-  /**
-   * Distance remaining until the destination is reached.
-   */
-  distance: number;
 }
 
-export class Dispatch extends Fleet {
+export class Dispatch extends Mixin(Fleet, Moveable) {
   constructor(public state: DispatchState) {
     super(state);
   }
-
-  /**
-   * Estimated time of arrival.
-   */
-  eta(speed: number): number {
-    if (this.isMissilesOnly) {
-      speed *= 2;
-    }
-    return Math.ceil(this.state.distance / speed);
-  }
-
-  /**
-   * Whether the fleet has reached its target.
-   */
-  get hasReachedTarget(): boolean {
-    return this.state.distance <= 0;
-  }
-
   /**
    * Whether the fleet is missiles only.
    */
@@ -249,15 +235,7 @@ export class Dispatch extends Fleet {
     );
   }
 
-  /**
-   * Move the scout.
-   *
-   * @param speed
-   */
-  move(speed: number): void {
-    if (this.isMissilesOnly) {
-      speed *= 2;
-    }
-    this.state.distance -= speed;
+  protected get speedModifier(): number {
+    return this.isMissilesOnly ? 2 : 1;
   }
 }

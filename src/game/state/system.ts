@@ -48,7 +48,9 @@ export class System {
    * @param produce
    */
   change(produce: Production): Response {
-    throw `UNIMPLEMENTED: ${produce}`;
+    this.state.production = produce;
+    // TODO: Actually implement.
+    return (null as unknown) as Response;
   }
 
   /**
@@ -94,6 +96,7 @@ export class System {
     const state = this.state;
     const morale = this.morale;
     const factories = state.factories;
+
     const perTurn = factories > 0 ? factories + morale : 0;
     const available = state.buildPoints + perTurn;
 
@@ -109,16 +112,19 @@ export class System {
     switch (state.production) {
       case 'warships':
         state.warShips += asManyAsPossible(1);
-        break;
+        return;
       case 'stealthships':
         state.stealthShips += asManyAsPossible(3);
-        break;
+        return;
       case 'transports':
         state.transports += asManyAsPossible(3);
-        break;
+        return;
       case 'missiles':
         state.missiles += asManyAsPossible(2);
-        break;
+        return;
+      case 'defenses':
+        state.defenses += asManyAsPossible(1);
+        return;
       case 'planets':
         if (state.planets.length >= 10) {
           break;
@@ -127,16 +133,13 @@ export class System {
         for (let i = 0; i < buildPlanets; i++) {
           state.planets.push(options.buildPlanet(state.owner));
         }
-        break;
+        return;
       case 'factories':
         if (state.factories >= 50) {
           break;
         }
         state.factories += asManyAsPossible(Math.max(1, state.factories) * 3);
-        break;
-      case 'defenses':
-        state.defenses += asManyAsPossible(1);
-        break;
+        return;
     }
 
     state.buildPoints += perTurn;

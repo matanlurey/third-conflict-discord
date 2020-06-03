@@ -85,3 +85,15 @@ export interface Settings {
    */
   readonly enableEmpireBuilds: boolean;
 }
+
+export const defaultSettings: Settings = {
+  initialFactories: 10,
+  shipSpeedATurn: 4,
+  gameDifficulty: 'easy',
+  maxGameLength: 150,
+  displayLevel: 'combat-and-events',
+  enableNoviceMode: false,
+  enableSystemDefenses: true,
+  enableRandomEvents: true,
+  enableEmpireBuilds: true,
+};

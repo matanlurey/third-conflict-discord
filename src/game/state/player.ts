@@ -2,20 +2,13 @@ import { Report } from './report';
 import { System } from './system';
 
 export class Player {
-  constructor(private readonly state: PlayerState) {}
-
-  /**
-   * Whether this player is a human player.
-   */
-  get isHuman(): boolean {
-    return !!this.state.userId;
-  }
+  constructor(public readonly state: PlayerState) {}
 
   /**
    * Filters a collection of systems.
    */
-  systems(systems: System[]): System[] {
-    return systems.filter((s) => s.owner.userId === this.state.userId);
+  filterSystems(systems: System[]): System[] {
+    return systems.filter((s) => s.state.owner === this.state.userId);
   }
 }
 
