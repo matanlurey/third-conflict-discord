@@ -1,4 +1,14 @@
 /**
+ * How many factories initial systems start with.
+ */
+export type InitialFactories = 10 | 15 | 20;
+
+/**
+ * How many units of distance a ship moves a turn, maximum.
+ */
+export type ShipSpeedATurn = 4 | 5 | 6;
+
+/**
  * Reporting level.
  */
 export type DisplayLevel =
@@ -22,14 +32,14 @@ export interface Settings {
    * is also used as the maximum number of factories that an imperial system
    * will build.
    */
-  readonly initialFactories: 10 | 15 | 20;
+  readonly initialFactories: InitialFactories;
 
   /**
    * How many units of distance a ship moves a turn, maximum.
    *
    * The faster the speed the farther ships can make it every "tick" of the game.
    */
-  readonly shipSpeedATurn: 4 | 5 | 6;
+  readonly shipSpeedATurn: ShipSpeedATurn;
 
   /**
    * Game difficulty, which controls a lot of things.

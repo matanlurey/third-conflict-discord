@@ -25,6 +25,7 @@ test('should calculate totals from fleets', () => {
       didEndTurn: false,
       combatRatings: { naval: 90, ground: 90 },
       fogOfWar: {},
+      reports: [],
     },
     {
       name: 'Player 2',
@@ -32,6 +33,7 @@ test('should calculate totals from fleets', () => {
       didEndTurn: false,
       combatRatings: { naval: 90, ground: 90 },
       fogOfWar: {},
+      reports: [],
     },
   ];
   const totals = calculateTotals(
@@ -89,6 +91,7 @@ test('should calculate totals from systems', () => {
       didEndTurn: false,
       combatRatings: { naval: 90, ground: 90 },
       fogOfWar: {},
+      reports: [],
     },
     {
       name: 'Player 2',
@@ -96,6 +99,7 @@ test('should calculate totals from systems', () => {
       didEndTurn: false,
       combatRatings: { naval: 90, ground: 90 },
       fogOfWar: {},
+      reports: [],
     },
   ];
   const totals = calculateTotals(
