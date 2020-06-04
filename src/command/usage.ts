@@ -67,7 +67,7 @@ export function getSimpleUsage(commands: Command | Command[]): string {
   return result.join('\n');
 }
 
-export function getEmbedUsage(commands: Command | Command[]): MessageEmbed {
+export function getRichUsage(commands: Command | Command[]): MessageEmbed {
   const result = new MessageEmbed().setTitle('Usage');
   if (commands instanceof Command) {
     result.setDescription(describeCommand(commands));

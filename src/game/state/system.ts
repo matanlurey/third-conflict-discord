@@ -1,6 +1,4 @@
-import { Response } from '../../response';
-import { Fleet } from '../sector';
-import { FleetState } from './fleet';
+import { Fleet, FleetState } from './fleet';
 import { PlayerState } from './player';
 import { Point, PointState } from './point';
 
@@ -47,10 +45,8 @@ export class System {
    *
    * @param produce
    */
-  change(produce: Production): Response {
+  change(produce: Production): void {
     this.state.production = produce;
-    // TODO: Actually implement.
-    return (null as unknown) as Response;
   }
 
   /**
@@ -60,7 +56,7 @@ export class System {
    * @param units
    * @param mission
    */
-  attack(target: SystemState, units: Fleet, mission: Mission): Response {
+  attack(target: SystemState, units: Fleet, mission: Mission): void {
     throw `UNIMPLEMENTED: ${target} ${units} ${mission}`;
   }
 
@@ -70,7 +66,7 @@ export class System {
    * @param target
    * @param units
    */
-  moveTo(target: SystemState, units: Fleet): Response {
+  moveTo(target: SystemState, units: Fleet): void {
     throw `UNIMPLEMENTED: ${target} ${units}`;
   }
 
@@ -79,7 +75,7 @@ export class System {
    *
    * @param target
    */
-  scout(target: SystemState): Response {
+  scout(target: SystemState): void {
     throw `UNIMPLEMENTED: ${target}`;
   }
 
