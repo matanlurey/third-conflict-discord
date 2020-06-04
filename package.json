@@ -39,6 +39,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
+    "camel-case": "^4.1.1",
     "capital-case": "^1.0.3",
     "chance": "^1.1.6",
     "columnify": "^1.5.4",

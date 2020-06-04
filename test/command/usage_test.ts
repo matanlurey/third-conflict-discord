@@ -1,6 +1,6 @@
-import { Command } from '../src/command/config';
-import { getRichUsage, getSimpleUsage } from '../src/command/usage';
-import commands from '../src/commands';
+import { Command } from '../../src/command/config';
+import { getRichUsage, getSimpleUsage } from '../../src/command/usage';
+import commands from '../../src/commands';
 
 const allCommands = commands({
   enableNoviceMode: false,

@@ -2,20 +2,25 @@ import columnify from 'columnify';
 import { MessageEmbed } from 'discord.js';
 import { Command } from './config';
 
+/**
+ * Describes a command in terms of the name and other options.
+ *
+ * @param command
+ */
 function describeCommand(command: Command): string {
-  let name = command.name;
+  let text = command.name;
   let more = false;
   for (const option of command.options) {
     if (typeof option.alias === 'number') {
-      name = `${name} <${option.name}>`;
+      text = `${text} <${option.name}>`;
     } else {
       more = true;
     }
   }
   if (more) {
-    name = `${name} [options]`;
+    text = `${text} [options]`;
   }
-  return name;
+  return text;
 }
 
 export function getSimpleUsage(commands: Command | Command[]): string {
