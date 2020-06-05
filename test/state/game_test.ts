@@ -28,6 +28,7 @@ beforeAll(() => {
         missiles: 0,
         name: 'Alfa',
         owner: '12345',
+        home: false,
         planets: [],
         position: [0, 1],
         production: 'nothing',

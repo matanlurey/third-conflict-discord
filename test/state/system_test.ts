@@ -15,6 +15,7 @@ describe('produce', () => {
       defenses: 0,
       factories: 10,
       missiles: 0,
+      home: false,
       name: 'Alfa',
       owner: '12345',
       planets: Array(10),

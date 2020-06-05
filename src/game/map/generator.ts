@@ -1,9 +1,10 @@
 import { Chance } from 'chance';
-import { System } from '../state/system';
+import { Settings } from '../state/settings';
+import { PlanetState, System, SystemState } from '../state/system';
 
 export abstract class Generator {
   constructor(
-    private readonly chance = new Chance(),
+    protected readonly chance = new Chance(),
     private readonly names = [
       'Alfa',
       'Bravo',
@@ -34,9 +35,110 @@ export abstract class Generator {
     ],
   ) {}
 
-  abstract generateMap(players: string[]): System[];
+  abstract generateMap(settings: Settings, players: string[]): System[];
 
   protected fetchNames(amount: number): string[] {
     return this.chance.pickset(this.names, amount);
+  }
+
+  protected createEmpire(
+    state: SystemState,
+    chance: Chance.Chance,
+    settings: Settings,
+  ): SystemState {
+    let ratio = 1;
+    switch (settings.gameDifficulty) {
+      case 'hard':
+        ratio = 2;
+        break;
+      case 'tough':
+        ratio = 3;
+        break;
+    }
+    let defenses = 0;
+    if (settings.enableSystemDefenses) {
+      defenses = this.chance.integer({ min: 5, max: 15 }) * ratio;
+    }
+    const warShips = this.chance.integer({ min: 10, max: 30 }) * ratio;
+    let stealthShips = 0;
+    if (!settings.enableNoviceMode) {
+      stealthShips = this.chance.integer({ min: 5, max: 15 }) * ratio;
+    }
+    const planets: PlanetState[] = new Array(
+      this.chance.integer({ min: 2, max: 5 }),
+    );
+    for (let i = 0; i < planets.length; i++) {
+      planets[i] = this.createPlanet(chance, 'Empire');
+    }
+    const factories = this.chance.integer({
+      min: Math.floor(settings.initialFactories / 4),
+      max: Math.floor(settings.initialFactories / 2),
+    });
+    return {
+      ...state,
+      defenses,
+      factories,
+      planets,
+      owner: 'Empire',
+      warShips,
+      stealthShips,
+    };
+  }
+
+  protected createPlayer(
+    owner: string,
+    state: SystemState,
+    chance: Chance.Chance,
+    settings: Settings,
+  ): SystemState {
+    let defenses = 0;
+    if (settings.enableSystemDefenses) {
+      defenses = this.chance.integer({ min: 10, max: 30 });
+    }
+    const warShips = this.chance.integer({ min: 160, max: 240 });
+    let stealthShips = 0;
+    if (!settings.enableNoviceMode) {
+      stealthShips = this.chance.integer({ min: 15, max: 35 });
+    }
+    let missiles = 0;
+    if (!settings.enableNoviceMode) {
+      missiles = this.chance.integer({ min: 10, max: 25 });
+    }
+    const planets: PlanetState[] = new Array(10);
+    for (let i = 0; i < planets.length; i++) {
+      planets[i] = this.createPlanet(chance, owner);
+    }
+    const factories = settings.initialFactories;
+    return {
+      ...state,
+      home: true,
+      defenses,
+      factories,
+      planets,
+      owner,
+      warShips,
+      missiles,
+      stealthShips,
+    };
+  }
+
+  protected createPlanet(chance: Chance.Chance, owner: string): PlanetState {
+    // TODO: Make initial generation more fair by giving players a chance to
+    // have a slight advantage in some area (i.e. better planets, more troops,
+    // more ships) without possibly having all of those or none of those.
+    const recruit = chance.weighted(
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      [1, 2, 3, 6, 3, 2, 1, 1, 1, 1],
+    );
+    const troops = chance.integer({
+      min: 20,
+      max: 80,
+    });
+    return {
+      morale: 1,
+      owner: owner,
+      recruit,
+      troops,
+    };
   }
 }

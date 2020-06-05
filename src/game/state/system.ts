@@ -210,6 +210,11 @@ export interface SystemState extends FleetState {
   owner: string;
 
   /**
+   * This is a home system.
+   */
+  home: boolean;
+
+  /**
    * Stationary organizations that defend star systems against attack.
    *
    * Computers, detectors, planet-based short-range missiles, patrol boats, and
