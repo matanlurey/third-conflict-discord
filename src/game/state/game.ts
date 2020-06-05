@@ -1,9 +1,9 @@
+import { NewlyCreatedGame } from '../save';
 import { DispatchState, ScoutState } from './fleet';
 import { Player, PlayerState } from './player';
-import { Settings } from './settings';
 import { System, SystemState } from './system';
 
-export interface GameState {
+export interface GameState extends NewlyCreatedGame {
   /**
    * Players in the game.
    */
@@ -20,22 +20,47 @@ export interface GameState {
   readonly scouts: ScoutState[];
 
   /**
-   * Systems in the game.
-   */
-  readonly systems: SystemState[];
-
-  /**
-   * Settings in the game.
-   */
-  readonly settings: Settings;
-
-  /**
    * Current turn.
    */
   turn: number;
 }
 
+const userPrefix = 'PLAYER:';
+
 export class Game {
+  /**
+   * Starts a new game session.
+   *
+   * @param settings
+   * @param systems
+   * @param players
+   */
+  static start(state: NewlyCreatedGame, players: PlayerState[]): Game {
+    return new Game({
+      seed: state.seed,
+      settings: state.settings,
+      systems: state.systems.map((s) => {
+        if (s.owner.startsWith(userPrefix)) {
+          const i = parseInt(s.owner.substring(userPrefix.length)) - 1;
+          return {
+            ...s,
+            planets: s.planets.map((planet) => {
+              return {
+                ...planet,
+                owner: players[i].userId,
+              };
+            }),
+            owner: players[i].userId,
+          };
+        }
+      }) as SystemState[],
+      players,
+      fleets: [],
+      scouts: [],
+      turn: 1,
+    });
+  }
+
   constructor(public readonly state: GameState) {}
 
   /**

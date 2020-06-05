@@ -103,6 +103,7 @@ if (file) {
     path.join('data', file),
     {
       seed: seed,
+      settings,
       systems: output.map((s) => s.state),
     },
     { spaces: 2 },

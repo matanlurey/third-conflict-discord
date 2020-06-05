@@ -1,7 +1,17 @@
 # TODO
 
-[ ] Add version number to save game files.
-[ ] Add seed to save game files.
+- [ ] Add single-player REPL support.
+- [ ] Add multi-player Discord support.
+- [ ] Add version number to save game files.
+- [x] Add seed to save game files.
+- [ ] Add attack.
+- [ ] Add build.
+- [ ] Add end.
+- [ ] Add move.
+- [ ] Add reports.
+- [ ] Add scan.
+- [ ] Add scout.
+- [ ] Add summary.
 
 ## Commands
 

@@ -5,6 +5,7 @@ let game: Game;
 
 beforeAll(() => {
   game = new Game({
+    seed: '1234',
     fleets: [],
     players: [
       {
