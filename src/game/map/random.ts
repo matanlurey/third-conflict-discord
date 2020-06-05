@@ -51,6 +51,6 @@ export class RandomMap extends Generator {
       const i = this.pickFarthestSystem(result);
       result[i] = this.createPlayer(name, result[i], this.chance, settings);
     });
-    return result.map((s) => new System(s));
+    return this.collatePositions(result).map((s) => new System(s));
   }
 }

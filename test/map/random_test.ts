@@ -28,40 +28,40 @@ test('should generate a random 26 system map', () => {
     '\n';
   expect(visualize).toMatchInlineSnapshot(`
     "
-    Player 1: Delta
-    Player 2: Whiskey
-    Player 3: Charlie
-    Player 4: Tango
+    Player 1: Yankee
+    Player 2: Tango
+    Player 3: November
+    Player 4: Victor
     • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
-    D • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
-    • • • • • • • • • • • • • • F • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
+    Y • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
+    • • • • • • • • • • • • • • D • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
     • • • • • • • P • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
-    • • • • • • • • • • • • • • • • • • G • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
-    • • • • • • • • • • • U • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
+    • • • • • • • • • • • • • • • • • • B • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
+    • • • • • • • • • • • J • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
     • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
-    • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • T • • • • • • • • • • • • • • • • • • •
-    • • • • • • • • • • • • • • • Y • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
-    • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
-    • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
-    • • • • • • • • • • H • • • • • • • K • • • • • • S • • • • • • • • • • • • • • • • • • • • • • • •
-    • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • Q • • • • • • • • • • • • • • • • • •
+    • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • V • • • • • • • • • • • • • • • • • • •
+    • • • • • • • • • • • • • • • W • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
     • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
     • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
+    • • • • • • • • • • Q • • • • • • • S • • • • • • Z • • • • • • • • • • • • • • • • • • • • • • • •
+    • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • I • • • • • • • • • • • • • • • • • •
     • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
-    • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • W
-    • • • • • • • • • • • • • • • • V • • • • • L • • • • • • E • • • • • • M • • • • • • • • • • • • •
+    • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
+    • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
+    • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • T
+    • • • • • • • • • • • • • • • • H • • • • • K • • • • • • L • • • • • • G • • • • • • • • • • • • •
     • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
     • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • A • • • • • •
-    • • • • • • • • • • • • • • • • • • • • • • • • • J • • • • • • • • • • • • • • • • • • • • • • • •
-    • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • X • •
-    • • • • • • • • • • • • • • • • • • Z • • • • • • • • • • • • • • • • • • • • R • • • • • • • • • •
-    • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • O • • • • • • • • • • • • • •
-    • • • • • • • • • • • • • • • • • • • • • • • • • • I • • • • • • • • • • • • • • • • • • • • • • •
+    • • • • • • • • • • • • • • • • • • • • • • • • • O • • • • • • • • • • • • • • • • • • • • • • • •
+    • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • U • •
+    • • • • • • • • • • • • • • • • • • F • • • • • • • • • • • • • • • • • • • • E • • • • • • • • • •
+    • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • C • • • • • • • • • • • • • •
+    • • • • • • • • • • • • • • • • • • • • • • • • • • R • • • • • • • • • • • • • • • • • • • • • • •
     • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
-    • • • • • • • • • • • • • • • • • • • • • C • • • • • • • • • • • • • • • • • • • • • • • • • • • •
+    • • • • • • • • • • • • • • • • • • • • • N • • • • • • • • • • • • • • • • • • • • • • • • • • • •
     • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
-    • • • • • • • • • • • • • • • • • • • • • • • • • • B • • • • • • • • • • • • • • • • • • • • • • •
-    • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • N • • • • • • •
+    • • • • • • • • • • • • • • • • • • • • • • • • • • M • • • • • • • • • • • • • • • • • • • • • • •
+    • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • X • • • • • • •
     "
   `);
   expect(output).toMatchInlineSnapshot(`
@@ -69,41 +69,481 @@ test('should generate a random 26 system map', () => {
       System {
         "state": Object {
           "buildPoints": 0,
-          "defenses": 6,
-          "factories": 4,
+          "defenses": 11,
+          "factories": 3,
           "home": false,
           "missiles": 0,
-          "name": "Juliett",
+          "name": "Sierra",
           "owner": "Empire",
           "planets": Array [
             Object {
               "morale": 1,
               "owner": "Empire",
+              "recruit": 4,
+              "troops": 32,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 4,
+              "troops": 68,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 9,
+              "troops": 32,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 3,
+              "troops": 72,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 3,
+              "troops": 53,
+            },
+          ],
+          "position": Array [
+            18,
+            11,
+          ],
+          "production": "warships",
+          "stealthShips": 13,
+          "transports": 0,
+          "troops": 0,
+          "warShips": 10,
+        },
+      },
+      System {
+        "state": Object {
+          "buildPoints": 0,
+          "defenses": 12,
+          "factories": 4,
+          "home": false,
+          "missiles": 0,
+          "name": "Delta",
+          "owner": "Empire",
+          "planets": Array [
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 3,
+              "troops": 27,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 10,
+              "troops": 27,
+            },
+          ],
+          "position": Array [
+            14,
+            2,
+          ],
+          "production": "warships",
+          "stealthShips": 11,
+          "transports": 0,
+          "troops": 0,
+          "warShips": 19,
+        },
+      },
+      System {
+        "state": Object {
+          "buildPoints": 0,
+          "defenses": 12,
+          "factories": 5,
+          "home": false,
+          "missiles": 0,
+          "name": "Zulu",
+          "owner": "Empire",
+          "planets": Array [
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 3,
+              "troops": 77,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 1,
+              "troops": 36,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 1,
+              "troops": 36,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 1,
+              "troops": 21,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 3,
+              "troops": 28,
+            },
+          ],
+          "position": Array [
+            25,
+            11,
+          ],
+          "production": "warships",
+          "stealthShips": 14,
+          "transports": 0,
+          "troops": 0,
+          "warShips": 16,
+        },
+      },
+      System {
+        "state": Object {
+          "buildPoints": 0,
+          "defenses": 23,
+          "factories": 10,
+          "home": true,
+          "missiles": 23,
+          "name": "November",
+          "owner": "Player 3",
+          "planets": Array [
+            Object {
+              "morale": 1,
+              "owner": "Player 3",
+              "recruit": 9,
+              "troops": 39,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 3",
+              "recruit": 2,
+              "troops": 28,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 3",
+              "recruit": 8,
+              "troops": 24,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 3",
+              "recruit": 1,
+              "troops": 73,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 3",
               "recruit": 6,
+              "troops": 49,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 3",
+              "recruit": 4,
+              "troops": 55,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 3",
+              "recruit": 9,
+              "troops": 63,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 3",
+              "recruit": 3,
+              "troops": 41,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 3",
+              "recruit": 4,
+              "troops": 34,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 3",
+              "recruit": 6,
+              "troops": 40,
+            },
+          ],
+          "position": Array [
+            21,
+            26,
+          ],
+          "production": "warships",
+          "stealthShips": 16,
+          "transports": 0,
+          "troops": 0,
+          "warShips": 204,
+        },
+      },
+      System {
+        "state": Object {
+          "buildPoints": 0,
+          "defenses": 10,
+          "factories": 5,
+          "home": false,
+          "missiles": 0,
+          "name": "Golf",
+          "owner": "Empire",
+          "planets": Array [
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 3,
+              "troops": 31,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 4,
+              "troops": 27,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 4,
+              "troops": 35,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 5,
+              "troops": 36,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 4,
+              "troops": 41,
+            },
+          ],
+          "position": Array [
+            36,
+            17,
+          ],
+          "production": "warships",
+          "stealthShips": 12,
+          "transports": 0,
+          "troops": 0,
+          "warShips": 19,
+        },
+      },
+      System {
+        "state": Object {
+          "buildPoints": 0,
+          "defenses": 11,
+          "factories": 3,
+          "home": false,
+          "missiles": 0,
+          "name": "Lima",
+          "owner": "Empire",
+          "planets": Array [
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 4,
+              "troops": 68,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 3,
+              "troops": 75,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 4,
+              "troops": 69,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 3,
+              "troops": 55,
+            },
+          ],
+          "position": Array [
+            29,
+            17,
+          ],
+          "production": "warships",
+          "stealthShips": 11,
+          "transports": 0,
+          "troops": 0,
+          "warShips": 16,
+        },
+      },
+      System {
+        "state": Object {
+          "buildPoints": 0,
+          "defenses": 15,
+          "factories": 4,
+          "home": false,
+          "missiles": 0,
+          "name": "Xray",
+          "owner": "Empire",
+          "planets": Array [
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 2,
+              "troops": 48,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 9,
+              "troops": 65,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 1,
+              "troops": 74,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 6,
+              "troops": 21,
+            },
+          ],
+          "position": Array [
+            42,
+            29,
+          ],
+          "production": "warships",
+          "stealthShips": 14,
+          "transports": 0,
+          "troops": 0,
+          "warShips": 16,
+        },
+      },
+      System {
+        "state": Object {
+          "buildPoints": 0,
+          "defenses": 5,
+          "factories": 5,
+          "home": false,
+          "missiles": 0,
+          "name": "Alfa",
+          "owner": "Empire",
+          "planets": Array [
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 7,
               "troops": 53,
             },
             Object {
               "morale": 1,
               "owner": "Empire",
-              "recruit": 4,
-              "troops": 38,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 4,
-              "troops": 80,
+              "recruit": 7,
+              "troops": 21,
             },
           ],
           "position": Array [
-            25,
-            20,
+            43,
+            19,
           ],
           "production": "warships",
-          "stealthShips": 9,
+          "stealthShips": 5,
           "transports": 0,
           "troops": 0,
-          "warShips": 14,
+          "warShips": 25,
+        },
+      },
+      System {
+        "state": Object {
+          "buildPoints": 0,
+          "defenses": 27,
+          "factories": 10,
+          "home": true,
+          "missiles": 20,
+          "name": "Yankee",
+          "owner": "Player 1",
+          "planets": Array [
+            Object {
+              "morale": 1,
+              "owner": "Player 1",
+              "recruit": 8,
+              "troops": 80,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 1",
+              "recruit": 4,
+              "troops": 35,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 1",
+              "recruit": 6,
+              "troops": 43,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 1",
+              "recruit": 6,
+              "troops": 53,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 1",
+              "recruit": 5,
+              "troops": 33,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 1",
+              "recruit": 4,
+              "troops": 23,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 1",
+              "recruit": 5,
+              "troops": 37,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 1",
+              "recruit": 6,
+              "troops": 60,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 1",
+              "recruit": 1,
+              "troops": 55,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 1",
+              "recruit": 2,
+              "troops": 79,
+            },
+          ],
+          "position": Array [
+            0,
+            1,
+          ],
+          "production": "warships",
+          "stealthShips": 19,
+          "transports": 0,
+          "troops": 0,
+          "warShips": 235,
         },
       },
       System {
@@ -113,7 +553,7 @@ test('should generate a random 26 system map', () => {
           "factories": 2,
           "home": false,
           "missiles": 0,
-          "name": "India",
+          "name": "Quebec",
           "owner": "Empire",
           "planets": Array [
             Object {
@@ -142,8 +582,8 @@ test('should generate a random 26 system map', () => {
             },
           ],
           "position": Array [
-            26,
-            24,
+            10,
+            11,
           ],
           "production": "warships",
           "stealthShips": 14,
@@ -155,105 +595,81 @@ test('should generate a random 26 system map', () => {
       System {
         "state": Object {
           "buildPoints": 0,
-          "defenses": 11,
-          "factories": 5,
+          "defenses": 6,
+          "factories": 4,
           "home": false,
           "missiles": 0,
-          "name": "Alfa",
+          "name": "Papa",
           "owner": "Empire",
           "planets": Array [
             Object {
               "morale": 1,
               "owner": "Empire",
-              "recruit": 2,
-              "troops": 27,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 2,
-              "troops": 68,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 10,
-              "troops": 56,
+              "recruit": 5,
+              "troops": 30,
             },
             Object {
               "morale": 1,
               "owner": "Empire",
               "recruit": 4,
-              "troops": 24,
+              "troops": 37,
             },
             Object {
               "morale": 1,
               "owner": "Empire",
-              "recruit": 6,
+              "recruit": 2,
               "troops": 27,
             },
           ],
           "position": Array [
-            43,
-            19,
+            7,
+            3,
           ],
           "production": "warships",
-          "stealthShips": 8,
+          "stealthShips": 5,
           "transports": 0,
           "troops": 0,
-          "warShips": 14,
+          "warShips": 22,
         },
       },
       System {
         "state": Object {
           "buildPoints": 0,
-          "defenses": 13,
-          "factories": 4,
+          "defenses": 7,
+          "factories": 2,
           "home": false,
           "missiles": 0,
-          "name": "Oscar",
+          "name": "Echo",
           "owner": "Empire",
           "planets": Array [
             Object {
               "morale": 1,
               "owner": "Empire",
-              "recruit": 5,
-              "troops": 42,
+              "recruit": 2,
+              "troops": 63,
             },
             Object {
               "morale": 1,
               "owner": "Empire",
-              "recruit": 4,
-              "troops": 21,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 6,
-              "troops": 42,
+              "recruit": 2,
+              "troops": 31,
             },
             Object {
               "morale": 1,
               "owner": "Empire",
               "recruit": 5,
-              "troops": 77,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 1,
-              "troops": 76,
+              "troops": 37,
             },
           ],
           "position": Array [
-            35,
-            23,
+            39,
+            22,
           ],
           "production": "warships",
-          "stealthShips": 9,
+          "stealthShips": 10,
           "transports": 0,
           "troops": 0,
-          "warShips": 29,
+          "warShips": 27,
         },
       },
       System {
@@ -292,8 +708,8 @@ test('should generate a random 26 system map', () => {
             },
           ],
           "position": Array [
-            10,
-            11,
+            16,
+            17,
           ],
           "production": "warships",
           "stealthShips": 11,
@@ -305,50 +721,114 @@ test('should generate a random 26 system map', () => {
       System {
         "state": Object {
           "buildPoints": 0,
-          "defenses": 6,
-          "factories": 5,
+          "defenses": 15,
+          "factories": 10,
+          "home": true,
+          "missiles": 21,
+          "name": "Tango",
+          "owner": "Player 2",
+          "planets": Array [
+            Object {
+              "morale": 1,
+              "owner": "Player 2",
+              "recruit": 6,
+              "troops": 39,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 2",
+              "recruit": 4,
+              "troops": 65,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 2",
+              "recruit": 5,
+              "troops": 23,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 2",
+              "recruit": 10,
+              "troops": 30,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 2",
+              "recruit": 4,
+              "troops": 71,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 2",
+              "recruit": 4,
+              "troops": 23,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 2",
+              "recruit": 3,
+              "troops": 64,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 2",
+              "recruit": 2,
+              "troops": 41,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 2",
+              "recruit": 6,
+              "troops": 25,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 2",
+              "recruit": 9,
+              "troops": 49,
+            },
+          ],
+          "position": Array [
+            49,
+            16,
+          ],
+          "production": "warships",
+          "stealthShips": 21,
+          "transports": 0,
+          "troops": 0,
+          "warShips": 162,
+        },
+      },
+      System {
+        "state": Object {
+          "buildPoints": 0,
+          "defenses": 10,
+          "factories": 4,
           "home": false,
           "missiles": 0,
-          "name": "Quebec",
+          "name": "Bravo",
           "owner": "Empire",
           "planets": Array [
             Object {
               "morale": 1,
               "owner": "Empire",
-              "recruit": 4,
-              "troops": 47,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 2,
-              "troops": 23,
+              "recruit": 9,
+              "troops": 73,
             },
             Object {
               "morale": 1,
               "owner": "Empire",
               "recruit": 4,
-              "troops": 51,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 1,
-              "troops": 33,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 10,
-              "troops": 24,
+              "troops": 50,
             },
           ],
           "position": Array [
-            31,
-            12,
+            18,
+            4,
           ],
           "production": "warships",
-          "stealthShips": 6,
+          "stealthShips": 14,
           "transports": 0,
           "troops": 0,
           "warShips": 21,
@@ -361,26 +841,38 @@ test('should generate a random 26 system map', () => {
           "factories": 5,
           "home": false,
           "missiles": 0,
-          "name": "Zulu",
+          "name": "Foxtrot",
           "owner": "Empire",
           "planets": Array [
             Object {
               "morale": 1,
               "owner": "Empire",
+              "recruit": 2,
+              "troops": 27,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 2,
+              "troops": 68,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 10,
+              "troops": 56,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
               "recruit": 4,
-              "troops": 76,
+              "troops": 24,
             },
             Object {
               "morale": 1,
               "owner": "Empire",
               "recruit": 6,
-              "troops": 20,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 9,
-              "troops": 31,
+              "troops": 27,
             },
           ],
           "position": Array [
@@ -388,50 +880,92 @@ test('should generate a random 26 system map', () => {
             22,
           ],
           "production": "warships",
-          "stealthShips": 11,
+          "stealthShips": 8,
           "transports": 0,
           "troops": 0,
-          "warShips": 24,
+          "warShips": 14,
         },
       },
       System {
         "state": Object {
           "buildPoints": 0,
-          "defenses": 6,
-          "factories": 4,
-          "home": false,
-          "missiles": 0,
-          "name": "Bravo",
-          "owner": "Empire",
+          "defenses": 15,
+          "factories": 10,
+          "home": true,
+          "missiles": 14,
+          "name": "Victor",
+          "owner": "Player 4",
           "planets": Array [
             Object {
               "morale": 1,
-              "owner": "Empire",
+              "owner": "Player 4",
               "recruit": 5,
-              "troops": 30,
+              "troops": 41,
             },
             Object {
               "morale": 1,
-              "owner": "Empire",
+              "owner": "Player 4",
               "recruit": 4,
-              "troops": 37,
+              "troops": 55,
             },
             Object {
               "morale": 1,
-              "owner": "Empire",
+              "owner": "Player 4",
+              "recruit": 4,
+              "troops": 28,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 4",
+              "recruit": 4,
+              "troops": 53,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 4",
               "recruit": 2,
-              "troops": 27,
+              "troops": 77,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 4",
+              "recruit": 10,
+              "troops": 55,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 4",
+              "recruit": 4,
+              "troops": 58,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 4",
+              "recruit": 4,
+              "troops": 38,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 4",
+              "recruit": 5,
+              "troops": 46,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Player 4",
+              "recruit": 10,
+              "troops": 37,
             },
           ],
           "position": Array [
-            26,
-            28,
+            30,
+            7,
           ],
           "production": "warships",
-          "stealthShips": 5,
+          "stealthShips": 15,
           "transports": 0,
           "troops": 0,
-          "warShips": 22,
+          "warShips": 193,
         },
       },
       System {
@@ -441,7 +975,7 @@ test('should generate a random 26 system map', () => {
           "factories": 4,
           "home": false,
           "missiles": 0,
-          "name": "Echo",
+          "name": "Oscar",
           "owner": "Empire",
           "planets": Array [
             Object {
@@ -470,8 +1004,8 @@ test('should generate a random 26 system map', () => {
             },
           ],
           "position": Array [
-            29,
-            17,
+            25,
+            20,
           ],
           "production": "warships",
           "stealthShips": 10,
@@ -483,69 +1017,53 @@ test('should generate a random 26 system map', () => {
       System {
         "state": Object {
           "buildPoints": 0,
-          "defenses": 12,
+          "defenses": 6,
           "factories": 4,
           "home": false,
           "missiles": 0,
-          "name": "Mike",
+          "name": "Whiskey",
           "owner": "Empire",
           "planets": Array [
             Object {
               "morale": 1,
               "owner": "Empire",
-              "recruit": 3,
-              "troops": 27,
+              "recruit": 2,
+              "troops": 22,
             },
             Object {
               "morale": 1,
               "owner": "Empire",
               "recruit": 10,
-              "troops": 27,
-            },
-          ],
-          "position": Array [
-            36,
-            17,
-          ],
-          "production": "warships",
-          "stealthShips": 11,
-          "transports": 0,
-          "troops": 0,
-          "warShips": 19,
-        },
-      },
-      System {
-        "state": Object {
-          "buildPoints": 0,
-          "defenses": 10,
-          "factories": 4,
-          "home": false,
-          "missiles": 0,
-          "name": "November",
-          "owner": "Empire",
-          "planets": Array [
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 9,
-              "troops": 73,
+              "troops": 53,
             },
             Object {
               "morale": 1,
               "owner": "Empire",
-              "recruit": 4,
-              "troops": 50,
+              "recruit": 5,
+              "troops": 29,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 6,
+              "troops": 49,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 6,
+              "troops": 45,
             },
           ],
           "position": Array [
-            42,
-            29,
+            15,
+            8,
           ],
           "production": "warships",
-          "stealthShips": 14,
+          "stealthShips": 13,
           "transports": 0,
           "troops": 0,
-          "warShips": 21,
+          "warShips": 17,
         },
       },
       System {
@@ -555,7 +1073,7 @@ test('should generate a random 26 system map', () => {
           "factories": 2,
           "home": false,
           "missiles": 0,
-          "name": "Romeo",
+          "name": "Mike",
           "owner": "Empire",
           "planets": Array [
             Object {
@@ -590,8 +1108,8 @@ test('should generate a random 26 system map', () => {
             },
           ],
           "position": Array [
-            39,
-            22,
+            26,
+            28,
           ],
           "production": "warships",
           "stealthShips": 10,
@@ -603,45 +1121,11 @@ test('should generate a random 26 system map', () => {
       System {
         "state": Object {
           "buildPoints": 0,
-          "defenses": 7,
-          "factories": 2,
-          "home": false,
-          "missiles": 0,
-          "name": "Golf",
-          "owner": "Empire",
-          "planets": Array [
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 5,
-              "troops": 63,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 6,
-              "troops": 79,
-            },
-          ],
-          "position": Array [
-            18,
-            4,
-          ],
-          "production": "warships",
-          "stealthShips": 13,
-          "transports": 0,
-          "troops": 0,
-          "warShips": 23,
-        },
-      },
-      System {
-        "state": Object {
-          "buildPoints": 0,
           "defenses": 12,
           "factories": 3,
           "home": false,
           "missiles": 0,
-          "name": "Xray",
+          "name": "Juliett",
           "owner": "Empire",
           "planets": Array [
             Object {
@@ -658,8 +1142,8 @@ test('should generate a random 26 system map', () => {
             },
           ],
           "position": Array [
-            47,
-            21,
+            11,
+            5,
           ],
           "production": "warships",
           "stealthShips": 11,
@@ -671,114 +1155,50 @@ test('should generate a random 26 system map', () => {
       System {
         "state": Object {
           "buildPoints": 0,
-          "defenses": 21,
-          "factories": 10,
-          "home": true,
-          "missiles": 15,
-          "name": "Charlie",
-          "owner": "Player 3",
-          "planets": Array [
-            Object {
-              "morale": 1,
-              "owner": "Player 3",
-              "recruit": 3,
-              "troops": 45,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 3",
-              "recruit": 1,
-              "troops": 38,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 3",
-              "recruit": 5,
-              "troops": 41,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 3",
-              "recruit": 4,
-              "troops": 55,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 3",
-              "recruit": 4,
-              "troops": 28,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 3",
-              "recruit": 4,
-              "troops": 53,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 3",
-              "recruit": 2,
-              "troops": 77,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 3",
-              "recruit": 10,
-              "troops": 55,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 3",
-              "recruit": 4,
-              "troops": 58,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 3",
-              "recruit": 4,
-              "troops": 38,
-            },
-          ],
-          "position": Array [
-            21,
-            26,
-          ],
-          "production": "warships",
-          "stealthShips": 31,
-          "transports": 0,
-          "troops": 0,
-          "warShips": 179,
-        },
-      },
-      System {
-        "state": Object {
-          "buildPoints": 0,
-          "defenses": 8,
-          "factories": 2,
+          "defenses": 6,
+          "factories": 5,
           "home": false,
           "missiles": 0,
-          "name": "Uniform",
+          "name": "Romeo",
           "owner": "Empire",
           "planets": Array [
             Object {
               "morale": 1,
               "owner": "Empire",
-              "recruit": 6,
-              "troops": 79,
+              "recruit": 4,
+              "troops": 47,
             },
             Object {
               "morale": 1,
               "owner": "Empire",
-              "recruit": 5,
-              "troops": 48,
+              "recruit": 2,
+              "troops": 23,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 4,
+              "troops": 51,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 1,
+              "troops": 33,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 10,
+              "troops": 24,
             },
           ],
           "position": Array [
-            11,
-            5,
+            26,
+            24,
           ],
           "production": "warships",
-          "stealthShips": 11,
+          "stealthShips": 6,
           "transports": 0,
           "troops": 0,
           "warShips": 21,
@@ -787,217 +1207,41 @@ test('should generate a random 26 system map', () => {
       System {
         "state": Object {
           "buildPoints": 0,
-          "defenses": 7,
-          "factories": 3,
+          "defenses": 11,
+          "factories": 5,
           "home": false,
           "missiles": 0,
-          "name": "Papa",
+          "name": "Charlie",
           "owner": "Empire",
           "planets": Array [
             Object {
               "morale": 1,
               "owner": "Empire",
-              "recruit": 9,
-              "troops": 30,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Empire",
               "recruit": 4,
-              "troops": 68,
+              "troops": 76,
             },
             Object {
               "morale": 1,
               "owner": "Empire",
-              "recruit": 2,
-              "troops": 56,
+              "recruit": 6,
+              "troops": 20,
             },
             Object {
               "morale": 1,
               "owner": "Empire",
-              "recruit": 1,
-              "troops": 24,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 5,
-              "troops": 45,
-            },
-          ],
-          "position": Array [
-            7,
-            3,
-          ],
-          "production": "warships",
-          "stealthShips": 15,
-          "transports": 0,
-          "troops": 0,
-          "warShips": 13,
-        },
-      },
-      System {
-        "state": Object {
-          "buildPoints": 0,
-          "defenses": 23,
-          "factories": 10,
-          "home": true,
-          "missiles": 14,
-          "name": "Tango",
-          "owner": "Player 4",
-          "planets": Array [
-            Object {
-              "morale": 1,
-              "owner": "Player 4",
-              "recruit": 10,
-              "troops": 42,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 4",
               "recruit": 9,
               "troops": 31,
             },
-            Object {
-              "morale": 1,
-              "owner": "Player 4",
-              "recruit": 4,
-              "troops": 59,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 4",
-              "recruit": 3,
-              "troops": 57,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 4",
-              "recruit": 8,
-              "troops": 74,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 4",
-              "recruit": 2,
-              "troops": 51,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 4",
-              "recruit": 9,
-              "troops": 21,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 4",
-              "recruit": 4,
-              "troops": 73,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 4",
-              "recruit": 4,
-              "troops": 58,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 4",
-              "recruit": 2,
-              "troops": 26,
-            },
           ],
           "position": Array [
-            30,
-            7,
+            35,
+            23,
           ],
           "production": "warships",
-          "stealthShips": 35,
+          "stealthShips": 11,
           "transports": 0,
           "troops": 0,
-          "warShips": 194,
-        },
-      },
-      System {
-        "state": Object {
-          "buildPoints": 0,
-          "defenses": 25,
-          "factories": 10,
-          "home": true,
-          "missiles": 17,
-          "name": "Whiskey",
-          "owner": "Player 2",
-          "planets": Array [
-            Object {
-              "morale": 1,
-              "owner": "Player 2",
-              "recruit": 5,
-              "troops": 53,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 2",
-              "recruit": 2,
-              "troops": 70,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 2",
-              "recruit": 9,
-              "troops": 39,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 2",
-              "recruit": 2,
-              "troops": 28,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 2",
-              "recruit": 8,
-              "troops": 24,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 2",
-              "recruit": 1,
-              "troops": 73,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 2",
-              "recruit": 6,
-              "troops": 49,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 2",
-              "recruit": 4,
-              "troops": 55,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 2",
-              "recruit": 9,
-              "troops": 63,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 2",
-              "recruit": 3,
-              "troops": 41,
-            },
-          ],
-          "position": Array [
-            49,
-            16,
-          ],
-          "production": "warships",
-          "stealthShips": 34,
-          "transports": 0,
-          "troops": 0,
-          "warShips": 167,
+          "warShips": 24,
         },
       },
       System {
@@ -1007,7 +1251,7 @@ test('should generate a random 26 system map', () => {
           "factories": 2,
           "home": false,
           "missiles": 0,
-          "name": "Kilo",
+          "name": "India",
           "owner": "Empire",
           "planets": Array [
             Object {
@@ -1042,8 +1286,8 @@ test('should generate a random 26 system map', () => {
             },
           ],
           "position": Array [
-            18,
-            11,
+            31,
+            12,
           ],
           "production": "warships",
           "stealthShips": 14,
@@ -1055,82 +1299,30 @@ test('should generate a random 26 system map', () => {
       System {
         "state": Object {
           "buildPoints": 0,
-          "defenses": 7,
+          "defenses": 6,
           "factories": 2,
           "home": false,
           "missiles": 0,
-          "name": "Foxtrot",
+          "name": "Kilo",
           "owner": "Empire",
           "planets": Array [
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 2,
-              "troops": 63,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 2,
-              "troops": 31,
-            },
             Object {
               "morale": 1,
               "owner": "Empire",
               "recruit": 5,
-              "troops": 37,
-            },
-          ],
-          "position": Array [
-            14,
-            2,
-          ],
-          "production": "warships",
-          "stealthShips": 10,
-          "transports": 0,
-          "troops": 0,
-          "warShips": 27,
-        },
-      },
-      System {
-        "state": Object {
-          "buildPoints": 0,
-          "defenses": 12,
-          "factories": 5,
-          "home": false,
-          "missiles": 0,
-          "name": "Lima",
-          "owner": "Empire",
-          "planets": Array [
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 3,
-              "troops": 77,
+              "troops": 30,
             },
             Object {
               "morale": 1,
               "owner": "Empire",
-              "recruit": 1,
-              "troops": 36,
+              "recruit": 4,
+              "troops": 51,
             },
             Object {
               "morale": 1,
               "owner": "Empire",
-              "recruit": 1,
-              "troops": 36,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 1,
-              "troops": 21,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 3,
-              "troops": 28,
+              "recruit": 4,
+              "troops": 59,
             },
           ],
           "position": Array [
@@ -1138,224 +1330,62 @@ test('should generate a random 26 system map', () => {
             17,
           ],
           "production": "warships",
-          "stealthShips": 14,
-          "transports": 0,
-          "troops": 0,
-          "warShips": 16,
-        },
-      },
-      System {
-        "state": Object {
-          "buildPoints": 0,
-          "defenses": 11,
-          "factories": 3,
-          "home": false,
-          "missiles": 0,
-          "name": "Sierra",
-          "owner": "Empire",
-          "planets": Array [
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 4,
-              "troops": 68,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 3,
-              "troops": 75,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 4,
-              "troops": 69,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 3,
-              "troops": 55,
-            },
-          ],
-          "position": Array [
-            25,
-            11,
-          ],
-          "production": "warships",
-          "stealthShips": 11,
-          "transports": 0,
-          "troops": 0,
-          "warShips": 16,
-        },
-      },
-      System {
-        "state": Object {
-          "buildPoints": 0,
-          "defenses": 10,
-          "factories": 5,
-          "home": false,
-          "missiles": 0,
-          "name": "Victor",
-          "owner": "Empire",
-          "planets": Array [
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 3,
-              "troops": 31,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 4,
-              "troops": 27,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 4,
-              "troops": 35,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 5,
-              "troops": 36,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 4,
-              "troops": 41,
-            },
-          ],
-          "position": Array [
-            16,
-            17,
-          ],
-          "production": "warships",
-          "stealthShips": 12,
-          "transports": 0,
-          "troops": 0,
-          "warShips": 19,
-        },
-      },
-      System {
-        "state": Object {
-          "buildPoints": 0,
-          "defenses": 10,
-          "factories": 10,
-          "home": true,
-          "missiles": 25,
-          "name": "Delta",
-          "owner": "Player 1",
-          "planets": Array [
-            Object {
-              "morale": 1,
-              "owner": "Player 1",
-              "recruit": 3,
-              "troops": 21,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 1",
-              "recruit": 4,
-              "troops": 64,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 1",
-              "recruit": 6,
-              "troops": 39,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 1",
-              "recruit": 4,
-              "troops": 65,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 1",
-              "recruit": 5,
-              "troops": 23,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 1",
-              "recruit": 10,
-              "troops": 30,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 1",
-              "recruit": 4,
-              "troops": 71,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 1",
-              "recruit": 4,
-              "troops": 23,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 1",
-              "recruit": 3,
-              "troops": 64,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Player 1",
-              "recruit": 2,
-              "troops": 41,
-            },
-          ],
-          "position": Array [
-            0,
-            1,
-          ],
-          "production": "warships",
-          "stealthShips": 16,
-          "transports": 0,
-          "troops": 0,
-          "warShips": 207,
-        },
-      },
-      System {
-        "state": Object {
-          "buildPoints": 0,
-          "defenses": 5,
-          "factories": 5,
-          "home": false,
-          "missiles": 0,
-          "name": "Yankee",
-          "owner": "Empire",
-          "planets": Array [
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 7,
-              "troops": 53,
-            },
-            Object {
-              "morale": 1,
-              "owner": "Empire",
-              "recruit": 7,
-              "troops": 21,
-            },
-          ],
-          "position": Array [
-            15,
-            8,
-          ],
-          "production": "warships",
           "stealthShips": 5,
           "transports": 0,
           "troops": 0,
-          "warShips": 25,
+          "warShips": 10,
+        },
+      },
+      System {
+        "state": Object {
+          "buildPoints": 0,
+          "defenses": 13,
+          "factories": 4,
+          "home": false,
+          "missiles": 0,
+          "name": "Uniform",
+          "owner": "Empire",
+          "planets": Array [
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 5,
+              "troops": 42,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 4,
+              "troops": 21,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 6,
+              "troops": 42,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 5,
+              "troops": 77,
+            },
+            Object {
+              "morale": 1,
+              "owner": "Empire",
+              "recruit": 1,
+              "troops": 76,
+            },
+          ],
+          "position": Array [
+            47,
+            21,
+          ],
+          "production": "warships",
+          "stealthShips": 9,
+          "transports": 0,
+          "troops": 0,
+          "warShips": 29,
         },
       },
     ]

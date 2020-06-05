@@ -27,7 +27,6 @@ const args = minimist(process.argv, {
     'max-game-length': 'l',
     'display-level': 'v',
     'enable-novice-mode': 'n',
-    players: 'p',
   },
   boolean: [
     'enable-novice-mode',
@@ -43,6 +42,7 @@ const args = minimist(process.argv, {
     'display-level': 'combat-and-events',
     'enable-novice-mode': false,
     players: 4,
+    sectors: 26,
     'system-defenses': true,
     'random-events': true,
     'empire-builds': true,
@@ -64,12 +64,19 @@ const settings: Settings = {
 
 const seed = args['seed'] || new Chance().hash({ length: 15 });
 const chance = new Chance(seed);
-const sampler = new PoissonDiskSampler([50, 30], 4, undefined, chance);
+const sectors = args['sectors'];
+const ratio = sectors / 26;
+const sampler = new PoissonDiskSampler(
+  [Math.round(50 * ratio), Math.round(30 * ratio)],
+  4,
+  undefined,
+  chance,
+);
 const players = new Array(args['players'])
   .fill('')
   .map((_, i) => `PLAYER:${i + 1}`);
 const map = new RandomMap(sampler, chance);
-const output = map.generateMap(settings, players);
+const output = map.generateMap(settings, players, args['sectors']);
 
 const visualize =
   output

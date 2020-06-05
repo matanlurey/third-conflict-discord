@@ -39,7 +39,7 @@ export abstract class Generator {
   abstract generateMap(settings: Settings, players: string[]): System[];
 
   protected fetchNames(amount: number): string[] {
-    return this.chance.pickset(this.names, amount);
+    return this.names.slice(0, amount);
   }
 
   protected createEmpire(
@@ -141,6 +141,29 @@ export abstract class Generator {
       recruit,
       troops,
     };
+  }
+
+  protected collatePositions(systems: SystemState[]): SystemState[] {
+    let minX = Number.MAX_SAFE_INTEGER;
+    let minY = Number.MAX_SAFE_INTEGER;
+    for (const system of systems) {
+      const [x, y] = system.position;
+      if (x < minX) {
+        minX = x;
+      }
+      if (y < minY) {
+        minY = y;
+      }
+    }
+    return systems.map((system) => {
+      let [x, y] = system.position;
+      x -= minX;
+      y -= minY;
+      return {
+        ...system,
+        position: [x, y],
+      };
+    });
   }
 
   protected pickFarthestSystem(systems: SystemState[]): number {
