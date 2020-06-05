@@ -32,7 +32,6 @@ test('should generate a random 26 system map', () => {
     Player 2: Tango
     Player 3: November
     Player 4: Victor
-    • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
     Y • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
     • • • • • • • • • • • • • • D • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
     • • • • • • • P • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • • •
@@ -109,7 +108,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             18,
-            11,
+            10,
           ],
           "production": "warships",
           "stealthShips": 13,
@@ -143,7 +142,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             14,
-            2,
+            1,
           ],
           "production": "warships",
           "stealthShips": 11,
@@ -195,7 +194,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             25,
-            11,
+            10,
           ],
           "production": "warships",
           "stealthShips": 14,
@@ -277,7 +276,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             21,
-            26,
+            25,
           ],
           "production": "warships",
           "stealthShips": 16,
@@ -329,7 +328,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             36,
-            17,
+            16,
           ],
           "production": "warships",
           "stealthShips": 12,
@@ -375,7 +374,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             29,
-            17,
+            16,
           ],
           "production": "warships",
           "stealthShips": 11,
@@ -421,7 +420,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             42,
-            29,
+            28,
           ],
           "production": "warships",
           "stealthShips": 14,
@@ -455,7 +454,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             43,
-            19,
+            18,
           ],
           "production": "warships",
           "stealthShips": 5,
@@ -537,7 +536,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             0,
-            1,
+            0,
           ],
           "production": "warships",
           "stealthShips": 19,
@@ -583,7 +582,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             10,
-            11,
+            10,
           ],
           "production": "warships",
           "stealthShips": 14,
@@ -623,7 +622,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             7,
-            3,
+            2,
           ],
           "production": "warships",
           "stealthShips": 5,
@@ -663,7 +662,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             39,
-            22,
+            21,
           ],
           "production": "warships",
           "stealthShips": 10,
@@ -709,7 +708,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             16,
-            17,
+            16,
           ],
           "production": "warships",
           "stealthShips": 11,
@@ -791,7 +790,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             49,
-            16,
+            15,
           ],
           "production": "warships",
           "stealthShips": 21,
@@ -825,7 +824,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             18,
-            4,
+            3,
           ],
           "production": "warships",
           "stealthShips": 14,
@@ -877,7 +876,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             18,
-            22,
+            21,
           ],
           "production": "warships",
           "stealthShips": 8,
@@ -959,7 +958,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             30,
-            7,
+            6,
           ],
           "production": "warships",
           "stealthShips": 15,
@@ -1005,7 +1004,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             25,
-            20,
+            19,
           ],
           "production": "warships",
           "stealthShips": 10,
@@ -1057,7 +1056,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             15,
-            8,
+            7,
           ],
           "production": "warships",
           "stealthShips": 13,
@@ -1109,7 +1108,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             26,
-            28,
+            27,
           ],
           "production": "warships",
           "stealthShips": 10,
@@ -1143,7 +1142,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             11,
-            5,
+            4,
           ],
           "production": "warships",
           "stealthShips": 11,
@@ -1195,7 +1194,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             26,
-            24,
+            23,
           ],
           "production": "warships",
           "stealthShips": 6,
@@ -1235,7 +1234,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             35,
-            23,
+            22,
           ],
           "production": "warships",
           "stealthShips": 11,
@@ -1287,7 +1286,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             31,
-            12,
+            11,
           ],
           "production": "warships",
           "stealthShips": 14,
@@ -1327,7 +1326,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             22,
-            17,
+            16,
           ],
           "production": "warships",
           "stealthShips": 5,
@@ -1379,7 +1378,7 @@ test('should generate a random 26 system map', () => {
           ],
           "position": Array [
             47,
-            21,
+            20,
           ],
           "production": "warships",
           "stealthShips": 9,
