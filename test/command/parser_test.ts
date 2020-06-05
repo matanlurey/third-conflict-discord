@@ -106,12 +106,16 @@ test('should match an option [negatable]', () => {
 });
 
 test('should match an alias [positional]', () => {
-  const result = parse('foo bar', [
-    new Command('foo', 'A command.', [new Option('name', 0)]),
+  const result = parse('foo bar baz', [
+    new Command('foo', 'A command.', [
+      new Option('name', 0),
+      new Option('description', 1),
+    ]),
   ]);
   expect(result.matched?.name).toEqual('foo');
   expect(result.options).toEqual({
     name: 'bar',
+    description: 'baz',
   });
   expect(result.error).toBeUndefined();
 });

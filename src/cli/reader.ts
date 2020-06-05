@@ -14,7 +14,31 @@ export class ArgumentError extends Error {
     public readonly value: unknown,
     public readonly reason: string,
   ) {
-    super(`Invalid argument "${value}" for ${name}: ${reason}.`);
+    super(`Invalid argument "${value}" for ${name}: ${reason}`);
+  }
+}
+
+export class GameStateError extends Error {}
+
+export class InvalidPlayerError extends GameStateError {
+  constructor(public readonly userId: string) {
+    super(`Invalid player: "${userId}" is not in the game.`);
+  }
+}
+
+export class InvalidSystem extends GameStateError {
+  constructor(public readonly system: string) {
+    super(`Invalid system: "${system}" is not in the game.`);
+  }
+}
+
+export class InvalidOwnerError extends GameStateError {
+  constructor(public readonly attempt: Player, public readonly target: System) {
+    super(
+      '' +
+        `Invalid player: "${attempt.state.name}" does not control system ` +
+        `"${target.state.name}".`,
+    );
   }
 }
 
@@ -29,7 +53,7 @@ export class OptionReader {
     return value;
   }
 
-  private requireNumber(name: string): number {
+  requireNumber(name: string): number {
     const value = this.options[name];
     if (typeof value !== 'number' || Number.isNaN(value)) {
       throw new ArgumentError(name, value, 'Not a number.');
@@ -92,7 +116,7 @@ export class CliReader {
    */
   read(user: string, args: Parsed): void {
     if (args.error) {
-      // TODO: Message an error.
+      throw new Error(`Invalid: ${args.error}.`);
     }
     if (args.matched) {
       return this.process(
@@ -117,11 +141,11 @@ export class CliReader {
     }
     if (options) {
       if (options.ownedBy && system.owner.userId !== options.ownedBy) {
-        throw new ArgumentError(
-          name,
-          system.owner.name,
-          'Not controlled by active player.',
-        );
+        const player = this.game.player(options.ownedBy);
+        if (!player) {
+          throw new InvalidPlayerError(options.ownedBy);
+        }
+        throw new InvalidOwnerError(player, system);
       }
     }
     return system;
@@ -130,7 +154,7 @@ export class CliReader {
   private requireSystem(name: string, options?: { ownedBy?: string }): System {
     const system = this.optionalSystem(name, options);
     if (!system) {
-      throw new ArgumentError(name, '<Invalid>', 'Not a valid system.');
+      throw new InvalidSystem(name);
     }
     return system;
   }
@@ -138,11 +162,7 @@ export class CliReader {
   private process(user: string, command: string, options: OptionReader): void {
     const player = this.game.player(user);
     if (!player) {
-      throw new ArgumentError(
-        '<Player>',
-        '<Not Found>',
-        'You are not in the game.',
-      );
+      throw new InvalidPlayerError(user);
     }
     switch (command) {
       case 'attack':
@@ -173,10 +193,8 @@ export class CliReader {
         : this.game.closest(user, target);
     })();
     if (!source) {
-      throw new ArgumentError(
-        target.state.name,
-        '<Not Found>',
-        'Could not find a friendly system nearby.',
+      throw new GameStateError(
+        `Could not find a friendly system of "${user.state.name}".`,
       );
     }
     const [
@@ -192,7 +210,7 @@ export class CliReader {
       options.requireInteger('transports'),
       options.requireInteger('missiles'),
       options.requireInteger('troops'),
-      options.requireInteger('buildPoints'),
+      options.requireInteger('points'),
     ];
     return this.handler.attack(target, source, {
       warShips,
@@ -205,7 +223,9 @@ export class CliReader {
   }
 
   private processBuild(user: Player, options: OptionReader): void {
-    const source = this.requireSystem('source', { ownedBy: user.state.userId });
+    const source = this.requireSystem(options.requireString('source'), {
+      ownedBy: user.state.userId,
+    });
     const produce = options.requireString('unit');
     return this.handler.build(source, produce as Production);
   }
@@ -219,10 +239,8 @@ export class CliReader {
         : this.game.closest(user, target);
     })();
     if (!source) {
-      throw new ArgumentError(
-        target.state.name,
-        '<Not Found>',
-        'Could not find a friendly system nearby.',
+      throw new GameStateError(
+        `Could not find a friendly system of "${user.state.name}".`,
       );
     }
     return this.handler.scout(target, source);
@@ -230,15 +248,7 @@ export class CliReader {
 
   private processScan(user: Player, options: OptionReader): void {
     const target = this.requireSystem(options.requireString('target'));
-    const player = this.game.player(user.state.userId);
-    if (!player) {
-      throw new ArgumentError(
-        '<Player>',
-        '<Not Found>',
-        'You are not in the game.',
-      );
-    }
-    return this.handler.scan(player, target);
+    return this.handler.scan(user, target);
   }
 }
 

@@ -36,10 +36,15 @@ function advancedUnits(): Option[] {
   ];
 }
 
-export default function (options: {
-  enableNoviceMode: boolean;
-  enableSystemDefenses: boolean;
-}): Command[] {
+export default function (
+  options: {
+    enableNoviceMode: boolean;
+    enableSystemDefenses: boolean;
+  } = {
+    enableNoviceMode: false,
+    enableSystemDefenses: true,
+  },
+): Command[] {
   if (options.enableNoviceMode) {
     options.enableSystemDefenses = false;
   }

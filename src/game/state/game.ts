@@ -68,4 +68,8 @@ export class Game {
       }
     }
   }
+
+  get systems(): System[] {
+    return this.state.systems.map((s) => new System(s));
+  }
 }
