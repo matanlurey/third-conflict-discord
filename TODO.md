@@ -15,6 +15,9 @@
 - [x] Add scout.
 - [x] Add summary.
 
+- [ ] Random combat ratings at start.
+- [ ] Change combat ratings after combat.
+
 - [x] End of turn: Increment.
 - [x] End of turn: Movement.
 - [ ] End of turn: Combat.

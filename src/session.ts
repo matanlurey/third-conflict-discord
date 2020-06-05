@@ -11,7 +11,7 @@ import {
 import { Command } from './command/config';
 import { parse } from './command/parser';
 import commands from './commands';
-import { Dispatch } from './game/state/fleet';
+import { Fleet } from './game/state/fleet';
 import { Game } from './game/state/game';
 import { Player } from './game/state/player';
 import { Production, System } from './game/state/system';
@@ -66,14 +66,15 @@ export class Session implements CliHandler {
     }
   }
 
-  attack(target: System, source: System, fleet: Dispatch): void {
-    source.attack(target, fleet, 'conquest');
+  attack(source: System, target: System, fleet: Fleet): void {
+    const dispatch = source.attack(source, target, fleet, 'conquest');
+    this.game.state.fleets.push(dispatch.state);
     this.reply(
       this.ui.sentAttack(
         source,
         target,
-        fleet.eta(this.game.state.settings.shipSpeedATurn),
-        fleet,
+        dispatch.eta(this.game.state.settings.shipSpeedATurn),
+        dispatch,
       ),
     );
   }

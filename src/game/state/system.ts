@@ -1,4 +1,4 @@
-import { Dispatch, Fleet, FleetState, Scout } from './fleet';
+import { Combatable, Dispatch, Fleet, FleetState, Scout } from './fleet';
 import { Point, PointState } from './point';
 
 /**
@@ -22,8 +22,49 @@ export type Mission = 'conquest' | 'resource-raid' | 'probe' | 'move';
 /**
  * Represents a system within the game session.
  */
-export class System {
-  constructor(public readonly state: SystemState) {}
+export class System extends Combatable {
+  static create(state: Partial<SystemState>): System {
+    return new System({
+      buildPoints: state.buildPoints || 0,
+      missiles: state.missiles || 0,
+      stealthShips: state.stealthShips || 0,
+      transports: state.transports || 0,
+      troops: state.troops || 0,
+      warShips: state.warShips || 0,
+      defenses: state.defenses || 0,
+      factories: state.factories || 0,
+      home: state.home || false,
+      name:
+        state.name ||
+        ((): never => {
+          throw new Error(`Name required.`);
+        })(),
+      owner:
+        state.owner ||
+        ((): never => {
+          throw new Error(`Owner required.`);
+        })(),
+      planets: state.planets || [],
+      position:
+        state.position ||
+        ((): never => {
+          throw new Error(`Position required.`);
+        })(),
+      production: 'warships',
+    });
+  }
+
+  constructor(public readonly state: SystemState) {
+    super();
+  }
+
+  get capableOfDefensiveMissileFire(): boolean {
+    return this.state.defenses >= 50;
+  }
+
+  get isEliminated(): boolean {
+    return super.isEliminated && this.state.defenses === 0;
+  }
 
   /**
    * Position of the system.
@@ -45,11 +86,26 @@ export class System {
    * Sends an attack mission to the target system.
    *
    * @param target
+   * @param source
    * @param units
    * @param mission
    */
-  attack(target: System, units: Fleet, mission: Mission): Dispatch {
-    throw `UNIMPLEMENTED: ${target} ${units} ${mission}`;
+  attack(
+    source: System,
+    target: System,
+    units: Fleet,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    mission: Mission,
+  ): Dispatch {
+    const move = source.fork(units.state);
+    return new Dispatch({
+      ...move,
+      owner: source.state.owner,
+      source: source.state.name,
+      distance: source.position.distance(target.position),
+      mission: 'conquest',
+      target: target.state.name,
+    });
   }
 
   /**

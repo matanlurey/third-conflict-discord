@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { Parsed } from '../command/parser';
-import { Dispatch } from '../game/state/fleet';
+import { Fleet } from '../game/state/fleet';
 import { Player } from '../game/state/player';
 import { Production, System } from '../game/state/system';
 
@@ -54,8 +54,11 @@ export class OptionReader {
     return value;
   }
 
-  requireNumber(name: string): number {
+  requireNumber(name: string, defaultTo?: number): number {
     const value = this.options[name];
+    if (value === undefined && defaultTo !== undefined) {
+      return defaultTo;
+    }
     if (typeof value !== 'number' || Number.isNaN(value)) {
       throw new ArgumentError(name, value, 'Not a number.');
     }
@@ -63,10 +66,7 @@ export class OptionReader {
   }
 
   requireInteger(name: string, defaultTo?: number): number {
-    const value = this.requireNumber(name);
-    if (defaultTo !== undefined && value === undefined) {
-      return defaultTo;
-    }
+    const value = this.requireNumber(name, defaultTo);
     if (!Number.isSafeInteger(value)) {
       throw new ArgumentError(name, value, 'Not an integer.');
     }
@@ -207,27 +207,22 @@ export class CliReader {
       buildPoints,
     ] = [
       options.requireInteger('warships'),
-      options.requireInteger('stealthships'),
+      options.requireInteger('stealthships', 0),
       options.requireInteger('transports'),
-      options.requireInteger('missiles'),
+      options.requireInteger('missiles', 0),
       options.requireInteger('troops'),
       options.requireInteger('points'),
     ];
     return this.handler.attack(
-      target,
       source,
-      new Dispatch({
+      target,
+      new Fleet({
         warShips,
         stealthShips,
         transports,
         missiles,
         troops,
         buildPoints,
-        distance: source.position.distance(target.position),
-        mission: 'conquest',
-        owner: user.state.userId,
-        source: source.state.name,
-        target: target.state.name,
       }),
     );
   }
@@ -296,11 +291,11 @@ export interface CliHandler {
   /**
    * Issues an attack command.
    *
-   * @param target
    * @param source
+   * @param target
    * @param fleet
    */
-  attack(target: System, source: System, fleet: Dispatch): void;
+  attack(source: System, target: System, fleet: Fleet): void;
 
   /**
    * Issues a build command.

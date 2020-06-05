@@ -1,4 +1,5 @@
 import { Mixin } from 'ts-mixer';
+import { GameStateError } from '../../cli/reader';
 
 export interface MoveState {
   /**
@@ -128,8 +129,22 @@ export interface FleetState {
   buildPoints: number;
 }
 
-export class Fleet {
-  constructor(readonly state: FleetState) {}
+export abstract class Combatable {
+  protected abstract get state(): FleetState;
+
+  destroyUndefendedCargo(): void {
+    if (this.isEliminated) {
+      this.state.troops = this.state.buildPoints = this.state.transports = 0;
+    }
+  }
+
+  saveDamagedStealthShips(): void {
+    this.state.stealthShips = Math.ceil(this.state.stealthShips);
+  }
+
+  get isEliminated(): boolean {
+    return this.state.stealthShips === 0 && this.state.warShips === 0;
+  }
 
   /**
    * Adds unit to the fleet.
@@ -139,21 +154,39 @@ export class Fleet {
   add(units: Partial<FleetState>): void {
     const state = this.state;
     if (units.buildPoints) {
+      if (state.buildPoints + units.buildPoints < 0) {
+        throw new GameStateError(`Would make buildPoints < 0`);
+      }
       state.buildPoints += units.buildPoints;
     }
     if (units.missiles) {
+      if (state.missiles + units.missiles < 0) {
+        throw new GameStateError(`Would make missiles < 0`);
+      }
       state.missiles += units.missiles;
     }
     if (units.stealthShips) {
+      if (state.stealthShips + units.stealthShips < 0) {
+        throw new GameStateError(`Would make stealthShips < 0`);
+      }
       state.stealthShips += units.stealthShips;
     }
     if (units.transports) {
+      if (state.transports + units.transports < 0) {
+        throw new GameStateError(`Would make transports < 0`);
+      }
       state.transports += units.transports;
     }
     if (units.troops) {
+      if (state.troops + units.troops < 0) {
+        throw new GameStateError(`Would make troops < 0`);
+      }
       state.troops += units.troops;
     }
     if (units.warShips) {
+      if (state.warShips + units.warShips < 0) {
+        throw new GameStateError(`Would make warShips < 0`);
+      }
       state.warShips += units.warShips;
     }
   }
@@ -164,7 +197,6 @@ export class Fleet {
    * @param units
    */
   fork(units: Partial<FleetState>): FleetState {
-    const state = this.state;
     const result = {
       buildPoints: 0,
       missiles: 0,
@@ -173,31 +205,50 @@ export class Fleet {
       troops: 0,
       warShips: 0,
     };
+    this.add({
+      buildPoints: units.buildPoints ? -units.buildPoints : 0,
+      missiles: units.missiles ? -units.missiles : 0,
+      stealthShips: units.stealthShips ? -units.stealthShips : 0,
+      transports: units.transports ? -units.transports : 0,
+      troops: units.troops ? -units.troops : 0,
+      warShips: units.warShips ? -units.warShips : 0,
+    });
     if (units.buildPoints) {
-      state.buildPoints -= units.buildPoints;
       result.buildPoints = units.buildPoints;
     }
     if (units.missiles) {
-      state.missiles -= units.missiles;
       result.buildPoints = units.missiles;
     }
     if (units.stealthShips) {
-      state.stealthShips -= units.stealthShips;
       result.stealthShips = units.stealthShips;
     }
     if (units.transports) {
-      state.transports -= units.transports;
       result.transports = units.transports;
     }
     if (units.troops) {
-      state.troops -= units.troops;
       result.troops = units.troops;
     }
     if (units.warShips) {
-      state.warShips -= units.warShips;
       result.warShips = units.warShips;
     }
     return result;
+  }
+}
+
+export class Fleet extends Combatable {
+  static create(state: Partial<FleetState>): Fleet {
+    return new Fleet({
+      buildPoints: state.buildPoints || 0,
+      missiles: state.missiles || 0,
+      stealthShips: state.stealthShips || 0,
+      transports: state.transports || 0,
+      troops: state.troops || 0,
+      warShips: state.warShips || 0,
+    });
+  }
+
+  constructor(readonly state: FleetState) {
+    super();
   }
 
   /**

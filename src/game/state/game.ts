@@ -1,6 +1,10 @@
+import { Chance } from 'chance';
+import { GameStateError } from '../../cli/reader';
+import { Conquest } from '../combat/naval';
 import { NewlyCreatedGame } from '../save';
 import { Dispatch, DispatchState, Scout, ScoutState } from './fleet';
 import { Player, PlayerState } from './player';
+import { CombatReport } from './report';
 import { System, SystemState } from './system';
 
 export interface GameState extends NewlyCreatedGame {
@@ -93,6 +97,7 @@ export class Game {
   }
 
   private computeNextTurn(): void {
+    this.clearLastTurnReports();
     this.endTurnMovementAndCombat();
     this.endTurnProduce();
     this.endTurnRecruit();
@@ -101,9 +106,12 @@ export class Game {
     this.endTurnIncrementAndMaybeEndGame();
   }
 
+  private clearLastTurnReports(): void {
+    this.players.forEach((p) => p.clearReports());
+  }
+
   private endTurnIncrementAndMaybeEndGame(): void {
     this.state.turn++;
-    this.players.forEach((p) => p.clearReports());
     // TODO: End game?
   }
 
@@ -151,9 +159,46 @@ export class Game {
     });
   }
 
-  private resolveCombat(where: Dispatch): void {
-    // TODO: Implement.
-    throw `Unimplemented: ${where}.`;
+  private resolveCombat(fleet: Dispatch): void {
+    if (fleet.state.mission === 'conquest') {
+      const conquest = new Conquest(new Chance(this.state.seed));
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const attacker = this.findPlayer(fleet.state.owner)!;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const system = this.findSystem(fleet.state.target)!;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const defender = this.findPlayer(system.state.owner)!;
+      const result = conquest.simulate(
+        {
+          fleet,
+          rating: attacker.state.ratings.naval,
+        },
+        {
+          system,
+          rating: defender.state.ratings.naval,
+        },
+      );
+      if (result.winner === 'attacker') {
+        this.transferOwnership(attacker, system);
+      }
+      // Report Attack.
+      const report: CombatReport = {
+        kind: 'combat',
+        system: fleet.state.target,
+        mission: 'conquest',
+        result,
+      };
+      attacker.state.reports.push(report);
+      defender.state.reports.push(report);
+    } else {
+      throw new GameStateError(
+        `Unsupported mission: "${fleet.state.mission}".`,
+      );
+    }
+  }
+
+  private transferOwnership(to: Player, target: System): void {
+    target.state.owner = to.state.userId;
   }
 
   private endTurnProduce(): void {

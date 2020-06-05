@@ -57,7 +57,7 @@ export abstract class Generator {
         break;
     }
     let defenses = 0;
-    if (settings.enableSystemDefenses) {
+    if (!settings.enableNoviceMode && settings.enableSystemDefenses) {
       defenses = this.chance.integer({ min: 5, max: 15 }) * ratio;
     }
     const warShips = this.chance.integer({ min: 10, max: 30 }) * ratio;
@@ -93,7 +93,7 @@ export abstract class Generator {
     settings: Settings,
   ): SystemState {
     let defenses = 0;
-    if (settings.enableSystemDefenses) {
+    if (!settings.enableNoviceMode && settings.enableSystemDefenses) {
       defenses = this.chance.integer({ min: 10, max: 30 });
     }
     const warShips = this.chance.integer({ min: 160, max: 240 });

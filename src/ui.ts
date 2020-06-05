@@ -67,6 +67,14 @@ export class SimpleUI extends UI<string> {
         case 'intel':
           output.push(`[INTEL] Gathered intel from "${report.system}".`);
           break;
+        default:
+          output.push(
+            `[${report.kind.toUpperCase()}] ${JSON.stringify(
+              report,
+              undefined,
+              2,
+            )}`,
+          );
       }
     }
 
@@ -182,8 +190,8 @@ export class SimpleUI extends UI<string> {
       unitTypes.state.missiles +
       unitTypes.state.transports;
     return (
-      `Attack "${total} ships" sent from "${to.state.name}" to ` +
-      `"${from.state.name}"; eta ${etaTurns} turns.`
+      `Attack "${total} ships" sent from "${from.state.name}" to ` +
+      `"${to.state.name}"; eta ${etaTurns} turns.`
     );
   }
 
