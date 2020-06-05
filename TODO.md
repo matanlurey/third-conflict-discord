@@ -1,6 +1,7 @@
 # TODO
 
 [ ] Add version number to save game files.
+[ ] Add seed to save game files.
 
 ## Commands
 

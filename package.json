@@ -7,9 +7,9 @@
     "lint": "prettier --ignore-path .gitignore --list-different src && eslint src test --ext .ts",
     "start": "ts-node src/index.ts",
     "watch": "nodemon src/index.ts",
-    "test": "jest",
-    "tool:map": "ts-node ./tool/map.ts",
-    "tool:repl": "nodemon ./tool/repl.ts"
+    "repl": "nodemon ./tool/repl.ts",
+    "save": "ts-node ./tool/save.ts",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
