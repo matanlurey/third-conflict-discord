@@ -3,14 +3,16 @@ import minimist from 'minimist';
 import stringArv from 'string-argv';
 import { Command } from './config';
 
+export interface Parsed {
+  readonly matched?: Command;
+  readonly options: { [key: string]: boolean | number | string | undefined };
+  readonly error?: string;
+}
+
 export function parse(
   args: string | string[] | minimist.ParsedArgs,
   commands: Command[],
-): {
-  matched?: Command;
-  options: { [key: string]: boolean | number | string | undefined };
-  error?: string;
-} {
+): Parsed {
   if (typeof args === 'string') {
     args = stringArv(args);
   }
@@ -41,8 +43,19 @@ export function parse(
       } else if (option.alias !== undefined && option.alias in args) {
         value = args[option.alias];
         found.add(option.alias as string);
+      } else {
+        value = option.default;
       }
       if (value !== undefined) {
+        if (
+          option.allowed &&
+          typeof value !== 'boolean' &&
+          option.allowed.indexOf(value) === -1
+        ) {
+          error = `Invalid value "${value}" for "${
+            option.name
+          }". Expected: "${option.allowed.join(', ')}".`;
+        }
         options[camelCase(option.name)] = value;
       }
     }

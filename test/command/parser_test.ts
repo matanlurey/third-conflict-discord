@@ -29,9 +29,37 @@ test('should return a failure [no option match]', () => {
   expect(result.error).toEqual(`Unknown option(s): "bar, c".`);
 });
 
+test('should return a failure [not allowed option]', () => {
+  const result = parse('foo --bar d', [
+    new Command('foo', 'A command.', [
+      new Option('bar', 'b', { allowed: ['a', 'b', 'c'] }),
+    ]),
+  ]);
+  expect(result.matched?.name).toEqual('foo');
+  expect(result.options).toEqual({
+    bar: 'd',
+  });
+  expect(result.error).toEqual(
+    `Invalid value "d" for "bar". Expected: "a, b, c".`,
+  );
+});
+
 test('should match an option', () => {
   const result = parse('foo --bar baz', [
     new Command('foo', 'A command.', [new Option('bar', 'b')]),
+  ]);
+  expect(result.matched?.name).toEqual('foo');
+  expect(result.options).toEqual({
+    bar: 'baz',
+  });
+  expect(result.error).toBeUndefined();
+});
+
+test('should match an option [default]', () => {
+  const result = parse('foo', [
+    new Command('foo', 'A command.', [
+      new Option('bar', 'b', { default: 'baz' }),
+    ]),
   ]);
   expect(result.matched?.name).toEqual('foo');
   expect(result.options).toEqual({
