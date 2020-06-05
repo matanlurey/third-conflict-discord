@@ -199,6 +199,22 @@ export class Fleet {
     }
     return result;
   }
+
+  /**
+   * Whether the fleet is missiles only.
+   */
+  get isMissilesOnly(): boolean {
+    return (
+      this.state.missiles > 0 &&
+      this.state.stealthShips === 0 &&
+      this.state.warShips === 0 &&
+      this.state.transports === 0
+    );
+  }
+
+  protected get speedModifier(): number {
+    return this.isMissilesOnly ? 2 : 1;
+  }
 }
 
 /**
@@ -222,20 +238,5 @@ export interface DispatchState extends FleetState, MoveState {
 export class Dispatch extends Mixin(Fleet, Moveable) {
   constructor(public state: DispatchState) {
     super(state);
-  }
-  /**
-   * Whether the fleet is missiles only.
-   */
-  get isMissilesOnly(): boolean {
-    return (
-      this.state.missiles > 0 &&
-      this.state.stealthShips === 0 &&
-      this.state.warShips === 0 &&
-      this.state.transports === 0
-    );
-  }
-
-  protected get speedModifier(): number {
-    return this.isMissilesOnly ? 2 : 1;
   }
 }

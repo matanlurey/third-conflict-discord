@@ -1,5 +1,6 @@
+import { MessageEmbed } from 'discord.js';
 import { Parsed } from '../command/parser';
-import { FleetState } from '../game/state/fleet';
+import { Dispatch } from '../game/state/fleet';
 import { Player } from '../game/state/player';
 import { Production, System } from '../game/state/system';
 
@@ -140,7 +141,7 @@ export class CliReader {
       return;
     }
     if (options) {
-      if (options.ownedBy && system.owner.userId !== options.ownedBy) {
+      if (options.ownedBy && system.state.owner !== options.ownedBy) {
         const player = this.game.player(options.ownedBy);
         if (!player) {
           throw new InvalidPlayerError(options.ownedBy);
@@ -212,14 +213,23 @@ export class CliReader {
       options.requireInteger('troops'),
       options.requireInteger('points'),
     ];
-    return this.handler.attack(target, source, {
-      warShips,
-      stealthShips,
-      transports,
-      missiles,
-      troops,
-      buildPoints,
-    });
+    return this.handler.attack(
+      target,
+      source,
+      new Dispatch({
+        warShips,
+        stealthShips,
+        transports,
+        missiles,
+        troops,
+        buildPoints,
+        distance: source.position.distance(target.position),
+        mission: 'conquest',
+        owner: user.state.userId,
+        source: source.state.name,
+        target: target.state.name,
+      }),
+    );
   }
 
   private processBuild(user: Player, options: OptionReader): void {
@@ -290,7 +300,7 @@ export interface CliHandler {
    * @param source
    * @param fleet
    */
-  attack(target: System, source: System, fleet: FleetState): void;
+  attack(target: System, source: System, fleet: Dispatch): void;
 
   /**
    * Issues a build command.
@@ -336,4 +346,21 @@ export interface CliHandler {
    * @param user
    */
   summary(user: Player): void;
+}
+
+export interface CliMessenger {
+  /**
+   * Sends a direct message.
+   *
+   * @param user
+   * @param message
+   */
+  message(user: string, message: string | MessageEmbed): void;
+
+  /**
+   * Sends a public message.
+   *
+   * @param message
+   */
+  broadcast(message: string | MessageEmbed): void;
 }

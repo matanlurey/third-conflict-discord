@@ -1,17 +1,27 @@
 # TODO
 
-- [ ] Add single-player REPL support.
+- [x] Add single-player REPL support.
+- [ ] Add help.
 - [ ] Add multi-player Discord support.
 - [ ] Add version number to save game files.
 - [x] Add seed to save game files.
-- [ ] Add attack.
-- [ ] Add build.
-- [ ] Add end.
+
+- [x] Add attack.
+- [x] Add build.
+- [x] Add end.
 - [ ] Add move.
-- [ ] Add reports.
-- [ ] Add scan.
-- [ ] Add scout.
-- [ ] Add summary.
+- [x] Add reports.
+- [x] Add scan.
+- [x] Add scout.
+- [x] Add summary.
+
+- [x] End of turn: Increment.
+- [x] End of turn: Movement.
+- [ ] End of turn: Combat.
+- [x] End of turn: Produce.
+- [ ] End of turn: End of Game.
+- [ ] End of turn: Random Event.
+- [ ] End of turn: Morale / Revolt.
 
 ## Commands
 

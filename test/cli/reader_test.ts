@@ -1,6 +1,7 @@
 import { ArgumentError, CliReader, OptionReader } from '../../src/cli/reader';
 import { parse, Parsed } from '../../src/command/parser';
 import commands from '../../src/commands';
+import { Point } from '../../src/game/state/point';
 
 describe('OptionReader', () => {
   let reader: OptionReader;
@@ -105,8 +106,14 @@ describe('CliReader', () => {
 
     test('should call handler.attack', () => {
       mockHooks.player.mockReturnValue({ state: { name: 'Joe' } });
-      mockHooks.closest.mockReturnValue({ state: { name: 'Alfa' } });
-      mockHooks.system.mockReturnValue({ state: { name: 'Bravo' } });
+      mockHooks.closest.mockReturnValue({
+        state: { name: 'Alfa' },
+        position: new Point([0, 0]),
+      });
+      mockHooks.system.mockReturnValue({
+        state: { name: 'Bravo' },
+        position: new Point([4, 0]),
+      });
       reader.read('1234', cli('attack Alfa -w 10'));
       expect(mockHandlers.attack.mock.calls).toHaveLength(1);
     });

@@ -19,7 +19,6 @@ import { Settings } from '../src/game/state/settings';
 //   --no-empire-builds
 //   --seed
 const args = minimist(process.argv, {
-  '--': false,
   alias: {
     'initial-factories': 'f',
     'ship-speed-a-turn': 's',
@@ -42,7 +41,7 @@ const args = minimist(process.argv, {
     'display-level': 'combat-and-events',
     'enable-novice-mode': false,
     players: 4,
-    sectors: 26,
+    systems: 26,
     'system-defenses': true,
     'random-events': true,
     'empire-builds': true,
@@ -64,10 +63,10 @@ const settings: Settings = {
 
 const seed = args['seed'] || new Chance().hash({ length: 15 });
 const chance = new Chance(seed);
-const sectors = args['sectors'];
-const ratio = sectors / 26;
+const stars = args['systems'];
+const ratio = stars / 26;
 const sampler = new PoissonDiskSampler(
-  [Math.round(50 * ratio), Math.round(30 * ratio)],
+  [Math.ceil(50 * ratio), Math.ceil(30 * ratio)],
   4,
   undefined,
   chance,
@@ -76,7 +75,7 @@ const players = new Array(args['players'])
   .fill('')
   .map((_, i) => `PLAYER:${i + 1}`);
 const map = new RandomMap(sampler, chance);
-const output = map.generateMap(settings, players, args['sectors']);
+const output = map.generateMap(settings, players, stars);
 
 const visualize =
   output
@@ -94,6 +93,7 @@ const file = args._[2];
 
 console.log('File', file || '<Not Specified>');
 console.log('Players', players.length);
+console.log('Systems', stars);
 console.log('Seed', seed);
 console.log('Settings', JSON.stringify(settings, undefined, 2));
 console.log(visualize);

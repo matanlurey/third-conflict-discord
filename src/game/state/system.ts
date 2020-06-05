@@ -1,4 +1,4 @@
-import { Fleet, FleetState } from './fleet';
+import { Dispatch, Fleet, FleetState, Scout } from './fleet';
 import { Point, PointState } from './point';
 
 /**
@@ -48,7 +48,7 @@ export class System {
    * @param units
    * @param mission
    */
-  attack(target: SystemState, units: Fleet, mission: Mission): void {
+  attack(target: System, units: Fleet, mission: Mission): Dispatch {
     throw `UNIMPLEMENTED: ${target} ${units} ${mission}`;
   }
 
@@ -58,7 +58,7 @@ export class System {
    * @param target
    * @param units
    */
-  moveTo(target: SystemState, units: Fleet): void {
+  moveTo(target: System, units: Fleet): Dispatch {
     throw `UNIMPLEMENTED: ${target} ${units}`;
   }
 
@@ -67,8 +67,18 @@ export class System {
    *
    * @param target
    */
-  scout(target: SystemState): void {
-    throw `UNIMPLEMENTED: ${target}`;
+  scout(
+    target: System,
+    source: System,
+    kind: 'warship' | 'stealthship',
+  ): Scout {
+    return new Scout({
+      distance: source.position.distance(target.position),
+      owner: source.state.owner,
+      scout: kind,
+      source: source.state.name,
+      target: target.state.name,
+    });
   }
 
   /**

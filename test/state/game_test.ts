@@ -17,6 +17,7 @@ beforeAll(() => {
         },
         reports: [],
         userId: '12345',
+        endedTurn: false,
       },
     ],
     scouts: [],

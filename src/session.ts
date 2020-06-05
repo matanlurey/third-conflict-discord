@@ -1,59 +1,52 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { MessageEmbed } from 'discord.js';
 import gameHook from './cli/hooks';
-import { ArgumentError, CliReader, GameStateError } from './cli/reader';
+import {
+  ArgumentError,
+  CliHandler,
+  CliMessenger,
+  CliReader,
+  GameStateError,
+} from './cli/reader';
 import { Command } from './command/config';
 import { parse } from './command/parser';
 import commands from './commands';
-import { FleetState } from './game/state/fleet';
+import { Dispatch } from './game/state/fleet';
 import { Game } from './game/state/game';
 import { Player } from './game/state/player';
 import { Production, System } from './game/state/system';
+import { UI } from './ui';
 
-export class Session {
+export class Session implements CliHandler {
   private readonly commands: Command[];
   private readonly reader: CliReader;
+  private replyTo?: string;
 
-  constructor(game: Game) {
+  constructor(
+    private readonly game: Game,
+    private readonly ui: UI,
+    private readonly messenger: CliMessenger,
+  ) {
     this.commands = commands({
       enableNoviceMode: game.state.settings.enableNoviceMode,
       enableSystemDefenses: game.state.settings.enableSystemDefenses,
     });
-    this.reader = new CliReader(gameHook(game), {
-      attack(target: System, source: System, fleet: FleetState): void {
-        throw new Error('Method not implemented.');
-      },
+    this.reader = new CliReader(gameHook(game), this);
+  }
 
-      build(source: System, unit: Production): void {
-        throw new Error('Method not implemented.');
-      },
-
-      end(user: Player): void {
-        throw new Error('Method not implemented.');
-      },
-
-      reports(user: Player): void {
-        throw new Error('Method not implemented.');
-      },
-
-      scan(user: Player, target: System): void {
-        throw new Error('Method not implemented.');
-      },
-
-      scout(target: System, source: System): void {
-        throw new Error('Method not implemented.');
-      },
-
-      summary(user: Player): void {
-        throw new Error('Method not implemented.');
-      },
-    });
+  private reply(message: string | MessageEmbed): void {
+    if (!this.replyTo) {
+      throw new Error(`No user to reply to.`);
+    }
+    this.messenger.message(this.replyTo, message);
   }
 
   handle(userId: string, wasDm: boolean, input: string): void {
     try {
+      this.replyTo = userId;
       const args = parse(input, this.commands);
       if (args.error) {
-        console.warn('Could not parse', args.error);
+        console.warn('Could not parse:', args.error);
       } else {
         this.reader.read(userId, args);
       }
@@ -68,6 +61,85 @@ export class Session {
         // TODO: Handle.
         console.error('Unhandled error', e);
       }
+    } finally {
+      this.replyTo = undefined;
     }
+  }
+
+  attack(target: System, source: System, fleet: Dispatch): void {
+    source.attack(target, fleet, 'conquest');
+    this.reply(
+      this.ui.sentAttack(
+        source,
+        target,
+        fleet.eta(this.game.state.settings.shipSpeedATurn),
+        fleet,
+      ),
+    );
+  }
+
+  build(source: System, unit: Production): void {
+    source.change(unit);
+    this.reply(this.ui.changeProduction(source, unit));
+  }
+
+  end(user: Player): void {
+    this.game.endTurn(user);
+  }
+
+  reports(user: Player): void {
+    this.reply(this.ui.displayReports(user));
+  }
+
+  scan(user: Player, target: System): void {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const owner = this.game.findPlayer(target.state.owner)!;
+    this.reply(
+      this.ui.displaySystem(user, target, owner, this.game.state.turn),
+    );
+  }
+
+  scout(target: System, source: System): void {
+    let scout: 'warship' | 'stealthship';
+    if (source.state.stealthShips) {
+      source.state.stealthShips--;
+      scout = 'stealthship';
+    } else if (source.state.warShips) {
+      source.state.warShips--;
+      scout = 'warship';
+    } else {
+      throw new GameStateError(
+        `No valid units for scouting from "${source.state.name}".`,
+      );
+    }
+    const result = source.scout(target, source, scout);
+    this.game.state.scouts.push(result.state);
+    this.reply(
+      this.ui.sentScout(
+        source,
+        target,
+        result.eta(this.game.state.settings.shipSpeedATurn),
+        result.state.scout === 'warship' ? 'WarShip' : 'StealthShip',
+      ),
+    );
+  }
+
+  summary(user: Player): void {
+    const settings = this.game.state.settings;
+    const currentTurn = this.game.state.turn;
+    const systems = user.filterSystems(this.game.systems);
+    const scouts = user.filterScouts(this.game.scouts);
+    const fleets = user.filterFleets(this.game.fleets);
+    this.reply(
+      this.ui.displaySummary(
+        settings,
+        user,
+        currentTurn,
+        this.game.systems,
+        systems,
+        scouts,
+        fleets,
+      ),
+    );
   }
 }
