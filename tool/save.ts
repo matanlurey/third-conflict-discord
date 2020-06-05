@@ -70,7 +70,13 @@ const players = new Array(args['players'])
   .map((_, i) => `PLAYER:${i + 1}`);
 const map = new RandomMap(sampler, chance);
 const output = map.generateMap(settings, players);
+
 const visualize =
+  output
+    .filter((s) => s.state.home)
+    .map((s) => `${s.state.owner}: ${s.state.name}`)
+    .sort()
+    .join('\n') +
   '\n' +
   simpleVisualize(output)
     .map((row) => row.map((col) => (col === '' ? '•' : col)).join(' '))

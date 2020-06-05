@@ -1,5 +1,4 @@
 import { Fleet, FleetState } from './fleet';
-import { PlayerState } from './player';
 import { Point, PointState } from './point';
 
 /**
@@ -31,13 +30,6 @@ export class System {
    */
   get position(): Point {
     return new Point(this.state.position);
-  }
-
-  /**
-   * The player that owns the system.
-   */
-  get owner(): PlayerState {
-    throw `UNIMPLEMENTED`;
   }
 
   /**

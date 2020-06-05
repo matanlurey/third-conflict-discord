@@ -1,4 +1,5 @@
 import { Chance } from 'chance';
+import { Point } from '../state/point';
 import { Settings } from '../state/settings';
 import { PlanetState, System, SystemState } from '../state/system';
 
@@ -140,5 +141,50 @@ export abstract class Generator {
       recruit,
       troops,
     };
+  }
+
+  protected pickFarthestSystem(systems: SystemState[]): number {
+    let result;
+    let lowsum = Number.MAX_SAFE_INTEGER;
+    let maximum = 0;
+    for (const a of systems) {
+      for (const b of systems) {
+        const d = new Point(a.position).distance(new Point(b.position));
+        if (d > maximum) {
+          maximum = d;
+        }
+      }
+    }
+    for (let i = 0; i < systems.length; i++) {
+      const a = systems[i];
+      if (a.home) {
+        continue;
+      }
+      const distances: number[] = [];
+      for (const b of systems) {
+        const distance = new Point(a.position).distance(new Point(b.position));
+        let weight = maximum - distance;
+        if (b.home) {
+          weight = Math.pow(2, weight);
+        }
+        distances.push(weight);
+      }
+      const sumDistance = distances.reduce((p, c) => p + c, 0);
+      if (sumDistance < lowsum) {
+        lowsum = sumDistance;
+        result = i;
+      }
+    }
+    if (!result) {
+      const open = systems.filter((s) => !s.home);
+      const name = this.chance.pickone(open).name;
+      for (let i = 0; i < systems.length; i++) {
+        if (systems[i].name === name) {
+          return i;
+        }
+      }
+      throw new Error('Failed to find a home system.');
+    }
+    return result;
   }
 }

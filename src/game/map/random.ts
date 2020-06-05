@@ -47,8 +47,8 @@ export class RandomMap extends Generator {
         );
       }),
     );
-    // TODO: Select systems that are the farthest from other players.
-    players.forEach((name, i) => {
+    players.forEach((name) => {
+      const i = this.pickFarthestSystem(result);
       result[i] = this.createPlayer(name, result[i], this.chance, settings);
     });
     return result.map((s) => new System(s));
