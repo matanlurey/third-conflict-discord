@@ -94,12 +94,12 @@ export abstract class Generator {
   ): SystemState {
     let defenses = 0;
     if (!settings.enableNoviceMode && settings.enableSystemDefenses) {
-      defenses = this.chance.integer({ min: 10, max: 30 });
+      defenses = this.chance.integer({ min: 25, max: 45 });
     }
-    const warShips = this.chance.integer({ min: 160, max: 240 });
+    const warShips = this.chance.integer({ min: 180, max: 240 });
     let stealthShips = 0;
     if (!settings.enableNoviceMode) {
-      stealthShips = this.chance.integer({ min: 15, max: 35 });
+      stealthShips = this.chance.integer({ min: 50, max: 80 });
     }
     let missiles = 0;
     if (!settings.enableNoviceMode) {
@@ -110,6 +110,8 @@ export abstract class Generator {
       planets[i] = this.createPlanet(chance, owner);
     }
     const factories = settings.initialFactories;
+    const transports = this.chance.integer({ min: 20, max: 30 });
+    const troops = transports * 50;
     return {
       ...state,
       home: true,
@@ -120,6 +122,8 @@ export abstract class Generator {
       warShips,
       missiles,
       stealthShips,
+      transports,
+      troops,
     };
   }
 

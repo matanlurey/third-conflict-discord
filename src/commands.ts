@@ -82,7 +82,6 @@ export default function (
       }),
     ]),
     new Command('end', 'Ends your turn.'),
-    new Command('reports', 'View the previous of turn report.'),
     new Command('scan', 'Show intelligence about aother system.', [
       new Option('target', 0, { description: 'Target system.' }),
     ]),

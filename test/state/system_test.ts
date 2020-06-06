@@ -10,21 +10,12 @@ describe('produce', () => {
   };
 
   beforeEach(() => {
-    system = new System({
-      buildPoints: 0,
-      defenses: 0,
+    system = System.create({
       factories: 10,
-      missiles: 0,
       home: false,
       name: 'Alfa',
       owner: '12345',
-      planets: Array(10),
       position: [0, 0],
-      production: 'nothing',
-      stealthShips: 0,
-      transports: 0,
-      troops: 0,
-      warShips: 0,
     });
   });
 
@@ -87,6 +78,7 @@ describe('produce', () => {
 
   describe('should build Planets', () => {
     test('except when there is already 10', () => {
+      system.state.planets.push(...Array(10).fill({ morale: 0 }));
       system.change('planets');
       while (system.state.buildPoints < 100) {
         system.produce(noPlanetBuildSupport);
@@ -136,5 +128,42 @@ describe('produce', () => {
       expect(system.state.buildPoints).toEqual(0);
       expect(system.state.factories).toEqual(11);
     });
+  });
+});
+
+describe('morale', () => {
+  test('should be the average of planets, adjusting for enemy', () => {
+    const system = System.create({
+      name: 'Hoth',
+      owner: '1',
+      position: [0, 0],
+      planets: [
+        {
+          morale: 1,
+          owner: '1',
+          recruit: 0,
+          troops: 0,
+        },
+        {
+          morale: 2,
+          owner: '1',
+          recruit: 0,
+          troops: 0,
+        },
+        {
+          morale: 3,
+          owner: '1',
+          recruit: 0,
+          troops: 0,
+        },
+        {
+          morale: 4,
+          owner: '0',
+          recruit: 0,
+          troops: 0,
+        },
+      ],
+    });
+    expect(system.morale).toBe(1);
   });
 });

@@ -1,5 +1,5 @@
 import { Dispatch, Scout } from './fleet';
-import { Report } from './report';
+import { DetectReport, IntelReport, Report } from './report';
 import { System, SystemState } from './system';
 
 export class Player {
@@ -29,6 +29,41 @@ export class Player {
   filterSystems(systems: System[]): System[] {
     return systems.filter((s) => s.state.owner === this.state.userId);
   }
+
+  private report(report: Report): void {
+    console.log(`>>> ${this.state.name}`, report);
+    this.state.reports.push(report);
+  }
+
+  reportIncoming(fleet: Dispatch, speed: number): void {
+    const report: DetectReport = {
+      kind: 'detect',
+      eta: fleet.eta(speed),
+      missiles: fleet.isMissilesOnly,
+      size: fleet.totalShips,
+      system: fleet.state.target,
+    };
+    this.report(report);
+  }
+
+  reportScouted(system: System): void {
+    const report: IntelReport = {
+      kind: 'intel',
+      system: system.state.name,
+      scout: true,
+    };
+    this.report(report);
+  }
+
+  reportScoutedBy(system: System, player: Player): void {
+    const report: IntelReport = {
+      kind: 'intel',
+      system: system.state.name,
+      name: player.state.name,
+      scout: true,
+    };
+    this.report(report);
+  }
 }
 
 export interface HiddenSystemState {
@@ -39,8 +74,10 @@ export interface HiddenSystemState {
 
   /**
    * Turn the system was last gathered intel on.
+   *
+   * If undefined, this system is unknown.
    */
-  readonly updated: number;
+  readonly updated?: number;
 }
 
 export interface PlayerState {

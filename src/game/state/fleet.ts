@@ -1,5 +1,6 @@
 import { Mixin } from 'ts-mixer';
 import { GameStateError } from '../../cli/reader';
+import { System } from './system';
 
 export interface MoveState {
   /**
@@ -10,12 +11,12 @@ export interface MoveState {
   /**
    * Origin of the unit (if recalled).
    */
-  readonly source: string;
+  source: string;
 
   /**
    * Destination (system) of the unit.
    */
-  readonly target: string;
+  target: string;
 
   /**
    * Distance remaining until the destination is reached.
@@ -59,6 +60,24 @@ export class Moveable {
    */
   move(speed: number): void {
     this.state.distance -= speed * this.speedModifier;
+  }
+
+  /**
+   * Recalls the fleet back.
+   */
+  recall(distance: number): void {
+    const { source, target } = this.state;
+    this.state.target = source;
+    this.state.source = target;
+    this.state.distance = distance;
+  }
+
+  shouldReveal(target: System): boolean {
+    return (
+      target.state.name === this.state.target &&
+      this.hasReachedTarget &&
+      target.state.owner !== this.state.owner
+    );
   }
 }
 
@@ -261,6 +280,19 @@ export class Fleet extends Combatable {
       this.state.warShips === 0 &&
       this.state.transports === 0
     );
+  }
+
+  public get totalShips(): number {
+    return (
+      this.state.missiles +
+      this.state.stealthShips +
+      this.state.transports +
+      this.state.warShips
+    );
+  }
+
+  get isDetectable(): boolean {
+    return this.totalShips > 10;
   }
 
   protected get speedModifier(): number {

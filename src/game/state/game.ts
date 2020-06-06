@@ -83,6 +83,8 @@ export class Game {
     };
   }
 
+  private readonly onTurnCallbacks: (() => void)[] = [];
+
   constructor(public readonly state: GameState) {}
 
   endTurn(player: Player): void {
@@ -104,10 +106,19 @@ export class Game {
     this.endTurnRandomEvent();
     this.endTurnMoraleAndRevolt();
     this.endTurnIncrementAndMaybeEndGame();
+    this.pushTurnEnded();
   }
 
   private clearLastTurnReports(): void {
     this.players.forEach((p) => p.clearReports());
+  }
+
+  onTurnEnded(callback: () => void): void {
+    this.onTurnCallbacks.push(callback);
+  }
+
+  private pushTurnEnded(): void {
+    this.onTurnCallbacks.forEach((c) => c());
   }
 
   private endTurnIncrementAndMaybeEndGame(): void {
@@ -116,58 +127,81 @@ export class Game {
   }
 
   private endTurnMovementAndCombat(): void {
+    this.moveScouts();
+    this.moveFleets();
+  }
+
+  private moveScouts(): void {
     const settings = this.state.settings;
     Array.from(this.scouts)
       .reverse()
-      .forEach((s, i) => {
-        s.move(settings.shipSpeedATurn);
-        if (s.hasReachedTarget) {
-          this.state.scouts.splice(i, 1);
-          this.revealSystem(s);
+      .forEach((scout, i) => {
+        scout.move(settings.shipSpeedATurn);
+        if (scout.hasReachedTarget) {
+          const target = this.mustSystem(scout.state.target);
+          if (scout.shouldReveal(target)) {
+            // Reveal.
+            const source = this.mustSystem(scout.state.source);
+            this.revealSystem(scout);
+            scout.recall(target.position.distance(source.position));
+            if (scout.state.scout === 'warship') {
+              const scouter = this.mustPlayer(scout.state.owner);
+              const scoutee = this.mustPlayer(target.state.owner);
+              scouter.reportScouted(target);
+              scoutee.reportScoutedBy(target, scouter);
+            }
+          } else {
+            // Return.
+            if (scout.state.scout === 'warship') {
+              target.state.warShips++;
+            } else {
+              target.state.stealthShips++;
+            }
+            this.state.scouts.splice(i, 1);
+          }
         }
       });
+  }
+
+  private moveFleets(): void {
+    const settings = this.state.settings;
     Array.from(this.fleets)
       .reverse()
-      .forEach((s, i) => {
-        s.move(settings.shipSpeedATurn);
-        if (s.hasReachedTarget) {
+      .forEach((fleet, i) => {
+        fleet.move(settings.shipSpeedATurn);
+        if (fleet.hasReachedTarget) {
+          // TODO: Recall/Gift/Etc.
           this.state.fleets.splice(i, 1);
-          this.resolveCombat(s);
+          this.resolveCombat(fleet);
+        } else {
+          this.detectIncoming(fleet, this.mustSystem(fleet.state.target));
         }
       });
   }
 
   private revealSystem(dueTo: Scout | Dispatch): void {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const target = this.findSystem(dueTo.state.target)!;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const player = this.findPlayer(dueTo.state.owner)!;
+    const target = this.mustSystem(dueTo.state.target);
+    const player = this.mustPlayer(dueTo.state.owner);
     player.state.fogOfWar[dueTo.state.target] = {
-      updated: this.state.turn,
+      updated: this.state.turn + 1,
       system: {
+        name: target.state.name,
+        position: target.state.position,
         defenses: target.state.defenses,
         factories: target.state.factories,
         missiles: target.state.missiles,
         stealthShips: target.state.stealthShips,
         transports: target.state.transports,
-        troops: target.state.troops,
       },
     };
-    player.state.reports.push({
-      kind: 'intel',
-      system: target.state.name,
-    });
   }
 
   private resolveCombat(fleet: Dispatch): void {
     if (fleet.state.mission === 'conquest') {
       const conquest = new Conquest(new Chance(this.state.seed));
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const attacker = this.findPlayer(fleet.state.owner)!;
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const system = this.findSystem(fleet.state.target)!;
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const defender = this.findPlayer(system.state.owner)!;
+      const attacker = this.mustPlayer(fleet.state.owner);
+      const system = this.mustSystem(fleet.state.target);
+      const defender = this.mustPlayer(system.state.owner);
       const result = conquest.simulate(
         {
           fleet,
@@ -199,6 +233,18 @@ export class Game {
 
   private transferOwnership(to: Player, target: System): void {
     target.state.owner = to.state.userId;
+  }
+
+  private detectIncoming(from: Dispatch, target: System): void {
+    if (!from.isDetectable) {
+      return;
+    }
+    if (target.detectionRange >= from.state.distance) {
+      this.mustPlayer(target.state.owner).reportIncoming(
+        from,
+        this.state.settings.shipSpeedATurn,
+      );
+    }
   }
 
   private endTurnProduce(): void {
@@ -241,6 +287,14 @@ export class Game {
     }
   }
 
+  mustSystem(nameOrInitial: string): System {
+    const result = this.findSystem(nameOrInitial);
+    if (!result) {
+      throw new GameStateError(`No system named "${nameOrInitial}".`);
+    }
+    return result;
+  }
+
   /**
    * Returns the player that matches the user ID.
    *
@@ -252,6 +306,14 @@ export class Game {
         return new Player(player);
       }
     }
+  }
+
+  mustPlayer(userId: string): Player {
+    const result = this.findPlayer(userId);
+    if (!result) {
+      throw new GameStateError(`No player with ID "${userId}".`);
+    }
+    return result;
   }
 
   get fleets(): Dispatch[] {

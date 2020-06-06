@@ -13,8 +13,8 @@ import { parse } from './command/parser';
 import commands from './commands';
 import { Fleet } from './game/state/fleet';
 import { Game } from './game/state/game';
-import { Player } from './game/state/player';
-import { Production, System } from './game/state/system';
+import { HiddenSystemState, Player } from './game/state/player';
+import { Production, System, SystemState } from './game/state/system';
 import { UI } from './ui';
 
 export class Session implements CliHandler {
@@ -26,12 +26,21 @@ export class Session implements CliHandler {
     private readonly game: Game,
     private readonly ui: UI,
     private readonly messenger: CliMessenger,
+    private readonly logWarnings = true,
   ) {
     this.commands = commands({
       enableNoviceMode: game.state.settings.enableNoviceMode,
       enableSystemDefenses: game.state.settings.enableSystemDefenses,
     });
     this.reader = new CliReader(gameHook(game), this);
+    game.onTurnEnded((): void => {
+      game.players.forEach((p) => {
+        // Filter AI.
+        if (!p.state.endedTurn) {
+          this.summary(p);
+        }
+      });
+    });
   }
 
   private reply(message: string | MessageEmbed): void {
@@ -45,18 +54,17 @@ export class Session implements CliHandler {
     try {
       this.replyTo = userId;
       const args = parse(input, this.commands);
-      if (args.error) {
+      if (args.error && this.logWarnings) {
         console.warn('Could not parse:', args.error);
       } else {
         this.reader.read(userId, args);
       }
     } catch (e) {
-      if (e instanceof ArgumentError) {
-        // TODO: Handle.
-        console.error('Unhandled error', e);
-      } else if (e instanceof GameStateError) {
-        // TODO: Handle.
-        console.error('Unhandled error', e);
+      if (e instanceof ArgumentError || e instanceof GameStateError) {
+        this.reply(e.message);
+        if (this.logWarnings) {
+          console.warn(`Failed: "${input}"`, e);
+        }
       } else {
         // TODO: Handle.
         console.error('Unhandled error', e);
@@ -85,19 +93,25 @@ export class Session implements CliHandler {
   }
 
   end(user: Player): void {
+    this.reply(this.ui.ackEndTurn());
     this.game.endTurn(user);
-  }
-
-  reports(user: Player): void {
-    this.reply(this.ui.displayReports(user));
   }
 
   scan(user: Player, target: System): void {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const owner = this.game.findPlayer(target.state.owner)!;
-    this.reply(
-      this.ui.displaySystem(user, target, owner, this.game.state.turn),
-    );
+    let reveal: SystemState | HiddenSystemState;
+    if (user.state.userId === owner.state.userId) {
+      reveal = target.state;
+    } else {
+      reveal = user.state.fogOfWar[target.state.name] || {
+        system: {
+          name: target.state.name,
+        },
+      };
+    }
+    // TODO: Filter visibility here versus in the UI layer.
+    this.reply(this.ui.displaySystem(user, reveal));
   }
 
   scout(target: System, source: System): void {

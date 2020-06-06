@@ -1,9 +1,9 @@
 import { MessageEmbed } from 'discord.js';
 import { simpleVisualize } from './game/map/visualize';
 import { Dispatch, Fleet, Scout } from './game/state/fleet';
-import { Player } from './game/state/player';
+import { HiddenSystemState, Player } from './game/state/player';
 import { Settings } from './game/state/settings';
-import { Production, System } from './game/state/system';
+import { Production, System, SystemState } from './game/state/system';
 
 export abstract class UI<
   T extends string | MessageEmbed = string | MessageEmbed
@@ -12,13 +12,9 @@ export abstract class UI<
 
   abstract changeProduction(target: System, unitType: Production): T;
 
-  abstract displayReports(forPlayer: Player): T;
-
   abstract displaySystem(
     pointOfView: Player,
-    target: System,
-    owner: Player,
-    currentTurn: number,
+    target: SystemState | HiddenSystemState,
   ): T;
 
   abstract displaySummary(
@@ -59,70 +55,43 @@ export class SimpleUI extends UI<string> {
     return `Now producing "${unitType}" at "${target.state.name}".`;
   }
 
-  displayReports(forPlayer: Player): string {
-    const output: string[] = [];
-
-    for (const report of forPlayer.state.reports) {
-      switch (report.kind) {
-        case 'intel':
-          output.push(`[INTEL] Gathered intel from "${report.system}".`);
-          break;
-        default:
-          output.push(
-            `[${report.kind.toUpperCase()}] ${JSON.stringify(
-              report,
-              undefined,
-              2,
-            )}`,
-          );
-      }
-    }
-
-    return output.join('\n');
-  }
-
   displaySystem(
     pointOfView: Player,
-    target: System,
-    owner: Player,
-    currentTurn: number,
+    target: SystemState | HiddenSystemState,
   ): string {
-    if (owner.state.userId === pointOfView.state.userId) {
+    if ('name' in target) {
       return (
         '' +
-        `Report on "${target.state.name}" (You control this system):\n` +
+        `Report on "${target.name}" (You control this system):\n` +
         '\n' +
-        `Home System: ${target.state.home ? 'Yes' : 'No'}\n` +
-        `Producing: ${target.state.production}\n` +
+        `Home System: ${target.home ? 'Yes' : 'No'}\n` +
+        `Producing: ${target.production}\n` +
         '\n' +
-        `Factories: ${target.state.factories}\n` +
-        `Planets: ${target.state.planets.length}\n` +
+        `Factories: ${target.factories}\n` +
+        `Planets: ${target.planets.length}\n` +
         '\n' +
-        `WarShips: ${target.state.warShips}\n` +
-        `StealthShips: ${target.state.stealthShips}\n` +
-        `Missiles: ${target.state.missiles}\n` +
-        `Transports: ${target.state.transports}\n` +
-        `Troops: ${target.state.troops}\n` +
-        `Points: ${target.state.buildPoints}\n`
+        `WarShips: ${target.warShips}\n` +
+        `StealthShips: ${target.stealthShips}\n` +
+        `Missiles: ${target.missiles}\n` +
+        `Transports: ${target.transports}\n` +
+        `Troops: ${target.troops}\n` +
+        `Points: ${target.buildPoints}\n`
       );
     } else {
-      const fogOfWar = pointOfView.state.fogOfWar[target.state.name];
-      if (!fogOfWar) {
-        return `Report on "${target.state.name}: No information.`;
+      if (target.updated === undefined) {
+        return `Report on "${target.system.name}: No information.`;
       }
       return (
         '' +
-        `Report on "${target.state.name}" (Last updated ${
-          currentTurn - fogOfWar.updated
-        } turns ago)\n` +
+        `Report on "${target.system.name}" (Last updated on turn ${target.updated})\n` +
         '\n' +
-        `Factories: ${mask(target.state.factories)}\n` +
-        `Planets: ${mask(target.state.planets.length)}\n` +
+        `Factories: ${mask(target.system.factories)}\n` +
+        `Planets: ${mask(target.system.planets?.length)}\n` +
         '\n' +
-        `WarShips: ${mask(target.state.warShips)}\n` +
-        `StealthShips: ${mask(target.state.stealthShips)}\n` +
-        `Missiles: ${mask(target.state.missiles)}\n` +
-        `Transports: ${mask(target.state.transports)}\n`
+        `WarShips: ${mask(target.system.warShips)}\n` +
+        `StealthShips: ${mask(target.system.stealthShips)}\n` +
+        `Missiles: ${mask(target.system.missiles)}\n` +
+        `Transports: ${mask(target.system.transports)}\n`
       );
     }
   }
@@ -140,10 +109,17 @@ export class SimpleUI extends UI<string> {
       simpleVisualize(allSystems)
         .map((row) => row.map((col) => (col === '' ? '•' : col)).join(' '))
         .join('\n') + '\n';
+    const controls = new Set(systems.map((s) => s.state.name));
     return [
       `Summary of Admiral ${pointOfView.state.name} on turn ${currentTurn}.\n`,
       visualize,
-      `SYSTEMS:`,
+      `REPORTS:`,
+      ...(pointOfView.state.reports.length === 0
+        ? [`  <None>`]
+        : pointOfView.state.reports.map((r) => {
+            return '';
+          })),
+      `\nSYSTEMS:`,
       ...(systems.length === 0
         ? [`  <None>`]
         : systems.map((s) => {
@@ -158,14 +134,24 @@ export class SimpleUI extends UI<string> {
       ...(scouts.length === 0
         ? [`  <None>`]
         : scouts.map((s) => {
-            return `  ${s.state.source} -> ${s.state.target} (ETA ${s.eta(
-              settings.shipSpeedATurn,
-            )})`;
+            let recall = '';
+            if (controls.has(s.state.target)) {
+              recall = ` [Returning]`;
+            }
+            return `  ${s.state.source} -> ${
+              s.state.target
+            }${recall} (ETA Turn ${
+              currentTurn + s.eta(settings.shipSpeedATurn)
+            })`;
           })),
       `\nFLEETS:`,
       ...(fleets.length === 0
         ? [`  <None>`]
         : fleets.map((s) => {
+            let recall = '';
+            if (controls.has(s.state.target)) {
+              recall = ` [Returning]`;
+            }
             const total =
               s.state.warShips +
               s.state.stealthShips +
@@ -173,7 +159,9 @@ export class SimpleUI extends UI<string> {
               s.state.transports;
             return `  ${s.state.source} -> ${
               s.state.target
-            }: ${total} (ETA ${s.eta(settings.shipSpeedATurn)})`;
+            }: ${total}${recall} (ETA Turn ${
+              currentTurn + s.eta(settings.shipSpeedATurn)
+            })`;
           })),
     ].join('\n');
   }

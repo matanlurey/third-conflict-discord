@@ -11,6 +11,7 @@ test('should filter systems', () => {
     },
     reports: [],
     userId: '12345',
+    endedTurn: false,
   });
 
   const systems = (([

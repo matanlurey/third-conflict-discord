@@ -172,8 +172,6 @@ export class CliReader {
         return this.processBuild(player, options);
       case 'end':
         return this.handler.end(player);
-      case 'reports':
-        return this.handler.reports(player);
       case 'scan':
         return this.processScan(player, options);
       case 'scout':
@@ -311,13 +309,6 @@ export interface CliHandler {
    * @param user
    */
   end(user: Player): void;
-
-  /**
-   * Issues a report request command.
-   *
-   * @param user
-   */
-  reports(user: Player): void;
 
   /**
    * Issues a scan command.

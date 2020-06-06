@@ -74,6 +74,21 @@ export class System extends Combatable {
   }
 
   /**
+   * Range of detecting incoming fleets/missiles.
+   *
+   * Detection range is 4 + 1 for every additional 25 increment.
+   */
+  get detectionRange(): number {
+    // TODO: Adjust detection ranges?
+    const defenses = this.state.defenses;
+    if (defenses < 25) {
+      return 0;
+    }
+    const additional = Math.floor((defenses - 25) / 25);
+    return 4 + additional;
+  }
+
+  /**
    * Changes the build production unit.
    *
    * @param produce
@@ -203,12 +218,22 @@ export class System extends Combatable {
    * Returns the system morale for the system.
    */
   get morale(): number {
-    // TODO: Consider the inverse of morale for enemy systems?
-    return Math.round(
-      this.state.planets
-        .filter((p) => p.owner === this.state.owner)
-        .reduce((p, c) => p + c.morale, 0),
-    );
+    if (this.state.planets.length === 0) {
+      // TODO: Is this right?
+      return 0;
+    }
+    let sum = 0;
+    for (let i = 0; i < this.state.planets.length; i++) {
+      const planet = this.state.planets[i];
+      const morale = planet.morale;
+      const owned = planet.owner === this.state.owner;
+      if (owned) {
+        sum += morale;
+      } else {
+        sum += -Math.abs(morale);
+      }
+    }
+    return Math.round(sum / this.state.planets.length);
   }
 }
 
