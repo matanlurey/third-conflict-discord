@@ -19,9 +19,6 @@ test('getSimpleUsage() of Commands', () => {
     end
     Ends your turn.
 
-    reports
-    View the previous of turn report.
-
     scan <target>
     Show intelligence about aother system.
 
@@ -70,15 +67,6 @@ describe('getSimpleUsage() of command: ', () => {
       "
       end
       Ends your turn.
-      "
-    `);
-  });
-
-  test('reports', () => {
-    expect('\n' + getSimpleUsage(keyed['reports'])).toMatchInlineSnapshot(`
-      "
-      reports
-      View the previous of turn report.
       "
     `);
   });
@@ -134,11 +122,6 @@ test('getRichUsage() of Commands', () => {
         {
           \\"name\\": \\"end\\",
           \\"value\\": \\"Ends your turn.\\",
-          \\"inline\\": false
-        },
-        {
-          \\"name\\": \\"reports\\",
-          \\"value\\": \\"View the previous of turn report.\\",
           \\"inline\\": false
         },
         {
@@ -256,24 +239,6 @@ describe('getRichUsage() of command: ', () => {
         \\"title\\": \\"Usage\\",
         \\"type\\": \\"rich\\",
         \\"description\\": \\"end\\\\nEnds your turn.\\\\n\\",
-        \\"timestamp\\": null,
-        \\"fields\\": [],
-        \\"thumbnail\\": null,
-        \\"image\\": null,
-        \\"author\\": null,
-        \\"footer\\": null
-      }"
-    `);
-  });
-
-  test('reports', () => {
-    expect('\n' + JSON.stringify(getRichUsage(keyed['reports']), undefined, 2))
-      .toMatchInlineSnapshot(`
-      "
-      {
-        \\"title\\": \\"Usage\\",
-        \\"type\\": \\"rich\\",
-        \\"description\\": \\"reports\\\\nView the previous of turn report.\\\\n\\",
         \\"timestamp\\": null,
         \\"fields\\": [],
         \\"thumbnail\\": null,

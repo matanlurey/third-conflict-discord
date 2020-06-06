@@ -36,7 +36,8 @@ export class Session implements CliHandler {
     game.onTurnEnded((): void => {
       game.players.forEach((p) => {
         // Filter AI.
-        if (!p.state.endedTurn) {
+        if (!p.isAI) {
+          this.replyTo = p.state.userId;
           this.summary(p);
         }
       });
@@ -45,7 +46,10 @@ export class Session implements CliHandler {
 
   private reply(message: string | MessageEmbed): void {
     if (!this.replyTo) {
-      throw new Error(`No user to reply to.`);
+      if (this.logWarnings) {
+        console.warn('Could not find user to reply', message);
+      }
+      return;
     }
     this.messenger.message(this.replyTo, message);
   }

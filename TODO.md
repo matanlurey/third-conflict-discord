@@ -21,7 +21,7 @@
 - [ ] Allow building planets.
 - [x] Return scouts.
 
-- [ ] Incoming fleets.
+- [x] Incoming fleets.
 - [ ] Redirect fleets/scouts if recalled system was conquered.
 
 - [ ] Random combat ratings at start.
@@ -29,7 +29,7 @@
 - [ ] Allow building up to 50 Defenses per Planet Controlled.
 - [ ] > =150 Defenses Overwhelm StealthShips First Strike.
 
-- [ ] Start of turn: Reports and Score.
+- [ ] Start of turn: Score.
 
 - [x] End of turn: Increment.
 - [x] End of turn: Movement.
@@ -39,6 +39,7 @@
 - [x] End of turn: Produce.
 - [ ] End of turn: Morale Check / Revolts / Unrest.
 
+- [ ] More details to combat report.
 - [ ] Recall fleet.
 - [ ] Scrape random events from game and add them.
 - [ ] Move homeworld.

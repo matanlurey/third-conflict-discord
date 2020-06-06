@@ -67,7 +67,6 @@ export abstract class NavalCombat {
     defender.system.destroyUndefendedCargo();
     defender.system.saveDamagedStealthShips();
 
-    // Return result.
     return {
       attacker: {
         buildPoints: oAttacker.buildPoints - mAttacker.buildPoints,
@@ -240,7 +239,23 @@ export class Conquest extends NavalCombat {
       factories: 0,
     };
     let winner: 'attacker' | 'defender' | 'draw' = 'draw';
-    while (!attacker.fleet.isEliminated && !defender.system.isEliminated) {
+    // No defenders base-case.
+    if (defender.system.isEliminated && !attacker.fleet.isMissilesOnly) {
+      return {
+        attacker: aResult,
+        defender: dResult,
+        winner: 'attacker',
+      };
+    }
+    function attackerHasMisslesAndDefenderHasFactories(): boolean {
+      return (
+        attacker.fleet.state.missiles > 0 && defender.system.state.factories > 0
+      );
+    }
+    while (
+      (!attacker.fleet.isEliminated && !defender.system.isEliminated) ||
+      attackerHasMisslesAndDefenderHasFactories()
+    ) {
       const round = this.combatRound(attacker, defender);
       winner = round.winner;
 

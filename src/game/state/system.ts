@@ -50,7 +50,7 @@ export class System extends Combatable {
         ((): never => {
           throw new Error(`Position required.`);
         })(),
-      production: 'warships',
+      production: 'nothing',
     });
   }
 
@@ -64,6 +64,12 @@ export class System extends Combatable {
 
   get isEliminated(): boolean {
     return super.isEliminated && this.state.defenses === 0;
+  }
+
+  destroyUndefendedCargo(): void {
+    if (this.isEliminated) {
+      this.state.troops = this.state.transports = 0;
+    }
   }
 
   /**

@@ -31,8 +31,12 @@ export class Player {
   }
 
   private report(report: Report): void {
-    console.log(`>>> ${this.state.name}`, report);
     this.state.reports.push(report);
+  }
+
+  get isAI(): boolean {
+    // TODO: Add AI field instead.
+    return this.state.name.toUpperCase().trim() === 'EMPIRE';
   }
 
   reportIncoming(fleet: Dispatch, speed: number): void {

@@ -17,6 +17,7 @@ export interface IntelReport {
 }
 
 export interface CombatReport {
+  readonly attacker: boolean;
   readonly kind: 'combat';
   readonly mission: Mission;
   readonly result: CombatResult;

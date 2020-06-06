@@ -1,88 +1,18 @@
 import { Game } from '../../src/game/state/game';
-import { defaultSettings } from '../../src/game/state/settings';
 import { System } from '../../src/game/state/system';
-import { Session } from '../../src/session';
-import { SimpleUI } from '../../src/ui';
+import { simpleABSession } from '../common/simple_a_b';
 
 describe('', () => {
   let alfa: System;
   let game: Game;
-  let session: Session;
-  let messages: string[];
-
-  function read(): string[] {
-    const reference = messages;
-    messages = [];
-    return reference;
-  }
+  let parse: (input: string) => string;
 
   beforeEach(() => {
-    messages = [];
-    session = new Session(
-      (game = new Game({
-        fleets: [],
-        scouts: [],
-        players: [
-          {
-            endedTurn: true,
-            fogOfWar: {},
-            name: 'Empire',
-            userId: 'Empire',
-            ratings: {
-              naval: 100,
-              ground: 100,
-            },
-            reports: [],
-          },
-          {
-            endedTurn: false,
-            fogOfWar: {},
-            name: 'Player 1',
-            userId: '1234',
-            ratings: {
-              naval: 100,
-              ground: 100,
-            },
-            reports: [],
-          },
-        ],
-        seed: '1000',
-        settings: defaultSettings,
-        systems: [
-          System.create({
-            name: 'Alfa',
-            position: [0, 0],
-            owner: '1234',
-          }).state,
-          System.create({
-            name: 'Bravo',
-            position: [10, 0],
-            owner: 'Empire',
-            factories: 5,
-            transports: 10,
-            troops: 500,
-          }).state,
-        ],
-        turn: 1,
-      })),
-      new SimpleUI(),
-      {
-        message: (_, message): void => {
-          messages.push(message as string);
-        },
-        broadcast: (message): void => {
-          messages.push(message as string);
-        },
-      },
-      false,
-    );
-    alfa = game.mustSystem('Alfa');
+    const create = simpleABSession();
+    alfa = create.alfa;
+    game = create.game;
+    parse = create.parse;
   });
-
-  function parse(input: string): string {
-    session.handle('1234', false, input);
-    return '\n' + read().join('\n');
-  }
 
   test('should have visibility on own system', () => {
     expect(parse('scan A')).toMatchInlineSnapshot(`
@@ -90,7 +20,7 @@ describe('', () => {
       Report on \\"Alfa\\" (You control this system):
 
       Home System: No
-      Producing: warships
+      Producing: nothing
 
       Factories: 0
       Planets: 0
@@ -152,8 +82,11 @@ describe('', () => {
 
       A • • • • • • • • • B
 
+      REPORTS:
+        <None>
+
       SYSTEMS:
-        Alfa. P: warships, T: 1, M: 0
+        Alfa. P: nothing, T: 1, M: 0
 
       SCOUTS:
         <None>
@@ -171,8 +104,11 @@ describe('', () => {
 
       A • • • • • • • • • B
 
+      REPORTS:
+        <None>
+
       SYSTEMS:
-        Alfa. P: warships, T: 0, M: 0
+        Alfa. P: nothing, T: 0, M: 0
 
       SCOUTS:
         Alfa -> Bravo (ETA Turn 3)
@@ -183,7 +119,22 @@ describe('', () => {
     expect(game.state.turn).toEqual(1);
     expect(parse('end')).toMatchInlineSnapshot(`
       "
-      Ended your turn."
+      Ended your turn.
+      Summary of Admiral Player 1 on turn 2.
+
+      A • • • • • • • • • B
+
+      REPORTS:
+        <None>
+
+      SYSTEMS:
+        Alfa. P: nothing, T: 0, M: 0
+
+      SCOUTS:
+        Alfa -> Bravo (ETA Turn 3)
+
+      FLEETS:
+        <None>"
     `);
     expect(game.state.turn).toEqual(2);
     expect(parse('summary')).toMatchInlineSnapshot(`
@@ -192,8 +143,11 @@ describe('', () => {
 
       A • • • • • • • • • B
 
+      REPORTS:
+        <None>
+
       SYSTEMS:
-        Alfa. P: warships, T: 0, M: 0
+        Alfa. P: nothing, T: 0, M: 0
 
       SCOUTS:
         Alfa -> Bravo (ETA Turn 3)
@@ -203,12 +157,22 @@ describe('', () => {
     `);
     expect(parse('end')).toMatchInlineSnapshot(`
       "
-      Ended your turn."
-    `);
-    expect(parse('reports')).toMatchInlineSnapshot(`
-      "
-      Scout reaches System Bravo
-      Scout reaches System Bravo"
+      Ended your turn.
+      Summary of Admiral Player 1 on turn 3.
+
+      A • • • • • • • • • B
+
+      REPORTS:
+        Scout reaches system Bravo
+
+      SYSTEMS:
+        Alfa. P: nothing, T: 0, M: 0
+
+      SCOUTS:
+        Bravo -> Alfa [Returning] (ETA Turn 5)
+
+      FLEETS:
+        <None>"
     `);
     expect(game.state.turn).toEqual(3);
     expect(parse('summary')).toMatchInlineSnapshot(`
@@ -217,8 +181,11 @@ describe('', () => {
 
       A • • • • • • • • • B
 
+      REPORTS:
+        Scout reaches system Bravo
+
       SYSTEMS:
-        Alfa. P: warships, T: 0, M: 0
+        Alfa. P: nothing, T: 0, M: 0
 
       SCOUTS:
         Bravo -> Alfa [Returning] (ETA Turn 5)

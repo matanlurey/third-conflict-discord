@@ -43,12 +43,14 @@
     "camel-case": "^4.1.1",
     "capital-case": "^1.0.3",
     "chance": "^1.1.6",
+    "change-case": "^4.1.1",
     "columnify": "^1.5.4",
     "discord.js": "^12.2.0",
     "fs-extra": "^9.0.0",
     "hook-std": "^2.0.0",
     "minimist": "^1.2.5",
     "string-argv": "^0.3.1",
+    "title-case": "^3.0.2",
     "ts-mixer": "^5.3.0"
   }
 }

@@ -212,18 +212,22 @@ export class Game {
           rating: defender.state.ratings.naval,
         },
       );
-      if (result.winner === 'attacker') {
-        this.transferOwnership(attacker, system);
-      }
       // Report Attack.
       const report: CombatReport = {
+        attacker: true,
         kind: 'combat',
         system: fleet.state.target,
         mission: 'conquest',
         result,
       };
       attacker.state.reports.push(report);
-      defender.state.reports.push(report);
+      defender.state.reports.push({
+        ...report,
+        attacker: false,
+      });
+      if (result.winner === 'attacker') {
+        this.transferOwnership(attacker, system);
+      }
     } else {
       throw new GameStateError(
         `Unsupported mission: "${fleet.state.mission}".`,
@@ -236,6 +240,11 @@ export class Game {
   }
 
   private detectIncoming(from: Dispatch, target: System): void {
+    console.log('detectIncoming', {
+      isDetectable: from.isDetectable,
+      detectionRange: target.detectionRange,
+      distance: from.state.distance,
+    });
     if (!from.isDetectable) {
       return;
     }

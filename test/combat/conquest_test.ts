@@ -72,7 +72,7 @@ test('should fight a simple battle', () => {
         0,
         0,
       ],
-      "production": "warships",
+      "production": "nothing",
       "stealthShips": 0,
       "transports": 0,
       "troops": 0,

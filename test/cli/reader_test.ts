@@ -67,7 +67,6 @@ describe('CliReader', () => {
       attack: jest.fn(),
       build: jest.fn(),
       end: jest.fn(),
-      reports: jest.fn(),
       scan: jest.fn(),
       scout: jest.fn(),
       summary: jest.fn(),
@@ -149,22 +148,6 @@ describe('CliReader', () => {
       mockHooks.player.mockReturnValue({ state: { name: 'Joe' } });
       reader.read('1234', cli('end'));
       expect(mockHandlers.end.mock.calls).toHaveLength(1);
-    });
-  });
-
-  describe('reports', () => {
-    test('should throw [invalid user]', () => {
-      expect(() =>
-        reader.read('4455', cli('reports')),
-      ).toThrowErrorMatchingInlineSnapshot(
-        `"Invalid player: \\"4455\\" is not in the game."`,
-      );
-    });
-
-    test('should call handler.reports', () => {
-      mockHooks.player.mockReturnValue({ state: { name: 'Joe' } });
-      reader.read('1234', cli('reports'));
-      expect(mockHandlers.reports.mock.calls).toHaveLength(1);
     });
   });
 

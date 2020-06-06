@@ -162,7 +162,11 @@ export abstract class Combatable {
   }
 
   get isEliminated(): boolean {
-    return this.state.stealthShips === 0 && this.state.warShips === 0;
+    return (
+      this.state.stealthShips === 0 &&
+      this.state.warShips === 0 &&
+      this.state.missiles === 0
+    );
   }
 
   /**
@@ -236,7 +240,7 @@ export abstract class Combatable {
       result.buildPoints = units.buildPoints;
     }
     if (units.missiles) {
-      result.buildPoints = units.missiles;
+      result.missiles = units.missiles;
     }
     if (units.stealthShips) {
       result.stealthShips = units.stealthShips;
@@ -268,6 +272,9 @@ export class Fleet extends Combatable {
 
   constructor(readonly state: FleetState) {
     super();
+    if (state.buildPoints + state.troops / 50 > state.transports) {
+      throw new GameStateError(`Invalid Fleet. Not enough Transport capacity.`);
+    }
   }
 
   /**

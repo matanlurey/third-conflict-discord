@@ -1,7 +1,9 @@
+import { capitalCase } from 'change-case';
 import { MessageEmbed } from 'discord.js';
 import { simpleVisualize } from './game/map/visualize';
 import { Dispatch, Fleet, Scout } from './game/state/fleet';
 import { HiddenSystemState, Player } from './game/state/player';
+import { CombatReport } from './game/state/report';
 import { Settings } from './game/state/settings';
 import { Production, System, SystemState } from './game/state/system';
 
@@ -117,7 +119,24 @@ export class SimpleUI extends UI<string> {
       ...(pointOfView.state.reports.length === 0
         ? [`  <None>`]
         : pointOfView.state.reports.map((r) => {
-            return '';
+            switch (r.kind) {
+              case 'intel':
+                if (r.scout) {
+                  if (r.name) {
+                    return `  System ${r.system} scouted by ${r.name}`;
+                  } else {
+                    return `  Scout reaches system ${r.system}`;
+                  }
+                }
+                break;
+              case 'combat':
+                return this.displayCombat(r);
+              case 'detect':
+                return `  Incoming ${r.missiles ? 'missiles' : 'fleet'} to ${
+                  r.system
+                }; eta turn ${currentTurn + r.eta}`;
+            }
+            return `  <BUG! UI Handler Missing> ${JSON.stringify(r)}`;
           })),
       `\nSYSTEMS:`,
       ...(systems.length === 0
@@ -164,6 +183,44 @@ export class SimpleUI extends UI<string> {
             })`;
           })),
     ].join('\n');
+  }
+
+  private displayCombat(r: CombatReport): string {
+    const result =
+      r.result.winner === 'draw'
+        ? 'draw'
+        : r.attacker === (r.result.winner === 'attacker')
+        ? 'victory'
+        : 'defeat';
+
+    function renderChanges(changes: {
+      [key: string]: number | undefined;
+    }): string {
+      const out: string[] = [];
+      for (const name in changes) {
+        const value = changes[name];
+        if (value) {
+          out.push(`    ${capitalCase(name)}: ${value}`);
+        }
+      }
+      if (out.length === 0) {
+        return `    <No Changes>`;
+      }
+      return out.join('\n');
+    }
+
+    const you = renderChanges(
+      r.attacker ? r.result.attacker : r.result.defender,
+    );
+    const them = renderChanges(
+      r.attacker ? r.result.defender : r.result.attacker,
+    );
+    return (
+      '' +
+      `  Combat @ ${r.system} resulted in ${result}.\n` +
+      `  YOU:\n${you}\n` +
+      `  THEM:\n${them}`
+    );
   }
 
   sentAttack(
