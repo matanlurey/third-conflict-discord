@@ -17,6 +17,8 @@
 - [x] Add summary.
 - [ ] Add invade.
 
+  - "Admiral D invades planet 1 of SYSTES with N troops (N after losses)."
+
 - [x] Fix morale calculation.
 - [ ] Allow building planets.
 - [x] Return scouts.
@@ -28,8 +30,13 @@
 - [ ] Change combat ratings after combat.
 - [ ] Allow building up to 50 Defenses per Planet Controlled.
 - [ ] > =150 Defenses Overwhelm StealthShips First Strike.
+- [ ] Allow defenses a chance to intercept missiles.
 
-- [ ] Start of turn: Score.
+- [ ] Determine and report unrest.
+- [ ] Discontent builds on non-invaded planets, privateers.
+- [ ] Add overthrow/revert control.
+
+- [ ] Start of turn: Score, Morale, Ratings.
 
 - [x] End of turn: Increment.
 - [x] End of turn: Movement.
@@ -41,9 +48,14 @@
 
 - [ ] More details to combat report.
 - [ ] Recall fleet.
+- [ ] Increase morale of planets when system captured.
+- [ ] Invert morale of planets when invaded.
+- [ ] Privateers.
 - [ ] Scrape random events from game and add them.
 - [ ] Move homeworld.
+- [ ] Visualize incoming fleets as `!`.
 
+- [ ] Empire randomly attacks.
 - [ ] Add auto fleet composition / keep a garrison.
 
 - [ ] Add wreck.

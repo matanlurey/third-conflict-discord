@@ -135,6 +135,18 @@ export class SimpleUI extends UI<string> {
                 return `  Incoming ${r.missiles ? 'missiles' : 'fleet'} to ${
                   r.system
                 }; eta turn ${currentTurn + r.eta}`;
+              case 'unrest':
+                if (r.planet) {
+                  return `  Discontent builds on planet ${r.planet} of ${r.system}`;
+                }
+                if (r.overthrown) {
+                  return `  System ${r.system} overthrows ${r.overthrown.who}, control reverst to ${r.overthrown.reverted}`;
+                }
+                return `  System ${r.system} garrison reports unrest`;
+              case 'privateer':
+                return `  Privateers capture ${r.warships} WarShip(s) in ${r.system}`;
+              case 'reinforced':
+                return `  The Emperor reinforces ${r.system} with <TODO: List Units>`;
             }
             return `  <BUG! UI Handler Missing> ${JSON.stringify(r)}`;
           })),

@@ -73,6 +73,41 @@ export class System extends Combatable {
   }
 
   /**
+   * Minimum amount of WarShips and StealthShips needed.
+   *
+   * 3x PRODUCTION + 3x (-MORALE).
+   */
+  private get minimumSystemGarrison(): number {
+    const production = this.state.factories;
+    return 3 * production + 3 * -this.morale;
+  }
+
+  /**
+   * Minimum amount of troops needed.
+   *
+   * 3x PRODUCTION + 3x (-MORALE).
+   *
+   * @param planet
+   */
+  private minimumPlanetGarrison(planet: PlanetState): number {
+    const production = this.state.factories;
+    return 3 * production + 3 * -planet.morale;
+  }
+
+  /**
+   * Returns whether garrison requirements are met for a planet.
+   *
+   * @param planet
+   */
+  isGarrisonMet(planet?: PlanetState): boolean {
+    const ships = this.state.warShips + this.state.stealthShips;
+    return planet
+      ? planet.owner === this.state.owner &&
+          planet.troops >= this.minimumPlanetGarrison(planet)
+      : ships >= this.minimumSystemGarrison;
+  }
+
+  /**
    * Position of the system.
    */
   get position(): Point {
