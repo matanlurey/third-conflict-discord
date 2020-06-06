@@ -22,6 +22,9 @@ test('getSimpleUsage() of Commands', () => {
     move <target> [options]
     Reinforce a friendly system.
 
+    recall <number> [options]
+    Recall a fleet or scount.
+
     scan <target>
     Show intelligence about aother system.
 
@@ -133,6 +136,11 @@ test('getRichUsage() of Commands', () => {
         {
           \\"name\\": \\"move <target> [options]\\",
           \\"value\\": \\"Reinforce a friendly system.\\",
+          \\"inline\\": false
+        },
+        {
+          \\"name\\": \\"recall <number> [options]\\",
+          \\"value\\": \\"Recall a fleet or scount.\\",
           \\"inline\\": false
         },
         {

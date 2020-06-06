@@ -17,27 +17,7 @@ export default function (game: Game): CliGameHooks {
       return game.findSystem(system);
     },
     closest: (player, target, options): System | undefined => {
-      const friendly = player.filterSystems(game.systems);
-      if (!friendly.length) {
-        return;
-      }
-      let system: System | undefined;
-      let closest = Number.MAX_SAFE_INTEGER;
-      for (const source of friendly) {
-        if (
-          options &&
-          options.not &&
-          options.not.state.name === source.state.name
-        ) {
-          continue;
-        }
-        const distance = source.position.distance(target.position);
-        if (distance < closest) {
-          closest = distance;
-          system = source;
-        }
-      }
-      return system;
+      return game.findClosest(player, target, options?.not);
     },
   };
 }

@@ -19,11 +19,12 @@
 - [x] Add load/unload.
 
 - [x] Fix morale calculation.
-- [ ] Allow building planets.
+- [x] Allow building planets.
 - [x] Return scouts.
 
 - [x] Incoming fleets.
-- [ ] Redirect fleets/scouts if recalled system was conquered.
+- [x] Redirect fleets/scouts if recalled system was conquered.
+- [x] Recall fleet.
 
 - [ ] Random combat ratings at start.
 - [ ] Change combat ratings after combat.
@@ -46,7 +47,6 @@
 - [ ] End of turn: Morale Check / Revolts / Unrest.
 
 - [ ] More details to combat report.
-- [ ] Recall fleet.
 - [ ] Increase morale of planets when system captured.
 - [ ] Invert morale of planets when invaded.
 - [ ] Privateers.

@@ -13,7 +13,6 @@ const game = Game.start(fs.readJsonSync(path.join('data', load)), [
   {
     fogOfWar: {},
     name: 'Local',
-    // TODO: A better way to determine this.
     ratings: {
       ground: 70,
       naval: 70,

@@ -30,21 +30,6 @@ export interface CliHandler {
   end(user: Player): void;
 
   /**
-   * Issues an invade command.
-   *
-   * @param target
-   * @param command
-   * @param planet
-   * @param troops
-   */
-  troops(
-    target: System,
-    command: 'load' | 'unload',
-    planet: number,
-    troops: number,
-  ): void;
-
-  /**
    * Issues an move command.
    *
    * @param source
@@ -52,6 +37,15 @@ export interface CliHandler {
    * @param fleet
    */
   move(source: System, target: System, fleet: Fleet): void;
+
+  /**
+   * Issues a recall command.
+   *
+   * @param user
+   * @param index
+   * @param isScout
+   */
+  recall(user: Player, index: number, isScout: boolean): void;
 
   /**
    * Issues a scan command.
@@ -75,4 +69,19 @@ export interface CliHandler {
    * @param user
    */
   summary(user: Player): void;
+
+  /**
+   * Issues an invade command.
+   *
+   * @param target
+   * @param command
+   * @param planet
+   * @param troops
+   */
+  troops(
+    target: System,
+    command: 'load' | 'unload',
+    planet: number,
+    troops: number,
+  ): void;
 }

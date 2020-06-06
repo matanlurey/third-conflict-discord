@@ -5,7 +5,7 @@ import { NewlyCreatedGame } from '../save';
 import { Dispatch, DispatchState, Scout, ScoutState } from './fleet';
 import { Player, PlayerState } from './player';
 import { CombatReport } from './report';
-import { System, SystemState } from './system';
+import { PlanetState, System, SystemState } from './system';
 
 export interface GameState extends NewlyCreatedGame {
   /**
@@ -169,14 +169,61 @@ export class Game {
       .reverse()
       .forEach((fleet, i) => {
         fleet.move(settings.shipSpeedATurn);
-        if (fleet.hasReachedTarget) {
-          // TODO: Recall/Gift/Etc.
+        const target = this.mustSystem(fleet.state.target);
+        if (
+          fleet.state.mission === 'reinforce' &&
+          target.state.owner !== fleet.state.owner
+        ) {
+          this.recallUnit(fleet);
+        } else if (fleet.hasReachedTarget) {
+          // TODO: Gif.
           this.state.fleets.splice(i, 1);
           this.resolveCombatOrMovement(fleet);
         } else {
-          this.detectIncoming(fleet, this.mustSystem(fleet.state.target));
+          this.detectIncoming(fleet, target);
         }
       });
+  }
+
+  findClosest(
+    player: Player,
+    target: System,
+    not?: System,
+  ): System | undefined {
+    const friendly = player.filterSystems(this.systems);
+    if (!friendly.length) {
+      return;
+    }
+    let system: System | undefined;
+    let closest = Number.MAX_SAFE_INTEGER;
+    for (const source of friendly) {
+      if (not && not.state.name === source.state.name) {
+        continue;
+      }
+      const distance = source.position.distance(target.position);
+      if (distance < closest) {
+        closest = distance;
+        system = source;
+      }
+    }
+    return system;
+  }
+
+  recallUnit(unit: Dispatch | Scout): void {
+    const source = this.mustSystem(unit.state.source);
+    const owner = unit.state.owner;
+    let target = source;
+    if (source.state.owner !== owner) {
+      const find = this.findClosest(this.mustPlayer(owner), source, source);
+      if (!find) {
+        throw new GameStateError(
+          `Could not recall - you have no more systems!`,
+        );
+      } else {
+        target = find;
+      }
+    }
+    unit.recall(target.position.distance(source.position));
   }
 
   private revealSystem(dueTo: Scout | Dispatch): void {
@@ -264,7 +311,7 @@ export class Game {
     this.systems.forEach((s) =>
       s.produce({
         buildPlanet: () => {
-          throw `Unimplemented: buildPlanet`;
+          return this.createPlanet(s.state.owner, s.morale);
         },
       }),
     );
@@ -327,6 +374,17 @@ export class Game {
       throw new GameStateError(`No player with ID "${userId}".`);
     }
     return result;
+  }
+
+  createPlanet(owner: string, morale = 0): PlanetState {
+    const chance = new Chance(this.state.seed);
+    const troops = chance.integer({ min: 40, max: 100 });
+    return {
+      owner,
+      morale: morale,
+      recruit: 7,
+      troops,
+    };
   }
 
   get fleets(): Dispatch[] {

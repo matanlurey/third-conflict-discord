@@ -111,7 +111,7 @@ describe('', () => {
         Alfa. P: nothing, T: 0, M: 0
 
       SCOUTS:
-        Alfa -> Bravo (ETA Turn 3)
+        #1 Alfa -> Bravo (ETA Turn 3)
 
       FLEETS:
         <None>"
@@ -131,7 +131,7 @@ describe('', () => {
         Alfa. P: nothing, T: 0, M: 0
 
       SCOUTS:
-        Alfa -> Bravo (ETA Turn 3)
+        #1 Alfa -> Bravo (ETA Turn 3)
 
       FLEETS:
         <None>"
@@ -150,7 +150,7 @@ describe('', () => {
         Alfa. P: nothing, T: 0, M: 0
 
       SCOUTS:
-        Alfa -> Bravo (ETA Turn 3)
+        #1 Alfa -> Bravo (ETA Turn 3)
 
       FLEETS:
         <None>"
@@ -169,7 +169,7 @@ describe('', () => {
         Alfa. P: nothing, T: 0, M: 0
 
       SCOUTS:
-        Bravo -> Alfa [Returning] (ETA Turn 5)
+        #1 Bravo -> Alfa [Returning] (ETA Turn 5)
 
       FLEETS:
         <None>"
@@ -188,7 +188,7 @@ describe('', () => {
         Alfa. P: nothing, T: 0, M: 0
 
       SCOUTS:
-        Bravo -> Alfa [Returning] (ETA Turn 5)
+        #1 Bravo -> Alfa [Returning] (ETA Turn 5)
 
       FLEETS:
         <None>"

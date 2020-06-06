@@ -44,7 +44,7 @@ describe('', () => {
         <None>
 
       FLEETS:
-        Alfa -> Bravo: 25 [Returning] (ETA Turn 4)"
+        #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)"
     `);
     expect(parse('end')).toMatchInlineSnapshot(`
       "
@@ -64,7 +64,7 @@ describe('', () => {
         <None>
 
       FLEETS:
-        Alfa -> Bravo: 25 [Returning] (ETA Turn 4)"
+        #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)"
     `);
     expect(parse('end')).toMatchInlineSnapshot(`
       "
@@ -79,6 +79,129 @@ describe('', () => {
       SYSTEMS:
         Alfa. P: nothing, T: 25, M: 0
         Bravo. P: nothing, T: 35, M: 0
+
+      SCOUTS:
+        <None>
+
+      FLEETS:
+        <None>"
+    `);
+  });
+
+  test('should recall a friendly fleet', () => {
+    bravo.state.owner = alfa.state.owner;
+    alfa.state.warShips = 50;
+    expect(parse('move B -w 25')).toMatchInlineSnapshot(`
+      "
+      Reinforcements of \\"25 ships\\" sent from \\"Alfa\\" to \\"Bravo\\"; eta 3 turns."
+    `);
+    expect(parse('end')).toMatchInlineSnapshot(`
+      "
+      Ended your turn.
+      Summary of Admiral Player 1 on turn 2.
+
+      A • • • • • • • • • B
+
+      REPORTS:
+        <None>
+
+      SYSTEMS:
+        Alfa. P: nothing, T: 25, M: 0
+        Bravo. P: nothing, T: 10, M: 0
+
+      SCOUTS:
+        <None>
+
+      FLEETS:
+        #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)"
+    `);
+    expect(parse('recall 1')).toMatchInlineSnapshot(`
+      "
+      Recalled fleet #1 to Alfa."
+    `);
+    expect(alfa.state.warShips).toEqual(25);
+    expect(parse('end')).toMatchInlineSnapshot(`
+      "
+      Ended your turn.
+      Summary of Admiral Player 1 on turn 3.
+
+      A • • • • • • • • • B
+
+      REPORTS:
+        <None>
+
+      SYSTEMS:
+        Alfa. P: nothing, T: 50, M: 0
+        Bravo. P: nothing, T: 10, M: 0
+
+      SCOUTS:
+        <None>
+
+      FLEETS:
+        <None>"
+    `);
+    expect(alfa.state.warShips).toEqual(50);
+  });
+
+  test('should recall a friendly fleet automatically', () => {
+    bravo.state.owner = alfa.state.owner;
+    alfa.state.warShips = 50;
+    expect(parse('move B -w 25')).toMatchInlineSnapshot(`
+      "
+      Reinforcements of \\"25 ships\\" sent from \\"Alfa\\" to \\"Bravo\\"; eta 3 turns."
+    `);
+    expect(parse('end')).toMatchInlineSnapshot(`
+      "
+      Ended your turn.
+      Summary of Admiral Player 1 on turn 2.
+
+      A • • • • • • • • • B
+
+      REPORTS:
+        <None>
+
+      SYSTEMS:
+        Alfa. P: nothing, T: 25, M: 0
+        Bravo. P: nothing, T: 10, M: 0
+
+      SCOUTS:
+        <None>
+
+      FLEETS:
+        #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)"
+    `);
+    bravo.state.owner = 'Empire';
+    expect(parse('end')).toMatchInlineSnapshot(`
+      "
+      Ended your turn.
+      Summary of Admiral Player 1 on turn 3.
+
+      A • • • • • • • • • B
+
+      REPORTS:
+        <None>
+
+      SYSTEMS:
+        Alfa. P: nothing, T: 25, M: 0
+
+      SCOUTS:
+        <None>
+
+      FLEETS:
+        #1 Bravo -> Alfa: 25 [Returning] (ETA Turn 3)"
+    `);
+    expect(parse('end')).toMatchInlineSnapshot(`
+      "
+      Ended your turn.
+      Summary of Admiral Player 1 on turn 4.
+
+      A • • • • • • • • • B
+
+      REPORTS:
+        <None>
+
+      SYSTEMS:
+        Alfa. P: nothing, T: 50, M: 0
 
       SCOUTS:
         <None>

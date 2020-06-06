@@ -92,6 +92,13 @@ export default function (
           'Defaults to the closest system you control.',
       }),
     ]),
+    new Command('recall', 'Recall a fleet or scount.', [
+      new Option('number', 0, { description: 'Fleet or scout number.' }),
+      new Option('scout', 's', {
+        default: false,
+        description: 'Recalls scout (not fleet).',
+      }),
+    ]),
     new Command('scan', 'Show intelligence about aother system.', [
       new Option('target', 0, { description: 'Target system.' }),
     ]),

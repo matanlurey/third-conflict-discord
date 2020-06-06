@@ -139,12 +139,12 @@ export class SimpleUI extends UI<string> {
       `\nSCOUTS:`,
       ...(scouts.length === 0
         ? [`  <None>`]
-        : scouts.map((s) => {
-            let recall = '';
+        : scouts.map((s, i) => {
+            let recall = ``;
             if (controls.has(s.state.target)) {
               recall = ` [Returning]`;
             }
-            return `  ${s.state.source} -> ${
+            return `  #${i + 1} ${s.state.source} -> ${
               s.state.target
             }${recall} (ETA Turn ${
               currentTurn + s.eta(settings.shipSpeedATurn)
@@ -153,7 +153,7 @@ export class SimpleUI extends UI<string> {
       `\nFLEETS:`,
       ...(fleets.length === 0
         ? [`  <None>`]
-        : fleets.map((s) => {
+        : fleets.map((s, i) => {
             let recall = '';
             if (controls.has(s.state.target)) {
               recall = ` [Returning]`;
@@ -163,7 +163,7 @@ export class SimpleUI extends UI<string> {
               s.state.stealthShips +
               s.state.missiles +
               s.state.transports;
-            return `  ${s.state.source} -> ${
+            return `  #${i + 1} ${s.state.source} -> ${
               s.state.target
             }: ${total}${recall} (ETA Turn ${
               currentTurn + s.eta(settings.shipSpeedATurn)

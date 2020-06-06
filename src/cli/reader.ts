@@ -186,16 +186,18 @@ export class CliReader {
         return this.processBuild(player, options);
       case 'end':
         return this.handler.end(player);
-      case 'troops':
-        return this.processTroops(player, options);
       case 'move':
         return this.processMove(player, options);
+      case 'recall':
+        return this.processRecall(player, options);
       case 'scan':
         return this.processScan(player, options);
       case 'scout':
         return this.processScout(player, options);
       case 'summary':
         return this.handler.summary(player);
+      case 'troops':
+        return this.processTroops(player, options);
       default:
         throw new Error(`Unimplemented: "${command}".`);
     }
@@ -311,6 +313,12 @@ export class CliReader {
         buildPoints,
       }),
     );
+  }
+
+  private processRecall(user: Player, options: OptionReader): void {
+    const number = options.requireNumber('number');
+    const isScout = options.requireBoolean('scout');
+    return this.handler.recall(user, number, isScout);
   }
 
   private processScout(user: Player, options: OptionReader): void {

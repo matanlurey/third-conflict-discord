@@ -362,6 +362,25 @@ export class Session implements CliHandler {
     );
   }
 
+  recall(user: Player, number: number, isScout: boolean): void {
+    const index = number - 1;
+    const units = isScout
+      ? user.filterScouts(this.game.scouts)
+      : user.filterFleets(this.game.fleets);
+    const select = units[index];
+    if (select === undefined) {
+      throw new GameStateError(
+        `No ${isScout ? 'scout' : 'fleet'} number ${number}.`,
+      );
+    }
+    this.game.recallUnit(select);
+    this.reply(
+      `Recalled ${isScout ? 'scout' : 'fleet'} #${number} to ${
+        select.state.target
+      }.`,
+    );
+  }
+
   summary(user: Player): void {
     const settings = this.game.state.settings;
     const currentTurn = this.game.state.turn;

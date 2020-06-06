@@ -69,7 +69,7 @@ export class Moveable {
     const { source, target } = this.state;
     this.state.target = source;
     this.state.source = target;
-    this.state.distance = distance;
+    this.state.distance = distance - this.state.distance;
   }
 
   shouldReveal(target: System): boolean {
@@ -328,11 +328,16 @@ export interface DispatchState extends FleetState, MoveState {
    * Undefined means the fleet is either stationary (if orbiting a
    * system) or being moved to a friendly location (e.g. not attacking).
    */
-  readonly mission: Mission;
+  mission: Mission;
 }
 
 export class Dispatch extends Mixin(Fleet, Moveable) {
   constructor(public state: DispatchState) {
     super(state);
+  }
+
+  recall(distance: number): void {
+    super.recall(distance);
+    this.state.mission = 'reinforce';
   }
 }
