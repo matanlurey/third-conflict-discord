@@ -16,14 +16,21 @@ export default function (game: Game): CliGameHooks {
     system: (system): System | undefined => {
       return game.findSystem(system);
     },
-    closest: (player, target): System | undefined => {
+    closest: (player, target, options): System | undefined => {
       const friendly = player.filterSystems(game.systems);
       if (!friendly.length) {
         return;
       }
-      let system!: System;
+      let system: System | undefined;
       let closest = Number.MAX_SAFE_INTEGER;
       for (const source of friendly) {
+        if (
+          options &&
+          options.not &&
+          options.not.state.name === source.state.name
+        ) {
+          continue;
+        }
         const distance = source.position.distance(target.position);
         if (distance < closest) {
           closest = distance;

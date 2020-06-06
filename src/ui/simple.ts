@@ -1,48 +1,11 @@
 import { capitalCase } from 'change-case';
-import { MessageEmbed } from 'discord.js';
-import { simpleVisualize } from './game/map/visualize';
-import { Dispatch, Fleet, Scout } from './game/state/fleet';
-import { HiddenSystemState, Player } from './game/state/player';
-import { CombatReport } from './game/state/report';
-import { Settings } from './game/state/settings';
-import { Production, System, SystemState } from './game/state/system';
-
-export abstract class UI<
-  T extends string | MessageEmbed = string | MessageEmbed
-> {
-  abstract ackEndTurn(): T;
-
-  abstract changeProduction(target: System, unitType: Production): T;
-
-  abstract displaySystem(
-    pointOfView: Player,
-    target: SystemState | HiddenSystemState,
-  ): T;
-
-  abstract displaySummary(
-    setting: Settings,
-    pointOfView: Player,
-    currentTurn: number,
-    allSystems: System[],
-    systems: System[],
-    scouts: Scout[],
-    fleets: Dispatch[],
-  ): T;
-
-  abstract sentAttack(
-    from: System,
-    to: System,
-    etaTurns: number,
-    unitTypes: Fleet,
-  ): T;
-
-  abstract sentScout(
-    from: System,
-    to: System,
-    etaTurns: number,
-    shipType: 'WarShip' | 'StealthShip',
-  ): T;
-}
+import { simpleVisualize } from '../game/map/visualize';
+import { Dispatch, Fleet, Scout } from '../game/state/fleet';
+import { HiddenSystemState, Player } from '../game/state/player';
+import { CombatReport } from '../game/state/report';
+import { Settings } from '../game/state/settings';
+import { Production, System, SystemState } from '../game/state/system';
+import { UI } from './interface';
 
 function mask(input: unknown): string {
   return input === undefined ? '?' : `${input}`;
@@ -55,6 +18,18 @@ export class SimpleUI extends UI<string> {
 
   changeProduction(target: System, unitType: Production): string {
     return `Now producing "${unitType}" at "${target.state.name}".`;
+  }
+
+  defendedPlanet(target: System, index: number, remaining: number): string {
+    return `System ${target.state.name} planet ${
+      index + 1
+    } defended an attack with ${remaining} troops left.`;
+  }
+
+  invadedPlanet(target: System, index: number, remaining: number): string {
+    return `System ${target.state.name} planet ${
+      index + 1
+    } was invaded with ${remaining} troops.`;
   }
 
   displaySystem(
@@ -248,6 +223,23 @@ export class SimpleUI extends UI<string> {
       unitTypes.state.transports;
     return (
       `Attack "${total} ships" sent from "${from.state.name}" to ` +
+      `"${to.state.name}"; eta ${etaTurns} turns.`
+    );
+  }
+
+  sentMove(
+    from: System,
+    to: System,
+    etaTurns: number,
+    unitTypes: Fleet,
+  ): string {
+    const total =
+      unitTypes.state.warShips +
+      unitTypes.state.stealthShips +
+      unitTypes.state.missiles +
+      unitTypes.state.transports;
+    return (
+      `Reinforcements of "${total} ships" sent from "${from.state.name}" to ` +
       `"${to.state.name}"; eta ${etaTurns} turns.`
     );
   }

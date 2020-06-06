@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Chance } from 'chance';
 import { MessageEmbed } from 'discord.js';
+import { CliHandler } from './cli/handler';
 import gameHook from './cli/hooks';
 import {
   ArgumentError,
-  CliHandler,
   CliMessenger,
   CliReader,
   GameStateError,
@@ -11,11 +11,17 @@ import {
 import { Command } from './command/config';
 import { parse } from './command/parser';
 import commands from './commands';
+import { determineGroundResults } from './game/combat/ground';
 import { Fleet } from './game/state/fleet';
 import { Game } from './game/state/game';
 import { HiddenSystemState, Player } from './game/state/player';
-import { Production, System, SystemState } from './game/state/system';
-import { UI } from './ui';
+import {
+  PlanetState,
+  Production,
+  System,
+  SystemState,
+} from './game/state/system';
+import { UI } from './ui/interface';
 
 export class Session implements CliHandler {
   private readonly commands: Command[];
@@ -70,8 +76,11 @@ export class Session implements CliHandler {
           console.warn(`Failed: "${input}"`, e);
         }
       } else {
-        // TODO: Handle.
-        console.error('Unhandled error', e);
+        if (this.logWarnings) {
+          console.error('Unhandled error', e);
+        } else {
+          throw e;
+        }
       }
     } finally {
       this.replyTo = undefined;
@@ -99,6 +108,99 @@ export class Session implements CliHandler {
   end(user: Player): void {
     this.reply(this.ui.ackEndTurn());
     this.game.endTurn(user);
+  }
+
+  invade(target: System, planet: number, amount: number): void {
+    console.log('invade', target.state, planet, amount);
+    if (target.state.troops === 0) {
+      throw new GameStateError(`You have no troops at ${target.state.name}.`);
+    }
+    if (amount > target.state.troops) {
+      throw new GameStateError(
+        `Not enough troops: specified ${amount}, has ${target.state.troops}.`,
+      );
+    }
+    if (amount === 0) {
+      amount = target.state.troops;
+    }
+    if (planet === 0) {
+      // Need at least N troops.
+      const toInvade = target.state.planets.filter(
+        (p) => p.owner !== target.state.owner,
+      );
+      const planets = toInvade.length;
+      if (amount < planets) {
+        throw new GameStateError(`Not enough troops to automatically invade.`);
+      }
+      const each = amount / planets;
+      toInvade.forEach((p, i) => this.invadePlanet(target, p, i, each));
+    } else {
+      const index = planet - 1;
+      const state = target.state.planets[index];
+      if (state === undefined) {
+        throw new GameStateError(
+          `No planet #${planet} in ${target.state.name}.`,
+        );
+      }
+      if (state.owner === target.state.owner) {
+        throw new GameStateError(`Cannot invade a friendly planet.`);
+      }
+      this.invadePlanet(target, state, index, amount);
+    }
+  }
+
+  private invadePlanet(
+    target: System,
+    planet: PlanetState,
+    index: number,
+    troops: number,
+  ): void {
+    // Reduce attacking troop strength immediately.
+    target.state.troops -= troops;
+
+    // Determine results.
+    const attacker = this.game.mustPlayer(target.state.owner);
+    const defender = this.game.mustPlayer(planet.owner);
+    const chance = new Chance(this.game.state.seed);
+    const results = determineGroundResults(
+      {
+        troops,
+        rating: attacker.state.ratings.ground,
+      },
+      {
+        troops: planet.troops,
+        rating: defender.state.ratings.ground,
+      },
+      chance,
+    );
+
+    if (results.winner === 'attacker') {
+      this.messenger.message(
+        attacker.state.userId,
+        this.ui.invadedPlanet(target, index, results.attacker),
+      );
+      planet.morale = -planet.morale;
+      planet.troops = results.attacker;
+      planet.owner = attacker.state.userId;
+    } else {
+      this.messenger.message(
+        attacker.state.userId,
+        this.ui.defendedPlanet(target, index, results.defender),
+      );
+    }
+  }
+
+  move(source: System, target: System, fleet: Fleet): void {
+    const dispatch = source.moveTo(source, target, fleet);
+    this.game.state.fleets.push(dispatch.state);
+    this.reply(
+      this.ui.sentMove(
+        source,
+        target,
+        dispatch.eta(this.game.state.settings.shipSpeedATurn),
+        dispatch,
+      ),
+    );
   }
 
   scan(user: Player, target: System): void {

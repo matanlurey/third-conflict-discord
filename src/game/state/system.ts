@@ -167,11 +167,20 @@ export class System extends Combatable {
   /**
    * Sends a reinforcement mission to the target system.
    *
+   * @param source
    * @param target
    * @param units
    */
-  moveTo(target: System, units: Fleet): Dispatch {
-    throw `UNIMPLEMENTED: ${target} ${units}`;
+  moveTo(source: System, target: System, units: Fleet): Dispatch {
+    const move = source.fork(units.state);
+    return new Dispatch({
+      ...move,
+      owner: source.state.owner,
+      source: source.state.name,
+      distance: source.position.distance(target.position),
+      mission: 'reinforce',
+      target: target.state.name,
+    });
   }
 
   /**

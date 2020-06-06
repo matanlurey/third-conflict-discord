@@ -9,13 +9,14 @@
 - [x] Add attack.
 - [x] Add build.
 - [x] Add end.
-- [ ] Add move.
+- [x] Add move.
 - [ ] Add gift.
 - [x] Add reports.
 - [x] Add scan.
 - [x] Add scout.
 - [x] Add summary.
 - [ ] Add invade.
+- [ ] Add load/unload.
 
   - "Admiral D invades planet 1 of SYSTES with N troops (N after losses)."
 

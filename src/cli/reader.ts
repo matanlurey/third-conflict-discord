@@ -3,6 +3,7 @@ import { Parsed } from '../command/parser';
 import { Fleet } from '../game/state/fleet';
 import { Player } from '../game/state/player';
 import { Production, System } from '../game/state/system';
+import { CliHandler } from './handler';
 
 type Options = { [key: string]: boolean | number | string | undefined };
 
@@ -94,7 +95,7 @@ export class OptionReader {
   requireString(name: string): string {
     const value = this.optionalString(name);
     if (value === undefined) {
-      throw new ArgumentError(name, value, 'Required argument.');
+      throw new ArgumentError(name, '<Undefined>', 'Required argument.');
     }
     return value;
   }
@@ -134,7 +135,7 @@ export class CliReader {
 
   private optionalSystem(
     name: string,
-    options?: { ownedBy?: string },
+    options?: { ownedBy?: string; notOwnedBy?: string },
   ): System | undefined {
     const system = this.game.system(name);
     if (!system) {
@@ -147,12 +148,24 @@ export class CliReader {
           throw new InvalidPlayerError(options.ownedBy);
         }
         throw new InvalidOwnerError(player, system);
+      } else if (
+        options.notOwnedBy &&
+        system.state.owner === options.notOwnedBy
+      ) {
+        const player = this.game.player(options.notOwnedBy);
+        if (!player) {
+          throw new InvalidPlayerError(options.notOwnedBy);
+        }
+        throw new InvalidOwnerError(player, system);
       }
     }
     return system;
   }
 
-  private requireSystem(name: string, options?: { ownedBy?: string }): System {
+  private requireSystem(
+    name: string,
+    options?: { ownedBy?: string; notOwnedBy?: string },
+  ): System {
     const system = this.optionalSystem(name, options);
     if (!system) {
       throw new InvalidSystem(name);
@@ -161,6 +174,7 @@ export class CliReader {
   }
 
   private process(user: string, command: string, options: OptionReader): void {
+    console.log(user, command);
     const player = this.game.player(user);
     if (!player) {
       throw new InvalidPlayerError(user);
@@ -172,6 +186,11 @@ export class CliReader {
         return this.processBuild(player, options);
       case 'end':
         return this.handler.end(player);
+      case 'invade':
+        console.log(command);
+        return this.processInvade(player, options);
+      case 'move':
+        return this.processMove(player, options);
       case 'scan':
         return this.processScan(player, options);
       case 'scout':
@@ -184,7 +203,9 @@ export class CliReader {
   }
 
   private processAttack(user: Player, options: OptionReader): void {
-    const target = this.requireSystem(options.requireString('target'));
+    const target = this.requireSystem(options.requireString('target'), {
+      notOwnedBy: user.state.userId,
+    });
     const source = ((): System | undefined => {
       const input = options.optionalString('source');
       return input
@@ -233,6 +254,61 @@ export class CliReader {
     return this.handler.build(source, produce as Production);
   }
 
+  private processInvade(user: Player, options: OptionReader): void {
+    console.log('processInvade()');
+    const target = this.requireSystem(options.requireString('target'), {
+      ownedBy: user.state.userId,
+    });
+    // TODO: Add and use .optionalNumber instead.
+    const planet = options.requireNumber('planet', 0);
+    const troops = options.requireNumber('troops', 0);
+    return this.handler.invade(target, planet, troops);
+  }
+
+  private processMove(user: Player, options: OptionReader): void {
+    const target = this.requireSystem(options.requireString('target'), {
+      ownedBy: user.state.userId,
+    });
+    const source = ((): System | undefined => {
+      const input = options.optionalString('source');
+      return input
+        ? this.requireSystem(input, { ownedBy: user.state.userId })
+        : this.game.closest(user, target, { not: target });
+    })();
+    if (!source) {
+      throw new GameStateError(
+        `Could not find a friendly system of "${user.state.name}".`,
+      );
+    }
+    const [
+      warShips,
+      stealthShips,
+      transports,
+      missiles,
+      troops,
+      buildPoints,
+    ] = [
+      options.requireInteger('warships'),
+      options.requireInteger('stealthships', 0),
+      options.requireInteger('transports'),
+      options.requireInteger('missiles', 0),
+      options.requireInteger('troops'),
+      options.requireInteger('points'),
+    ];
+    return this.handler.move(
+      source,
+      target,
+      new Fleet({
+        warShips,
+        stealthShips,
+        transports,
+        missiles,
+        troops,
+        buildPoints,
+      }),
+    );
+  }
+
   private processScout(user: Player, options: OptionReader): void {
     const target = this.requireSystem(options.requireString('target'));
     const source = ((): System | undefined => {
@@ -279,59 +355,11 @@ export interface CliGameHooks {
    * @param player
    * @param system
    */
-  closest(player: Player, system: System): System | undefined;
-}
-
-/**
- * How to handle valid requests.
- */
-export interface CliHandler {
-  /**
-   * Issues an attack command.
-   *
-   * @param source
-   * @param target
-   * @param fleet
-   */
-  attack(source: System, target: System, fleet: Fleet): void;
-
-  /**
-   * Issues a build command.
-   *
-   * @param source
-   * @param unit
-   */
-  build(source: System, unit: Production): void;
-
-  /**
-   * Issues an end-turn command.
-   *
-   * @param user
-   */
-  end(user: Player): void;
-
-  /**
-   * Issues a scan command.
-   *
-   * @param user
-   * @param target
-   */
-  scan(user: Player, target: System): void;
-
-  /**
-   * Issues a scout command.
-   *
-   * @param target
-   * @param source
-   */
-  scout(target: System, source: System): void;
-
-  /**
-   * Issues a summary request command.
-   *
-   * @param user
-   */
-  summary(user: Player): void;
+  closest(
+    player: Player,
+    system: System,
+    options?: { not: System },
+  ): System | undefined;
 }
 
 export interface CliMessenger {

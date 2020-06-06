@@ -2,7 +2,7 @@ import { Game } from '../../src/game/state/game';
 import { defaultSettings } from '../../src/game/state/settings';
 import { System } from '../../src/game/state/system';
 import { Session } from '../../src/session';
-import { SimpleUI } from '../../src/ui';
+import { SimpleUI } from '../../src/ui/simple';
 
 export function simpleABSession(): {
   alfa: System;

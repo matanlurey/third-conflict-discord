@@ -19,6 +19,12 @@ test('getSimpleUsage() of Commands', () => {
     end
     Ends your turn.
 
+    invade <target> [options]
+    Invade planet(s) in an occupied system.
+
+    move <target> [options]
+    Reinforce a friendly system.
+
     scan <target>
     Show intelligence about aother system.
 
@@ -122,6 +128,16 @@ test('getRichUsage() of Commands', () => {
         {
           \\"name\\": \\"end\\",
           \\"value\\": \\"Ends your turn.\\",
+          \\"inline\\": false
+        },
+        {
+          \\"name\\": \\"invade <target> [options]\\",
+          \\"value\\": \\"Invade planet(s) in an occupied system.\\",
+          \\"inline\\": false
+        },
+        {
+          \\"name\\": \\"move <target> [options]\\",
+          \\"value\\": \\"Reinforce a friendly system.\\",
           \\"inline\\": false
         },
         {

@@ -5,7 +5,7 @@ import readLine from 'readline';
 import { simpleVisualize } from '../src/game/map/visualize';
 import { Game } from '../src/game/state/game';
 import { Session } from '../src/session';
-import { SimpleUI } from '../src/ui';
+import { SimpleUI } from '../src/ui/simple';
 
 const args = minimist(process.argv.slice(2));
 const load = args._[0];

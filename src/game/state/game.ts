@@ -172,7 +172,7 @@ export class Game {
         if (fleet.hasReachedTarget) {
           // TODO: Recall/Gift/Etc.
           this.state.fleets.splice(i, 1);
-          this.resolveCombat(fleet);
+          this.resolveCombatOrMovement(fleet);
         } else {
           this.detectIncoming(fleet, this.mustSystem(fleet.state.target));
         }
@@ -196,7 +196,10 @@ export class Game {
     };
   }
 
-  private resolveCombat(fleet: Dispatch): void {
+  private resolveCombatOrMovement(fleet: Dispatch): void {
+    if (fleet.state.mission === 'reinforce') {
+      return this.resolveMoveFinished(fleet);
+    }
     if (fleet.state.mission === 'conquest') {
       const conquest = new Conquest(new Chance(this.state.seed));
       const attacker = this.mustPlayer(fleet.state.owner);
@@ -233,6 +236,11 @@ export class Game {
         `Unsupported mission: "${fleet.state.mission}".`,
       );
     }
+  }
+
+  private resolveMoveFinished(fleet: Dispatch): void {
+    const target = this.mustSystem(fleet.state.target);
+    target.add(fleet.state);
   }
 
   private transferOwnership(to: Player, target: System): void {

@@ -310,7 +310,7 @@ export class Fleet extends Combatable {
 /**
  * Type of fleet missions.
  */
-export type Mission = 'conquest' | 'resource-raid' | 'probe';
+export type Mission = 'conquest' | 'resource-raid' | 'probe' | 'reinforce';
 
 /**
  * A fleet on its way to another system.

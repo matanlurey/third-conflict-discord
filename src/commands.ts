@@ -82,6 +82,30 @@ export default function (
       }),
     ]),
     new Command('end', 'Ends your turn.'),
+    new Command('invade', 'Invade planet(s) in an occupied system.', [
+      new Option('target', 0, {
+        description: 'Target system',
+      }),
+      new Option('planet', 'p', {
+        description:
+          '' +
+          'Planet number (1 to N). ' +
+          'If not specified, splits troops automatically.',
+      }),
+      new Option('troops', 't', {
+        description: 'Amount of troops. Defaults to all.',
+      }),
+    ]),
+    new Command('move', 'Reinforce a friendly system.', [
+      ...basicUnits(),
+      ...(options.enableNoviceMode ? [] : advancedUnits()),
+      new Option('source', 'o', {
+        description:
+          '' +
+          'Source system. ' +
+          'Defaults to the closest system you control.',
+      }),
+    ]),
     new Command('scan', 'Show intelligence about aother system.', [
       new Option('target', 0, { description: 'Target system.' }),
     ]),

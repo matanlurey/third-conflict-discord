@@ -66,6 +66,7 @@ describe('CliReader', () => {
     mockHandlers = {
       attack: jest.fn(),
       build: jest.fn(),
+      invade: jest.fn(),
       end: jest.fn(),
       scan: jest.fn(),
       scout: jest.fn(),
@@ -85,7 +86,7 @@ describe('CliReader', () => {
     });
 
     test('should throw [invalid target]', () => {
-      mockHooks.player.mockReturnValue({});
+      mockHooks.player.mockReturnValue({ state: {} });
       expect(() =>
         reader.read('1234', cli('attack Alfa')),
       ).toThrowErrorMatchingInlineSnapshot(
@@ -148,6 +149,24 @@ describe('CliReader', () => {
       mockHooks.player.mockReturnValue({ state: { name: 'Joe' } });
       reader.read('1234', cli('end'));
       expect(mockHandlers.end.mock.calls).toHaveLength(1);
+    });
+  });
+
+  describe('invade', () => {
+    test.only('should throw [invalid system]', () => {
+      mockHooks.player.mockReturnValue({ state: { name: 'Joe' } });
+      expect(() =>
+        reader.read('1234', cli('invade Alfa')),
+      ).toThrowErrorMatchingInlineSnapshot(
+        `"Invalid system: \\"Alfa\\" is not in the game."`,
+      );
+    });
+
+    test('should call handler.invade', () => {
+      mockHooks.system.mockReturnValue({});
+      mockHooks.player.mockReturnValue({ state: { name: 'Joe' } });
+      reader.read('1234', cli('invade Alfa'));
+      expect(mockHandlers.invade.mock.calls).toHaveLength(1);
     });
   });
 
