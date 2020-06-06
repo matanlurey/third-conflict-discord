@@ -107,9 +107,9 @@ export class SimpleUI extends UI<string> {
               case 'combat':
                 return this.displayCombat(r);
               case 'detect':
-                return `  Incoming ${r.missiles ? 'missiles' : 'fleet'} to ${
-                  r.system
-                }; eta turn ${currentTurn + r.eta}`;
+                return `  Incoming approximately ${r.size} ${
+                  r.missiles ? 'missile(s)' : 'flee(t)'
+                } to ${r.system}; eta turn ${currentTurn + r.eta}`;
               case 'unrest':
                 if (r.planet) {
                   return `  Discontent builds on planet ${r.planet} of ${r.system}`;

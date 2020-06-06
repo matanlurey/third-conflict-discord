@@ -256,6 +256,12 @@ export abstract class Combatable {
     }
     return result;
   }
+
+  get remainingCapacity(): number {
+    const transports = this.state.transports;
+    const occupied = (this.state.troops + this.state.buildPoints) / 50;
+    return (transports - occupied) * 50;
+  }
 }
 
 export class Fleet extends Combatable {

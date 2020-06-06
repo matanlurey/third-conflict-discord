@@ -110,8 +110,17 @@ export class Session implements CliHandler {
     this.game.endTurn(user);
   }
 
-  invade(target: System, planet: number, amount: number): void {
-    console.log('invade', target.state, planet, amount);
+  troops(
+    target: System,
+    command: 'unload' | 'load' | 'invade',
+    planet: number,
+    amount: number,
+  ): void {
+    if (command == 'load') {
+      return this.loadTroops(target, planet, amount);
+    }
+
+    // Will either be invaidng or garrisoning.
     if (target.state.troops === 0) {
       throw new GameStateError(`You have no troops at ${target.state.name}.`);
     }
@@ -123,6 +132,15 @@ export class Session implements CliHandler {
     if (amount === 0) {
       amount = target.state.troops;
     }
+
+    if (command === 'invade') {
+      return this.invadeSystem(target, planet, amount);
+    } else {
+      return this.unloadTroops(target, planet, amount);
+    }
+  }
+
+  private invadeSystem(target: System, planet: number, amount: number): void {
     if (planet === 0) {
       // Need at least N troops.
       const toInvade = target.state.planets.filter(
@@ -143,9 +161,108 @@ export class Session implements CliHandler {
         );
       }
       if (state.owner === target.state.owner) {
-        throw new GameStateError(`Cannot invade a friendly planet.`);
+        throw new GameStateError(
+          `Cannot invade a friendly planet ("did you mean "unload"?).`,
+        );
       }
       this.invadePlanet(target, state, index, amount);
+    }
+  }
+
+  private loadTroops(target: System, planet: number, amount: number): void {
+    let capacity = target.remainingCapacity;
+    if (capacity === 0) {
+      throw new GameStateError(`No remaining Transport capacity.`);
+    }
+    const controlled = target.state.planets.filter(
+      (f) => f.owner === target.state.owner,
+    );
+    if (controlled.length === 0) {
+      throw new GameStateError(
+        `You have no occupied planets in ${target.state.name}.`,
+      );
+    }
+    if (planet === 0) {
+      // Load as many troops as fit in transports.
+      function hasTroopsLeft(): boolean {
+        return controlled.some((x) => x.troops > 0);
+      }
+      let i = 0;
+      let t = 0;
+      if (amount === 0) {
+        amount = Number.MAX_SAFE_INTEGER;
+      }
+      while (amount > 0 && capacity > 0 && hasTroopsLeft()) {
+        if (controlled[i].troops > 0) {
+          controlled[i].troops--;
+          t++;
+          capacity--;
+          amount--;
+        }
+        i++;
+        if (i >= controlled.length) {
+          i = 0;
+        }
+      }
+      target.state.troops += t;
+      this.reply(`Loaded ${t} troop(s) from ${controlled.length} planet(s).`);
+      return;
+    } else {
+      const state = target.state.planets[planet - 1];
+      if (state === undefined) {
+        throw new GameStateError(
+          `No planet #${planet} in ${target.state.name}.`,
+        );
+      }
+      if (state.owner !== target.state.owner) {
+        throw new GameStateError(`Cannot load from an enemy planet.`);
+      }
+      if (amount === 0) {
+        const loading = state.troops;
+        target.state.troops += loading;
+        state.troops = 0;
+        this.reply(`Loaded ${loading} troop(s) from planet ${planet}.`);
+      } else if (state.troops < amount) {
+        throw new GameStateError(`Not enough troops at planet ${planet}.`);
+      } else {
+        target.state.troops += amount;
+        state.troops -= amount;
+        this.reply(`Loaded ${amount} troop(s) from planet ${planet}.`);
+      }
+    }
+  }
+
+  private unloadTroops(target: System, planet: number, amount: number): void {
+    if (planet === 0) {
+      // Need at least N troops.
+      const toUnloadTo = target.state.planets.filter(
+        (p) => p.owner === target.state.owner,
+      );
+      const planets = toUnloadTo.length;
+      if (amount < planets) {
+        throw new GameStateError(`Not enough troops to automatically unload.`);
+      }
+      const each = amount / planets;
+      toUnloadTo.forEach((p) => (p.troops += each));
+      target.state.troops = amount % planets;
+      this.reply(
+        `Unloaded ${amount} troops equally across ${toUnloadTo.length} planet(s).`,
+      );
+    } else {
+      const index = planet - 1;
+      const state = target.state.planets[index];
+      if (state === undefined) {
+        throw new GameStateError(
+          `No planet #${planet} in ${target.state.name}.`,
+        );
+      }
+      if (state.owner !== target.state.owner) {
+        throw new GameStateError(
+          `Cannot unload to an enemy planet (did you mean "invade"?).`,
+        );
+      }
+      state.troops += amount;
+      target.state.troops -= amount;
     }
   }
 

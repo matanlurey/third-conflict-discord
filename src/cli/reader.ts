@@ -186,9 +186,8 @@ export class CliReader {
         return this.processBuild(player, options);
       case 'end':
         return this.handler.end(player);
-      case 'invade':
-        console.log(command);
-        return this.processInvade(player, options);
+      case 'troops':
+        return this.processTroops(player, options);
       case 'move':
         return this.processMove(player, options);
       case 'scan':
@@ -254,15 +253,20 @@ export class CliReader {
     return this.handler.build(source, produce as Production);
   }
 
-  private processInvade(user: Player, options: OptionReader): void {
-    console.log('processInvade()');
-    const target = this.requireSystem(options.requireString('target'), {
+  private processTroops(user: Player, options: OptionReader): void {
+    const target = this.requireSystem(options.requireString('system'), {
       ownedBy: user.state.userId,
     });
     // TODO: Add and use .optionalNumber instead.
+    const command = options.requireString('command');
     const planet = options.requireNumber('planet', 0);
     const troops = options.requireNumber('troops', 0);
-    return this.handler.invade(target, planet, troops);
+    return this.handler.troops(
+      target,
+      command as 'load' | 'unload',
+      planet,
+      troops,
+    );
   }
 
   private processMove(user: Player, options: OptionReader): void {

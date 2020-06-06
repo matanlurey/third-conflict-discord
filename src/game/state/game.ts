@@ -248,11 +248,6 @@ export class Game {
   }
 
   private detectIncoming(from: Dispatch, target: System): void {
-    console.log('detectIncoming', {
-      isDetectable: from.isDetectable,
-      detectionRange: target.detectionRange,
-      distance: from.state.distance,
-    });
     if (!from.isDetectable) {
       return;
     }
@@ -260,6 +255,7 @@ export class Game {
       this.mustPlayer(target.state.owner).reportIncoming(
         from,
         this.state.settings.shipSpeedATurn,
+        new Chance(this.state.seed),
       );
     }
   }

@@ -33,10 +33,16 @@ export interface CliHandler {
    * Issues an invade command.
    *
    * @param target
+   * @param command
    * @param planet
    * @param troops
    */
-  invade(target: System, planet: number, troops: number): void;
+  troops(
+    target: System,
+    command: 'load' | 'unload',
+    planet: number,
+    troops: number,
+  ): void;
 
   /**
    * Issues an move command.

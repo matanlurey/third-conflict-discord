@@ -15,10 +15,8 @@
 - [x] Add scan.
 - [x] Add scout.
 - [x] Add summary.
-- [ ] Add invade.
-- [ ] Add load/unload.
-
-  - "Admiral D invades planet 1 of SYSTES with N troops (N after losses)."
+- [x] Add invade.
+- [x] Add load/unload.
 
 - [x] Fix morale calculation.
 - [ ] Allow building planets.
@@ -52,12 +50,12 @@
 - [ ] Increase morale of planets when system captured.
 - [ ] Invert morale of planets when invaded.
 - [ ] Privateers.
-- [ ] Scrape random events from game and add them.
-- [ ] Move homeworld.
-- [ ] Visualize incoming fleets as `!`.
+- [x] Scrape random events from game and add them.
+- [ ] Move homeworld (50pts).
 
 - [ ] Empire randomly attacks.
 - [ ] Add auto fleet composition / keep a garrison.
+- [ ] Visualize incoming fleets as `!`.
 
 - [ ] Add wreck.
 - [ ] Add probe.

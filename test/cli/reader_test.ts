@@ -66,11 +66,11 @@ describe('CliReader', () => {
     mockHandlers = {
       attack: jest.fn(),
       build: jest.fn(),
-      invade: jest.fn(),
       end: jest.fn(),
       scan: jest.fn(),
       scout: jest.fn(),
       summary: jest.fn(),
+      troops: jest.fn(),
     };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     reader = new CliReader(mockHooks as any, mockHandlers as any);
@@ -152,21 +152,40 @@ describe('CliReader', () => {
     });
   });
 
-  describe('invade', () => {
-    test.only('should throw [invalid system]', () => {
+  describe('troops', () => {
+    test('should throw [invalid system]', () => {
       mockHooks.player.mockReturnValue({ state: { name: 'Joe' } });
       expect(() =>
-        reader.read('1234', cli('invade Alfa')),
+        reader.read('1234', cli('troops unload Alfa')),
       ).toThrowErrorMatchingInlineSnapshot(
         `"Invalid system: \\"Alfa\\" is not in the game."`,
       );
     });
 
-    test('should call handler.invade', () => {
+    test('should throw [invalid sub-command]', () => {
       mockHooks.system.mockReturnValue({});
       mockHooks.player.mockReturnValue({ state: { name: 'Joe' } });
-      reader.read('1234', cli('invade Alfa'));
-      expect(mockHandlers.invade.mock.calls).toHaveLength(1);
+      expect(() =>
+        reader.read('1234', cli('troops explode Alfa')),
+      ).toThrowErrorMatchingInlineSnapshot(
+        `"Invalid: Invalid value \\"explode\\" for \\"command\\". Expected: \\"invade, load, unload\\".."`,
+      );
+    });
+
+    test('should call handler.troops', () => {
+      mockHooks.system.mockReturnValue({});
+      mockHooks.player.mockReturnValue({ state: { name: 'Joe' } });
+      reader.read('1234', cli('troops unload Alfa'));
+      expect(mockHandlers.troops.mock.calls).toMatchInlineSnapshot(`
+        Array [
+          Array [
+            Object {},
+            "unload",
+            0,
+            0,
+          ],
+        ]
+      `);
     });
   });
 

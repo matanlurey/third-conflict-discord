@@ -39,12 +39,14 @@ export class Player {
     return this.state.name.toUpperCase().trim() === 'EMPIRE';
   }
 
-  reportIncoming(fleet: Dispatch, speed: number): void {
+  reportIncoming(fleet: Dispatch, speed: number, fuzz: Chance.Chance): void {
+    let size = fleet.totalShips;
+    size = fuzz.integer({ min: size * 0.75, max: size * 1.25 });
     const report: DetectReport = {
       kind: 'detect',
       eta: fleet.eta(speed),
       missiles: fleet.isMissilesOnly,
-      size: fleet.totalShips,
+      size: size,
       system: fleet.state.target,
     };
     this.report(report);

@@ -82,20 +82,6 @@ export default function (
       }),
     ]),
     new Command('end', 'Ends your turn.'),
-    new Command('invade', 'Invade planet(s) in an occupied system.', [
-      new Option('target', 0, {
-        description: 'Target system',
-      }),
-      new Option('planet', 'p', {
-        description:
-          '' +
-          'Planet number (1 to N). ' +
-          'If not specified, splits troops automatically.',
-      }),
-      new Option('troops', 't', {
-        description: 'Amount of troops. Defaults to all.',
-      }),
-    ]),
     new Command('move', 'Reinforce a friendly system.', [
       ...basicUnits(),
       ...(options.enableNoviceMode ? [] : advancedUnits()),
@@ -119,5 +105,17 @@ export default function (
       }),
     ]),
     new Command('summary', 'Shows a summary of your game.'),
+    new Command('troops', 'Load/unload troops from planet(s)', [
+      new Option('command', 0, { allowed: ['invade', 'load', 'unload'] }),
+      new Option('system', 1, { description: 'Target system.' }),
+      new Option('amount', 2, {
+        description: 'Number of troops, otherwise maximum available.',
+        default: 0,
+      }),
+      new Option('planet', 'p', {
+        description: 'From/to planet, otherwise equally split.',
+        default: 0,
+      }),
+    ]),
   ];
 }

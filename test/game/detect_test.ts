@@ -170,7 +170,7 @@ describe('', () => {
       A • • • • • • • • • B
 
       REPORTS:
-        Incoming missiles to Alfa; eta turn 3
+        Incoming approximately 22 missile(s) to Alfa; eta turn 3
 
       SYSTEMS:
         Alfa. P: nothing, T: 0, M: 0

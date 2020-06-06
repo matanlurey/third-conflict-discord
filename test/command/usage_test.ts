@@ -19,9 +19,6 @@ test('getSimpleUsage() of Commands', () => {
     end
     Ends your turn.
 
-    invade <target> [options]
-    Invade planet(s) in an occupied system.
-
     move <target> [options]
     Reinforce a friendly system.
 
@@ -33,6 +30,9 @@ test('getSimpleUsage() of Commands', () => {
 
     summary
     Shows a summary of your game.
+
+    troops <command> <system> <amount> [options]
+    Load/unload troops from planet(s)
     "
   `);
 });
@@ -131,11 +131,6 @@ test('getRichUsage() of Commands', () => {
           \\"inline\\": false
         },
         {
-          \\"name\\": \\"invade <target> [options]\\",
-          \\"value\\": \\"Invade planet(s) in an occupied system.\\",
-          \\"inline\\": false
-        },
-        {
           \\"name\\": \\"move <target> [options]\\",
           \\"value\\": \\"Reinforce a friendly system.\\",
           \\"inline\\": false
@@ -153,6 +148,11 @@ test('getRichUsage() of Commands', () => {
         {
           \\"name\\": \\"summary\\",
           \\"value\\": \\"Shows a summary of your game.\\",
+          \\"inline\\": false
+        },
+        {
+          \\"name\\": \\"troops <command> <system> <amount> [options]\\",
+          \\"value\\": \\"Load/unload troops from planet(s)\\",
           \\"inline\\": false
         }
       ],
