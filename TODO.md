@@ -77,7 +77,7 @@
 - [x] Scrape random events from game and add them.
 - [ ] Move homeworld (50pts).
 
-- [ ] Empire randomly attacks.
+- [x] Empire randomly attacks.
 - [ ] Add auto fleet composition / keep a garrison.
 - [ ] Visualize incoming fleets as `!`.
 
@@ -86,7 +86,7 @@
 - [ ] Add raid.
 - [ ] Homeworld specific features (production limits).
 
-- [ ] Add AI.
+- [ ] Add general purpose AI.
 
 ## Commands
 
