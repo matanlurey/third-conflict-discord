@@ -205,7 +205,10 @@ export class DiscordUI implements UI<string | MessageEmbed> {
     showScouts: boolean,
   ): MessageEmbed {
     const map =
-      simpleVisualize(allSystems)
+      simpleVisualize(
+        allSystems,
+        systems.map((s) => s.state.name),
+      )
         .map((row) => row.map((col) => (col === '' ? '•' : col)).join(' '))
         .join('\n') + '\n';
 
@@ -375,7 +378,7 @@ export class DiscordUI implements UI<string | MessageEmbed> {
       return {
         name: `${system.state.name}`,
         value,
-        inline: true,
+        inline: false,
       };
     });
   }
@@ -389,7 +392,7 @@ export class DiscordUI implements UI<string | MessageEmbed> {
       return {
         name: `#${index + 1} ${scout.state.source} -> ${scout.state.target}`,
         value: `ETA Turn ${turn + scout.eta(speed)}`,
-        inline: true,
+        inline: false,
       };
     });
   }
@@ -409,7 +412,7 @@ export class DiscordUI implements UI<string | MessageEmbed> {
       return {
         name: `#${index + 1} ${fleet.state.source} -> ${fleet.state.target}`,
         value,
-        inline: true,
+        inline: false,
       };
     });
   }

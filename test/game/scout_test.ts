@@ -82,7 +82,7 @@ describe('', () => {
 
       SCORE: 25
 
-      A • • • • • • • • • B
+      [A] • • • • • • • • •  B 
 
       REPORTS:
         <None>
@@ -105,7 +105,7 @@ describe('', () => {
 
       SCORE: 25
 
-      A • • • • • • • • • B
+      [A] • • • • • • • • •  B 
 
       REPORTS:
         <None>
@@ -126,7 +126,7 @@ describe('', () => {
 
       SCORE: 25
 
-      A • • • • • • • • • B
+      [A] • • • • • • • • •  B 
 
       REPORTS:
         <None>
@@ -147,7 +147,7 @@ describe('', () => {
 
       SCORE: 25
 
-      A • • • • • • • • • B
+      [A] • • • • • • • • •  B 
 
       REPORTS:
         <None>
@@ -167,7 +167,7 @@ describe('', () => {
 
       SCORE: 25
 
-      A • • • • • • • • • B
+      [A] • • • • • • • • •  B 
 
       REPORTS:
         Scout reaches system Bravo
@@ -188,7 +188,7 @@ describe('', () => {
 
       SCORE: 25
 
-      A • • • • • • • • • B
+      [A] • • • • • • • • •  B 
 
       REPORTS:
         Scout reaches system Bravo

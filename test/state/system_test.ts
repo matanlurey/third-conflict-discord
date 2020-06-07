@@ -1,3 +1,5 @@
+import { GameStateError } from '../../src/cli/reader';
+import { Fleet } from '../../src/game/state/fleet';
 import { PlanetState, System } from '../../src/game/state/system';
 
 describe('produce', () => {
@@ -174,5 +176,47 @@ describe('morale', () => {
       ],
     });
     expect(system.morale).toBe(1);
+  });
+});
+
+describe('', () => {
+  let alfa: System;
+  let bravo: System;
+  let charlie: System;
+
+  beforeEach(() => {
+    alfa = System.create({
+      factories: 10,
+      home: false,
+      name: 'Alfa',
+      owner: '12345',
+      position: [0, 0],
+    });
+    bravo = System.create({
+      factories: 10,
+      home: false,
+      name: 'Alfa',
+      owner: '67890',
+      position: [0, 0],
+    });
+    charlie = System.create({
+      factories: 10,
+      home: false,
+      name: 'Alfa',
+      owner: '12345',
+      position: [0, 0],
+    });
+  });
+
+  test('should prevent attacking with 0 units', () => {
+    expect(() => alfa.attack(bravo, Fleet.create({}), 'conquest')).toThrowError(
+      GameStateError,
+    );
+  });
+
+  test('should prevent moving with 0 units', () => {
+    expect(() => alfa.moveTo(charlie, Fleet.create({}))).toThrowError(
+      GameStateError,
+    );
   });
 });

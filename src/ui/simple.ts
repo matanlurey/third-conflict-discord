@@ -84,7 +84,10 @@ export class SimpleUI extends UI<string> {
     showScouts: boolean,
   ): string {
     const visualize =
-      simpleVisualize(allSystems)
+      simpleVisualize(
+        allSystems,
+        systems.map((s) => s.state.name),
+      )
         .map((row) => row.map((col) => (col === '' ? '•' : col)).join(' '))
         .join('\n') + '\n';
     const controls = new Set(systems.map((s) => s.state.name));

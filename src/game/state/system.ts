@@ -1,3 +1,4 @@
+import { GameStateError } from '../../cli/reader';
 import { Combatable, Dispatch, Fleet, FleetState, Scout } from './fleet';
 import { Point, PointState } from './point';
 
@@ -168,18 +169,22 @@ export class System extends Combatable {
    * @param mission
    */
   attack(
-    source: System,
     target: System,
     units: Fleet,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     mission: Mission,
   ): Dispatch {
-    const move = source.fork(units.state);
+    if (!units.isMoveable) {
+      throw new GameStateError(
+        `Invalid fleet: You must have at least one ship.`,
+      );
+    }
+    const move = this.fork(units.state);
     return new Dispatch({
       ...move,
-      owner: source.state.owner,
-      source: source.state.name,
-      distance: source.position.distance(target.position),
+      owner: this.state.owner,
+      source: this.state.name,
+      distance: this.position.distance(target.position),
       mission: 'conquest',
       target: target.state.name,
     });
@@ -192,13 +197,18 @@ export class System extends Combatable {
    * @param target
    * @param units
    */
-  moveTo(source: System, target: System, units: Fleet): Dispatch {
-    const move = source.fork(units.state);
+  moveTo(target: System, units: Fleet): Dispatch {
+    if (!units.isMoveable) {
+      throw new GameStateError(
+        `Invalid fleet: You must have at least one ship.`,
+      );
+    }
+    const move = this.fork(units.state);
     return new Dispatch({
       ...move,
-      owner: source.state.owner,
-      source: source.state.name,
-      distance: source.position.distance(target.position),
+      owner: this.state.owner,
+      source: this.state.name,
+      distance: this.position.distance(target.position),
       mission: 'reinforce',
       target: target.state.name,
     });

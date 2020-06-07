@@ -30,7 +30,7 @@ describe('', () => {
 
       SCORE: 25
 
-      A • • • • • • • • • B
+      [A] • • • • • • • • •  B 
 
       REPORTS:
         <None>
@@ -51,7 +51,7 @@ describe('', () => {
 
       SCORE: 25
 
-      A • • • • • • • • • B
+      [A] • • • • • • • • •  B 
 
       REPORTS:
         <None>
@@ -72,7 +72,7 @@ describe('', () => {
 
       SCORE: 0
 
-      A • • • • • • • • • B
+       A  • • • • • • • • •  B 
 
       REPORTS:
         Combat @ Alfa resulted in defeat.
@@ -103,7 +103,7 @@ describe('', () => {
 
       SCORE: 35
 
-      A • • • • • • • • • B
+      [A] • • • • • • • • •  B 
 
       REPORTS:
         <None>
@@ -124,7 +124,7 @@ describe('', () => {
 
       SCORE: 35
 
-      A • • • • • • • • • B
+      [A] • • • • • • • • •  B 
 
       REPORTS:
         <None>
@@ -145,7 +145,7 @@ describe('', () => {
 
       SCORE: 35
 
-      A • • • • • • • • • B
+      [A] • • • • • • • • •  B 
 
       REPORTS:
         Combat @ Alfa resulted in victory.
@@ -181,7 +181,7 @@ describe('', () => {
 
       SCORE: 37
 
-      A • • • • • • • • • B
+      [A] • • • • • • • • •  B 
 
       REPORTS:
         Incoming approximately 22 missile(s) to Alfa; eta turn 3
@@ -204,7 +204,7 @@ describe('', () => {
 
       SCORE: 26
 
-      A • • • • • • • • • B
+      [A] • • • • • • • • •  B 
 
       REPORTS:
         Combat @ Alfa resulted in victory.

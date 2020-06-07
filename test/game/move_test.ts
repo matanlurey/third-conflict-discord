@@ -33,7 +33,7 @@ describe('', () => {
 
       SCORE: 96
 
-      A • • • • • • • • • B
+      [A] • • • • • • • • • [B]
 
       REPORTS:
         System Bravo garrison reports unrest
@@ -55,7 +55,7 @@ describe('', () => {
 
       SCORE: 96
 
-      A • • • • • • • • • B
+      [A] • • • • • • • • • [B]
 
       REPORTS:
         System Bravo garrison reports unrest
@@ -77,7 +77,7 @@ describe('', () => {
 
       SCORE: 96
 
-      A • • • • • • • • • B
+      [A] • • • • • • • • • [B]
 
       REPORTS:
         <None>
@@ -108,7 +108,7 @@ describe('', () => {
 
       SCORE: 96
 
-      A • • • • • • • • • B
+      [A] • • • • • • • • • [B]
 
       REPORTS:
         System Bravo garrison reports unrest
@@ -135,7 +135,7 @@ describe('', () => {
 
       SCORE: 96
 
-      A • • • • • • • • • B
+      [A] • • • • • • • • • [B]
 
       REPORTS:
         System Bravo garrison reports unrest
@@ -167,7 +167,7 @@ describe('', () => {
 
       SCORE: 96
 
-      A • • • • • • • • • B
+      [A] • • • • • • • • • [B]
 
       REPORTS:
         System Bravo garrison reports unrest
@@ -190,7 +190,7 @@ describe('', () => {
 
       SCORE: 35
 
-      A • • • • • • • • • B
+      [A] • • • • • • • • •  B 
 
       REPORTS:
         <None>
@@ -211,7 +211,7 @@ describe('', () => {
 
       SCORE: 35
 
-      A • • • • • • • • • B
+      [A] • • • • • • • • •  B 
 
       REPORTS:
         <None>
@@ -242,7 +242,7 @@ describe('', () => {
     bravo = game.mustSystem('Bravo');
   });
 
-  test.only('should attack and invade an enemy system', () => {
+  test('should attack and invade an enemy system', () => {
     alfa.state.warShips = 50;
     alfa.state.transports = 10;
     alfa.state.troops = 500;
@@ -308,7 +308,7 @@ describe('', () => {
 
       SCORE: 91
 
-      A • • • • • • • • • B
+      [A] • • • • • • • • • [B]
 
       REPORTS:
         Combat @ Bravo resulted in victory.

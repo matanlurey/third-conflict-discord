@@ -96,7 +96,7 @@ export class Session implements CliHandler {
   }
 
   attack(source: System, target: System, fleet: Fleet): void {
-    const dispatch = source.attack(source, target, fleet, 'conquest');
+    const dispatch = source.attack(target, fleet, 'conquest');
     this.game.state.fleets.push(dispatch.state);
     this.reply(
       this.ui.sentAttack(
@@ -339,7 +339,7 @@ export class Session implements CliHandler {
   }
 
   move(source: System, target: System, fleet: Fleet): void {
-    const dispatch = source.moveTo(source, target, fleet);
+    const dispatch = source.moveTo(target, fleet);
     this.game.state.fleets.push(dispatch.state);
     this.reply(
       this.ui.sentMove(

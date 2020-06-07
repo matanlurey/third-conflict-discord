@@ -284,6 +284,13 @@ export class Fleet extends Combatable {
   }
 
   /**
+   * Whether the fleet has mobile units.
+   */
+  get isMoveable(): boolean {
+    return this.totalShips > 0;
+  }
+
+  /**
    * Whether the fleet is missiles only.
    */
   get isMissilesOnly(): boolean {
@@ -324,9 +331,6 @@ export type Mission = 'conquest' | 'resource-raid' | 'probe' | 'reinforce';
 export interface DispatchState extends FleetState, MoveState {
   /**
    * What the purpose of the movement/transit is.
-   *
-   * Undefined means the fleet is either stationary (if orbiting a
-   * system) or being moved to a friendly location (e.g. not attacking).
    */
   mission: Mission;
 }
