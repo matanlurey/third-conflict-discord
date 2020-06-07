@@ -7,9 +7,9 @@ import { System } from '../state/system';
  */
 export function simpleVisualize(
   systems: System[],
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   owned?: string[],
 ): string[][] {
-  const bracket = new Set(owned || []);
   let width = 0;
   let height = 0;
   systems.forEach((system) => {
@@ -29,14 +29,7 @@ export function simpleVisualize(
   systems.forEach((system) => {
     const x = system.position.state[0];
     const y = system.position.state[1];
-    let s = system.state.name.substring(0, 1);
-    if (owned) {
-      if (bracket.has(system.state.name)) {
-        s = `[${s}]`;
-      } else {
-        s = ` ${s} `;
-      }
-    }
+    const s = system.state.name.substring(0, 1);
     grid[y][x] = s;
   });
   return grid;

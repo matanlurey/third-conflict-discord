@@ -14,7 +14,7 @@ test('getSimpleUsage() of Commands', () => {
     Send an offensive fleet to an enemy system.
 
     build <source> <unit>
-    Changes the production queue for a system.
+    Changes the production queue for a system. Units build automatically upon ending your turn. To increase your production, build more factories and keep your morale high.
 
     end
     Ends your turn.
@@ -38,7 +38,7 @@ test('getSimpleUsage() of Commands', () => {
     Shows a summary of your game.
 
     troops <command> <system> <amount> [options]
-    Load/unload troops from planet(s)
+    Load/unload troops from planet(s).
     "
   `);
 });
@@ -69,7 +69,7 @@ describe('getSimpleUsage() of command: ', () => {
     expect('\n' + getSimpleUsage(keyed['build'])).toMatchInlineSnapshot(`
       "
       build <source> <unit>
-      Changes the production queue for a system.
+      Changes the production queue for a system. Units build automatically upon ending your turn. To increase your production, build more factories and keep your morale high.
       "
     `);
   });
@@ -129,7 +129,7 @@ test('getRichUsage() of Commands', () => {
         },
         {
           \\"name\\": \\"build <source> <unit>\\",
-          \\"value\\": \\"Changes the production queue for a system.\\",
+          \\"value\\": \\"Changes the production queue for a system. Units build automatically upon ending your turn. To increase your production, build more factories and keep your morale high.\\",
           \\"inline\\": false
         },
         {
@@ -169,7 +169,7 @@ test('getRichUsage() of Commands', () => {
         },
         {
           \\"name\\": \\"troops <command> <system> <amount> [options]\\",
-          \\"value\\": \\"Load/unload troops from planet(s)\\",
+          \\"value\\": \\"Load/unload troops from planet(s).\\",
           \\"inline\\": false
         }
       ],
@@ -223,6 +223,11 @@ describe('getRichUsage() of command: ', () => {
             \\"inline\\": false
           },
           {
+            \\"name\\": \\"P0 (target)\\",
+            \\"value\\": \\"Target system.\\",
+            \\"inline\\": false
+          },
+          {
             \\"name\\": \\"--transports, -r\\",
             \\"value\\": \\"Transports to send.\\",
             \\"inline\\": false
@@ -253,9 +258,20 @@ describe('getRichUsage() of command: ', () => {
       {
         \\"title\\": \\"Usage\\",
         \\"type\\": \\"rich\\",
-        \\"description\\": \\"build <source> <unit>\\\\nChanges the production queue for a system.\\\\n\\",
+        \\"description\\": \\"build <source> <unit>\\\\nChanges the production queue for a system. Units build automatically upon ending your turn. To increase your production, build more factories and keep your morale high.\\\\n\\",
         \\"timestamp\\": null,
-        \\"fields\\": [],
+        \\"fields\\": [
+          {
+            \\"name\\": \\"P0 (source)\\",
+            \\"value\\": \\"undefined\\\\nDefault: System to build in.\\",
+            \\"inline\\": false
+          },
+          {
+            \\"name\\": \\"P1 (unit)\\",
+            \\"value\\": \\"What to build.\\\\nAllowed: nothing, warships, transports, factories, planets, defenses, stealthships, missiles\\",
+            \\"inline\\": false
+          }
+        ],
         \\"thumbnail\\": null,
         \\"image\\": null,
         \\"author\\": null,
@@ -291,7 +307,13 @@ describe('getRichUsage() of command: ', () => {
         \\"type\\": \\"rich\\",
         \\"description\\": \\"scan <target>\\\\nShow intelligence about aother system.\\\\n\\",
         \\"timestamp\\": null,
-        \\"fields\\": [],
+        \\"fields\\": [
+          {
+            \\"name\\": \\"P0 (target)\\",
+            \\"value\\": \\"Target system.\\",
+            \\"inline\\": false
+          }
+        ],
         \\"thumbnail\\": null,
         \\"image\\": null,
         \\"author\\": null,
@@ -313,6 +335,11 @@ describe('getRichUsage() of command: ', () => {
           {
             \\"name\\": \\"--source, -o\\",
             \\"value\\": \\"Source system. Defaults to the closest system you control.\\",
+            \\"inline\\": false
+          },
+          {
+            \\"name\\": \\"P0 (target)\\",
+            \\"value\\": \\"Target system.\\",
             \\"inline\\": false
           }
         ],

@@ -72,6 +72,7 @@ test('should fight a simple battle', () => {
         0,
         0,
       ],
+      "privateers": 0,
       "production": "nothing",
       "stealthShips": 0,
       "transports": 0,

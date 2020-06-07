@@ -86,14 +86,21 @@ export function getRichUsage(commands: Command | Command[]): MessageEmbed {
     const ordered = Array.from(commands.options).sort((a, b) =>
       a.name > b.name ? 1 : -1,
     );
-    if (ordered.filter((o) => typeof o.alias !== 'number').length) {
-      for (const option of ordered) {
-        if (typeof option.alias !== 'number') {
-          const name = `--${option.name}, -${option.alias}`;
-          const value = option.description;
-          result.addField(name, value);
-        }
+    for (const option of ordered) {
+      let name;
+      let value = option.description;
+      if (option.allowed) {
+        value = `${value}\nAllowed: ${option.allowed.join(', ')}`;
       }
+      if (option.default) {
+        value = `${value}\nDefault: ${option.default}`;
+      }
+      if (typeof option.alias !== 'number') {
+        name = `--${option.name}, -${option.alias}`;
+      } else {
+        name = `P${option.alias} (${option.name})`;
+      }
+      result.addField(name, value);
     }
   } else {
     const ordered = Array.from(commands).sort((a, b) =>

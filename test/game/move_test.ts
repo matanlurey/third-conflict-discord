@@ -33,7 +33,7 @@ describe('', () => {
 
       SCORE: 96
 
-      [A] • • • • • • • • • [B]
+      A • • • • • • • • • B
 
       REPORTS:
         System Bravo garrison reports unrest
@@ -55,7 +55,7 @@ describe('', () => {
 
       SCORE: 96
 
-      [A] • • • • • • • • • [B]
+      A • • • • • • • • • B
 
       REPORTS:
         System Bravo garrison reports unrest
@@ -77,7 +77,7 @@ describe('', () => {
 
       SCORE: 96
 
-      [A] • • • • • • • • • [B]
+      A • • • • • • • • • B
 
       REPORTS:
         System Bravo garrison reports unrest
@@ -108,7 +108,7 @@ describe('', () => {
 
       SCORE: 96
 
-      [A] • • • • • • • • • [B]
+      A • • • • • • • • • B
 
       REPORTS:
         System Bravo garrison reports unrest
@@ -135,7 +135,7 @@ describe('', () => {
 
       SCORE: 96
 
-      [A] • • • • • • • • • [B]
+      A • • • • • • • • • B
 
       REPORTS:
         System Bravo garrison reports unrest
@@ -167,7 +167,7 @@ describe('', () => {
 
       SCORE: 96
 
-      [A] • • • • • • • • • [B]
+      A • • • • • • • • • B
 
       REPORTS:
         System Bravo garrison reports unrest
@@ -190,7 +190,7 @@ describe('', () => {
 
       SCORE: 35
 
-      [A] • • • • • • • • •  B 
+      A • • • • • • • • • B
 
       REPORTS:
         <None>
@@ -211,7 +211,7 @@ describe('', () => {
 
       SCORE: 35
 
-      [A] • • • • • • • • •  B 
+      A • • • • • • • • • B
 
       REPORTS:
         <None>
@@ -294,6 +294,7 @@ describe('', () => {
           10,
           0,
         ],
+        "privateers": 0,
         "production": "nothing",
         "stealthShips": 0,
         "transports": 10,
@@ -308,7 +309,7 @@ describe('', () => {
 
       SCORE: 91
 
-      [A] • • • • • • • • • [B]
+      A • • • • • • • • • B
 
       REPORTS:
         Combat @ Bravo resulted in victory.

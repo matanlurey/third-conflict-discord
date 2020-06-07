@@ -130,6 +130,11 @@ export class Game {
   private endTurnIncrementAndMaybeEndGame(): void {
     this.state.turn++;
     // TODO: End game?
+    this.players.forEach((p) => {
+      if (!p.isAI) {
+        p.state.endedTurn = false;
+      }
+    });
   }
 
   private endTurnMovementAndCombat(): void {
@@ -421,7 +426,32 @@ export class Game {
    * @param system
    */
   private unrestPrivateers(player: Player, system: System): void {
-    // TODO: Implement.
+    // Capture WarShips.
+    // Easy  = up to ~3%
+    // Hard  = up to ~5%
+    // Tough = up to ~10%
+    if (system.state.warShips) {
+      let percent;
+      switch (this.state.settings.gameDifficulty) {
+        case 'easy':
+          percent = 0.03;
+          break;
+        case 'hard':
+          percent = 0.05;
+          break;
+        case 'tough':
+          percent = 0.1;
+          break;
+      }
+      const chance = new Chance(this.state.seed);
+      const capture = chance.integer({
+        min: 0.01 * system.state.warShips,
+        max: percent * system.state.warShips,
+      });
+      if (capture > 0) {
+        // player.reportUnrest();
+      }
+    }
   }
 
   /**

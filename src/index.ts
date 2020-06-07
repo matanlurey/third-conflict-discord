@@ -49,6 +49,11 @@ async function startGame(
       session.handle(message.author.id, false, content);
     }
   });
+  game.players.forEach((p) => {
+    if (!p.isAI) {
+      session.summary(p, false, true);
+    }
+  });
 }
 
 async function loadGame(client: discord.Client): Promise<void> {

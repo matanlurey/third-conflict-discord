@@ -147,3 +147,20 @@ test('should match an alias [positional w/ non-positional]', () => {
   });
   expect(result.error).toBeUndefined();
 });
+
+test('should match multiple aliased positional arguments', () => {
+  const result = parse('foo bar baz 50', [
+    new Command('foo', 'A command.', [
+      new Option('a1', 0),
+      new Option('a2', 1),
+      new Option('a3', 2, { default: 0 }),
+    ]),
+  ]);
+  expect(result.matched?.name).toEqual('foo');
+  expect(result.options).toEqual({
+    a1: 'bar',
+    a2: 'baz',
+    a3: 50,
+  });
+  expect(result.error).toBeUndefined();
+});

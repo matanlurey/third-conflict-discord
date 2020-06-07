@@ -157,6 +157,7 @@ export class DiscordUI implements UI<string | MessageEmbed> {
         .addField('Transports', target.transports, true)
         .addField('Troops', target.troops, true)
         .addField('Build Points', target.buildPoints, true)
+        .addField('Defenses', target.defenses, true)
         .addField(
           'Planets',
           `You control ${friendly.length} of ${target.planets.length} planets`,

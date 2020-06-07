@@ -59,28 +59,35 @@ export default function (
           'Defaults to the closest system you control.',
       }),
     ]),
-    new Command('build', 'Changes the production queue for a system.', [
-      new Option('source', 0, { default: 'Where to build.' }),
-      new Option('unit', 1, {
-        allowed: ((): string[] => {
-          const canBuild = [
-            'nothing',
-            'warships',
-            'transports',
-            'factories',
-            'planets',
-          ];
-          if (options.enableSystemDefenses) {
-            canBuild.push('defenses');
-          }
-          if (!options.enableNoviceMode) {
-            canBuild.push('stealthships', 'missiles');
-          }
-          return canBuild;
-        })(),
-        description: 'What to build.',
-      }),
-    ]),
+    new Command(
+      'build',
+      '' +
+        'Changes the production queue for a system. Units build automatically ' +
+        'upon ending your turn. To increase your production, build more ' +
+        'factories and keep your morale high.',
+      [
+        new Option('source', 0, { default: 'System to build in.' }),
+        new Option('unit', 1, {
+          allowed: ((): string[] => {
+            const canBuild = [
+              'nothing',
+              'warships',
+              'transports',
+              'factories',
+              'planets',
+            ];
+            if (options.enableSystemDefenses) {
+              canBuild.push('defenses');
+            }
+            if (!options.enableNoviceMode) {
+              canBuild.push('stealthships', 'missiles');
+            }
+            return canBuild;
+          })(),
+          description: 'What to build.',
+        }),
+      ],
+    ),
     new Command('end', 'Ends your turn.'),
     new Command('help', 'Explains the command system.', [
       new Option('command', 0),
@@ -120,9 +127,15 @@ export default function (
         default: false,
       }),
     ]),
-    new Command('troops', 'Load/unload troops from planet(s)', [
-      new Option('command', 0, { allowed: ['invade', 'load', 'unload'] }),
-      new Option('system', 1, { description: 'Target system.' }),
+    new Command('troops', 'Load/unload troops from planet(s).', [
+      new Option('command', 0, {
+        allowed: ['invade', 'load', 'unload'],
+        description:
+          'In order to move troops between planets, you must load ' +
+          'them into Transports, and unload them upon arrival at their ' +
+          'intended destination.',
+      }),
+      new Option('system', 1, { description: 'Target system, such as Alfa.' }),
       new Option('amount', 2, {
         description: 'Number of troops, otherwise maximum available.',
         default: 0,

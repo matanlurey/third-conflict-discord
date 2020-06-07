@@ -266,7 +266,7 @@ export class CliReader {
     // TODO: Add and use .optionalNumber instead.
     const command = options.requireString('command');
     const planet = options.requireNumber('planet', 0);
-    const troops = options.requireNumber('troops', 0);
+    const troops = options.requireNumber('amount', 0);
     return this.handler.troops(
       target,
       command as 'load' | 'unload',

@@ -64,14 +64,25 @@ describe('', () => {
     expect(bravo.state.planets.map((p) => p.troops)).toEqual([30, 20, 50, 0]);
   });
 
-  test('should load troops from one planet', () => {
+  test('should load troops from one planet [to max capacity]', () => {
     bravo.state.transports = 1;
     bravo.state.troops = 0;
     expect(parse('troops load B -p 3')).toMatchInlineSnapshot(`
       "
-      Loaded 100 troop(s) from planet 3."
+      Loaded 50 troop(s) from planet 3."
     `);
     expect(bravo.state.planets.map((p) => p.troops)).toEqual([30, 20, 0, 50]);
+  });
+
+  test('should load troops [specific amount] from one planet', () => {
+    bravo.state.transports = 1;
+    bravo.state.troops = 0;
+    expect(bravo.state.troops).toBe(0);
+    expect(parse('troops load B 50 -p 3')).toMatchInlineSnapshot(`
+      "
+      Loaded 50 troop(s) from planet 3."
+    `);
+    expect(bravo.state.troops).toBe(50);
   });
 
   test('should unload troops automatically', () => {

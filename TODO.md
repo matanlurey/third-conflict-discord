@@ -40,6 +40,12 @@
 - [x] Add auto-save and loading an existing game.
 - [x] On end turn, say remaining players.
 
+- [x] DM Summary on Game Start.
+- [ ] Have help build say valid options.
+- [x] Self-scan is missing Defenses.
+- [ ] Epidemic strikes [object Object].
+- [x] `troops unload D 50 -p 6` had no response, unloaded all troops!
+- [ ] Discontent kills troops.
 - [x] Determine and report unrest.
 - [ ] Discontent builds on non-invaded planets, privateers.
 - [ ] Add overthrow/revert control.

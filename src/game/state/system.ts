@@ -52,6 +52,7 @@ export class System extends Combatable {
           throw new Error(`Position required.`);
         })(),
       production: 'nothing',
+      privateers: 0,
     });
   }
 
@@ -430,4 +431,9 @@ export interface SystemState extends FleetState {
    * What unit type is currently being built.
    */
   production: Production;
+
+  /**
+   * Strength of privateers in a system (as they capture WarShips).
+   */
+  privateers: number;
 }

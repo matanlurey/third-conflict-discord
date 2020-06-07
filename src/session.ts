@@ -241,13 +241,18 @@ export class Session implements CliHandler {
         throw new GameStateError(`Cannot load from an enemy planet.`);
       }
       if (amount === 0) {
-        const loading = state.troops;
+        const loading = Math.min(capacity, state.troops);
         target.state.troops += loading;
         state.troops = 0;
         this.reply(`Loaded ${loading} troop(s) from planet ${planet}.`);
       } else if (state.troops < amount) {
         throw new GameStateError(`Not enough troops at planet ${planet}.`);
       } else {
+        if (amount > capacity) {
+          throw new GameStateError(
+            `Not enough capacity on Transports (${capacity}).`,
+          );
+        }
         target.state.troops += amount;
         state.troops -= amount;
         this.reply(`Loaded ${amount} troop(s) from planet ${planet}.`);
