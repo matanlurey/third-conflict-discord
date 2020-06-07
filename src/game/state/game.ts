@@ -356,6 +356,7 @@ export class Game {
         buildRatio: 0.5,
       });
     }
+    // TODO: Randomly attack stuff?
   }
 
   private endTurnRecruit(): void {
@@ -369,6 +370,9 @@ export class Game {
   private endTurnMoraleAndRevolt(): void {
     this.systems.forEach((s) => {
       const player = this.mustPlayer(s.state.owner);
+      if (player.isAI) {
+        return;
+      }
       if (s.isGarrisonMet()) {
         s.adjustMorale(1, { max: 1 });
       } else {

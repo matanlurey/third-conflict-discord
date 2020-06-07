@@ -66,6 +66,8 @@ export class Events {
     }
   }
 
+  private doRandomAIEvent(player: Player): void {}
+
   private antiPlayerMovementStrikes(player: Player): void {
     const systems = player.filterSystems(this.game.systems);
     if (systems.length === 0) {
