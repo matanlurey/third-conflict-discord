@@ -114,7 +114,12 @@ export default function (
           'Defaults to the closest system you control.',
       }),
     ]),
-    new Command('summary', 'Shows a summary of your game.'),
+    new Command('summary', 'Shows a summary of your game.', [
+      new Option('show-scouts', 's', {
+        description: 'Show outgoing scouts.',
+        default: false,
+      }),
+    ]),
     new Command('troops', 'Load/unload troops from planet(s)', [
       new Option('command', 0, { allowed: ['invade', 'load', 'unload'] }),
       new Option('system', 1, { description: 'Target system.' }),

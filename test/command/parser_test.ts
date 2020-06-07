@@ -92,6 +92,19 @@ test('should match an option [flag]', () => {
   expect(result.error).toBeUndefined();
 });
 
+test('should default to an option [flag]', () => {
+  const result = parse('foo', [
+    new Command('foo', 'A command.', [
+      new Option('enable-bar', 'b', { default: false }),
+    ]),
+  ]);
+  expect(result.matched?.name).toEqual('foo');
+  expect(result.options).toEqual({
+    enableBar: false,
+  });
+  expect(result.error).toBeUndefined();
+});
+
 test('should match an option [negatable]', () => {
   const result = parse('foo --no-enable-bar', [
     new Command('foo', 'A command.', [

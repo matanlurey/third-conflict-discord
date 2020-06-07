@@ -76,7 +76,7 @@ export interface CliHandler {
    *
    * @param user
    */
-  summary(user: Player): void;
+  summary(user: Player, showScouts: boolean): void;
 
   /**
    * Issues an invade command.

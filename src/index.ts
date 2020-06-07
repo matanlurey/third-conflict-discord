@@ -28,7 +28,7 @@ async function startGame(
       client.users.fetch(user).then((u) => u.send(message));
     },
     broadcast: (message): void => {
-      console.log('<BROADCAST>', message);
+      // console.log('<BROADCAST>', message);
       broadcast.send(message);
     },
   });
@@ -105,18 +105,22 @@ function connectToDiscord(): void {
   client.login(config.token);
 }
 
-function readPlayer(): void {
-  console.log('ID:NAME');
-  reader.question('ID:NAME', (answer) => {
-    if (answer.trim() === '') {
-      return connectToDiscord();
-    } else {
-      const split = answer.split(':');
-      players[split[0]] = split[1];
-      readPlayer();
-    }
-  });
-}
+if (!('turn' in json)) {
+  function readPlayer(): void {
+    console.log('ID:NAME');
+    reader.question('ID:NAME', (answer) => {
+      if (answer.trim() === '') {
+        return connectToDiscord();
+      } else {
+        const split = answer.split(':');
+        players[split[0]] = split[1];
+        readPlayer();
+      }
+    });
+  }
 
-console.info(`Loaded`, file);
-readPlayer();
+  console.info(`Loaded`, file);
+  readPlayer();
+} else {
+  connectToDiscord();
+}

@@ -23,6 +23,7 @@ export abstract class UI<
     systems: System[],
     scouts: Scout[],
     fleets: Dispatch[],
+    showScouts: boolean,
   ): T;
 
   abstract defendedPlanet(target: System, index: number, remaining: number): T;

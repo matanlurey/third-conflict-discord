@@ -124,6 +124,11 @@ export class Game {
   }
 
   private pushTurnEnded(): void {
+    this.players.forEach((p) => {
+      if (!p.isAI) {
+        p.state.endedTurn = false;
+      }
+    });
     this.onTurnCallbacks.forEach((c) => c());
   }
 
@@ -150,12 +155,12 @@ export class Game {
             const source = this.mustSystem(scout.state.source);
             this.revealSystem(scout);
             scout.recall(target.position.distance(source.position));
+            const scouter = this.mustPlayer(scout.state.owner);
             if (scout.state.scout === 'warship') {
-              const scouter = this.mustPlayer(scout.state.owner);
               const scoutee = this.mustPlayer(target.state.owner);
-              scouter.reportScouted(target);
               scoutee.reportScoutedBy(target, scouter);
             }
+            scouter.reportScouted(target);
           } else {
             // Return.
             if (scout.state.scout === 'warship') {
@@ -243,7 +248,7 @@ export class Game {
         defenses: target.state.defenses,
         factories: target.state.factories,
         missiles: target.state.missiles,
-        stealthShips: target.state.stealthShips,
+        warShips: target.state.warShips,
         transports: target.state.transports,
       },
     };
@@ -400,7 +405,7 @@ export class Game {
   findSystem(nameOrInitial: string): System | undefined {
     const match =
       nameOrInitial.length === 1
-        ? (input: string): boolean => input[0] === nameOrInitial
+        ? (input: string): boolean => input[0] === nameOrInitial.toUpperCase()
         : (input: string): boolean => input === nameOrInitial;
 
     for (const system of this.state.systems) {

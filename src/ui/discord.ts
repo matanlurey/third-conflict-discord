@@ -202,6 +202,7 @@ export class DiscordUI implements UI<string | MessageEmbed> {
     systems: System[],
     scouts: Scout[],
     fleets: Dispatch[],
+    showScouts: boolean,
   ): MessageEmbed {
     const map =
       simpleVisualize(allSystems)
@@ -236,9 +237,11 @@ export class DiscordUI implements UI<string | MessageEmbed> {
 
     // Scouts.
     message.addField('**Scouts**', scouts.length ? `${scouts.length}` : 'None');
-    message.addFields(
-      this.writeScouts(scouts, currentTurn, settings.shipSpeedATurn),
-    );
+    if (showScouts) {
+      message.addFields(
+        this.writeScouts(scouts, currentTurn, settings.shipSpeedATurn),
+      );
+    }
 
     // Fleets.
     message.addField('**Fleets**', fleets.length ? `${fleets.length}` : 'None');

@@ -47,7 +47,7 @@ export class Session implements CliHandler {
         // Filter AI.
         if (!p.isAI) {
           this.replyTo = p.state.userId;
-          this.summary(p);
+          this.summary(p, true);
         }
       });
     });
@@ -71,7 +71,7 @@ export class Session implements CliHandler {
     try {
       this.replyTo = userId;
       this.wasDm = wasDm;
-      const args = parse(input, this.commands);
+      const args = parse(input.toLowerCase(), this.commands);
       if (args.error && this.logWarnings) {
         console.warn('Could not parse:', args.error);
       } else {
@@ -412,22 +412,26 @@ export class Session implements CliHandler {
     );
   }
 
-  summary(user: Player): void {
+  summary(user: Player, showScouts: boolean, dm = false): void {
     const settings = this.game.state.settings;
     const currentTurn = this.game.state.turn;
     const systems = user.filterSystems(this.game.systems);
     const scouts = user.filterScouts(this.game.scouts);
     const fleets = user.filterFleets(this.game.fleets);
-    this.reply(
-      this.ui.displaySummary(
-        settings,
-        user,
-        currentTurn,
-        this.game.systems,
-        systems,
-        scouts,
-        fleets,
-      ),
+    const summary = this.ui.displaySummary(
+      settings,
+      user,
+      currentTurn,
+      this.game.systems,
+      systems,
+      scouts,
+      fleets,
+      showScouts,
     );
+    if (dm) {
+      this.messenger.message(user.state.userId, summary);
+    } else {
+      this.reply(summary);
+    }
   }
 }

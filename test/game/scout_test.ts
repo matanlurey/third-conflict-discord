@@ -90,8 +90,7 @@ describe('', () => {
       SYSTEMS:
         Alfa. P: nothing, T: 1, M: 0
 
-      SCOUTS:
-        <None>
+      SCOUTS: 0
 
       FLEETS:
         <None>"
@@ -114,8 +113,7 @@ describe('', () => {
       SYSTEMS:
         Alfa. P: nothing, T: 0, M: 0
 
-      SCOUTS:
-        #1 Alfa -> Bravo (ETA Turn 3)
+      SCOUTS: 1
 
       FLEETS:
         <None>"
@@ -157,8 +155,7 @@ describe('', () => {
       SYSTEMS:
         Alfa. P: nothing, T: 0, M: 0
 
-      SCOUTS:
-        #1 Alfa -> Bravo (ETA Turn 3)
+      SCOUTS: 1
 
       FLEETS:
         <None>"
@@ -199,8 +196,7 @@ describe('', () => {
       SYSTEMS:
         Alfa. P: nothing, T: 0, M: 0
 
-      SCOUTS:
-        #1 Bravo -> Alfa [Returning] (ETA Turn 5)
+      SCOUTS: 1
 
       FLEETS:
         <None>"
@@ -212,8 +208,8 @@ describe('', () => {
       Factories: 5
       Planets: ?
 
-      WarShips: ?
-      StealthShips: 0
+      WarShips: 0
+      StealthShips: ?
       Missiles: 0
       Transports: 10
       "

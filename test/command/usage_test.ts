@@ -34,7 +34,7 @@ test('getSimpleUsage() of Commands', () => {
     scout <target> [options]
     Send a scout to another system.
 
-    summary
+    summary [options]
     Shows a summary of your game.
 
     troops <command> <system> <amount> [options]
@@ -105,9 +105,10 @@ describe('getSimpleUsage() of command: ', () => {
   test('summary', () => {
     expect('\n' + getSimpleUsage(keyed['summary'])).toMatchInlineSnapshot(`
       "
-      summary
+      summary [options]
       Shows a summary of your game.
-      "
+
+      --show-scouts, -s    Show outgoing scouts."
     `);
   });
 });
@@ -162,7 +163,7 @@ test('getRichUsage() of Commands', () => {
           \\"inline\\": false
         },
         {
-          \\"name\\": \\"summary\\",
+          \\"name\\": \\"summary [options]\\",
           \\"value\\": \\"Shows a summary of your game.\\",
           \\"inline\\": false
         },
@@ -330,9 +331,15 @@ describe('getRichUsage() of command: ', () => {
       {
         \\"title\\": \\"Usage\\",
         \\"type\\": \\"rich\\",
-        \\"description\\": \\"summary\\\\nShows a summary of your game.\\\\n\\",
+        \\"description\\": \\"summary [options]\\\\nShows a summary of your game.\\\\n\\",
         \\"timestamp\\": null,
-        \\"fields\\": [],
+        \\"fields\\": [
+          {
+            \\"name\\": \\"--show-scouts, -s\\",
+            \\"value\\": \\"Show outgoing scouts.\\",
+            \\"inline\\": false
+          }
+        ],
         \\"thumbnail\\": null,
         \\"image\\": null,
         \\"author\\": null,

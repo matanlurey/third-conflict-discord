@@ -196,7 +196,10 @@ export class CliReader {
       case 'scout':
         return this.processScout(player, options);
       case 'summary':
-        return this.handler.summary(player);
+        return this.handler.summary(
+          player,
+          options.requireBoolean('showScouts'),
+        );
       case 'troops':
         return this.processTroops(player, options);
       default:

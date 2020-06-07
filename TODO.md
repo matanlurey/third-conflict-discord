@@ -18,6 +18,12 @@
 - [x] Add invade.
 - [x] Add load/unload.
 
+- [ ] Transports/troops not sending.
+- [ ] Don't allow 0-size fleets.
+- [x] Not case sensitive via DM.
+- [x] Intel reports not showing up (Discord)?
+- [ ] Make reports non-Inline.
+- [x] StealthShips are visible not WarShips.
 - [x] Fix morale calculation.
 - [x] Allow building planets.
 - [x] Return scouts.

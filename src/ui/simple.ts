@@ -81,6 +81,7 @@ export class SimpleUI extends UI<string> {
     systems: System[],
     scouts: Scout[],
     fleets: Dispatch[],
+    showScouts: boolean,
   ): string {
     const visualize =
       simpleVisualize(allSystems)
@@ -137,10 +138,13 @@ export class SimpleUI extends UI<string> {
               s.state.transports;
             return `  ${s.state.name}. P: ${s.state.production}, T: ${total}, M: ${s.morale}`;
           })),
-      `\nSCOUTS:`,
-      ...(scouts.length === 0
+      `\nSCOUTS:${showScouts ? '' : ` ${scouts.length}`}`,
+      ...(!showScouts
+        ? []
+        : scouts.length === 0
         ? [`  <None>`]
-        : scouts.map((s, i) => {
+        : showScouts
+        ? scouts.map((s, i) => {
             let recall = ``;
             if (controls.has(s.state.target)) {
               recall = ` [Returning]`;
@@ -150,7 +154,8 @@ export class SimpleUI extends UI<string> {
             }${recall} (ETA Turn ${
               currentTurn + s.eta(settings.shipSpeedATurn)
             })`;
-          })),
+          })
+        : `  ${scouts.length}`),
       `\nFLEETS:`,
       ...(fleets.length === 0
         ? [`  <None>`]
