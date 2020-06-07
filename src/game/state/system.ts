@@ -72,6 +72,10 @@ export class System extends Combatable {
     }
   }
 
+  get offensiveShips(): number {
+    return this.state.warShips + this.state.stealthShips;
+  }
+
   /**
    * Minimum amount of WarShips and StealthShips needed.
    *

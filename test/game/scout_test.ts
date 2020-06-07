@@ -78,7 +78,9 @@ describe('', () => {
     `);
     expect(parse('summary')).toMatchInlineSnapshot(`
       "
-      Summary of Admiral Player 1 on turn 1.
+      Summary of Admiral Player 1 on turn 1 of 150.
+
+      SCORE: 25
 
       A • • • • • • • • • B
 
@@ -100,7 +102,9 @@ describe('', () => {
     `);
     expect(parse('summary')).toMatchInlineSnapshot(`
       "
-      Summary of Admiral Player 1 on turn 1.
+      Summary of Admiral Player 1 on turn 1 of 150.
+
+      SCORE: 25
 
       A • • • • • • • • • B
 
@@ -120,7 +124,9 @@ describe('', () => {
     expect(parse('end')).toMatchInlineSnapshot(`
       "
       Ended your turn.
-      Summary of Admiral Player 1 on turn 2.
+      Summary of Admiral Player 1 on turn 2 of 150.
+
+      SCORE: 25
 
       A • • • • • • • • • B
 
@@ -139,7 +145,9 @@ describe('', () => {
     expect(game.state.turn).toEqual(2);
     expect(parse('summary')).toMatchInlineSnapshot(`
       "
-      Summary of Admiral Player 1 on turn 2.
+      Summary of Admiral Player 1 on turn 2 of 150.
+
+      SCORE: 25
 
       A • • • • • • • • • B
 
@@ -158,7 +166,9 @@ describe('', () => {
     expect(parse('end')).toMatchInlineSnapshot(`
       "
       Ended your turn.
-      Summary of Admiral Player 1 on turn 3.
+      Summary of Admiral Player 1 on turn 3 of 150.
+
+      SCORE: 25
 
       A • • • • • • • • • B
 
@@ -177,7 +187,9 @@ describe('', () => {
     expect(game.state.turn).toEqual(3);
     expect(parse('summary')).toMatchInlineSnapshot(`
       "
-      Summary of Admiral Player 1 on turn 3.
+      Summary of Admiral Player 1 on turn 3 of 150.
+
+      SCORE: 25
 
       A • • • • • • • • • B
 

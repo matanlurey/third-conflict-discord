@@ -10,6 +10,7 @@ import {
 } from './cli/reader';
 import { Command } from './command/config';
 import { parse } from './command/parser';
+import { getRichUsage } from './command/usage';
 import commands from './commands';
 import { determineGroundResults } from './game/combat/ground';
 import { Fleet } from './game/state/fleet';
@@ -26,7 +27,9 @@ import { UI } from './ui/interface';
 export class Session implements CliHandler {
   private readonly commands: Command[];
   private readonly reader: CliReader;
+
   private replyTo?: string;
+  private wasDm = false;
 
   constructor(
     private readonly game: Game,
@@ -57,12 +60,17 @@ export class Session implements CliHandler {
       }
       return;
     }
-    this.messenger.message(this.replyTo, message);
+    if (this.wasDm) {
+      this.messenger.message(this.replyTo, message);
+    } else {
+      this.messenger.broadcast(message);
+    }
   }
 
   handle(userId: string, wasDm: boolean, input: string): void {
     try {
       this.replyTo = userId;
+      this.wasDm = wasDm;
       const args = parse(input, this.commands);
       if (args.error && this.logWarnings) {
         console.warn('Could not parse:', args.error);
@@ -108,6 +116,17 @@ export class Session implements CliHandler {
   end(user: Player): void {
     this.reply(this.ui.ackEndTurn());
     this.game.endTurn(user);
+  }
+
+  usage(command: string | undefined): void {
+    if (command) {
+      for (const c of this.commands) {
+        if (c.name === command) {
+          return this.reply(getRichUsage(c));
+        }
+      }
+    }
+    return this.reply(getRichUsage(this.commands));
   }
 
   troops(

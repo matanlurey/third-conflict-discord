@@ -19,6 +19,9 @@ test('getSimpleUsage() of Commands', () => {
     end
     Ends your turn.
 
+    help <command>
+    Explains the command system.
+
     move <target> [options]
     Reinforce a friendly system.
 
@@ -131,6 +134,11 @@ test('getRichUsage() of Commands', () => {
         {
           \\"name\\": \\"end\\",
           \\"value\\": \\"Ends your turn.\\",
+          \\"inline\\": false
+        },
+        {
+          \\"name\\": \\"help <command>\\",
+          \\"value\\": \\"Explains the command system.\\",
           \\"inline\\": false
         },
         {

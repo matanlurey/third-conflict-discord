@@ -26,7 +26,9 @@ describe('', () => {
     expect(parse('end')).toMatchInlineSnapshot(`
       "
       Ended your turn.
-      Summary of Admiral Player 1 on turn 2.
+      Summary of Admiral Player 1 on turn 2 of 150.
+
+      SCORE: 25
 
       A • • • • • • • • • B
 
@@ -45,7 +47,9 @@ describe('', () => {
     expect(parse('end')).toMatchInlineSnapshot(`
       "
       Ended your turn.
-      Summary of Admiral Player 1 on turn 3.
+      Summary of Admiral Player 1 on turn 3 of 150.
+
+      SCORE: 25
 
       A • • • • • • • • • B
 
@@ -64,7 +68,9 @@ describe('', () => {
     expect(parse('end')).toMatchInlineSnapshot(`
       "
       Ended your turn.
-      Summary of Admiral Player 1 on turn 4.
+      Summary of Admiral Player 1 on turn 4 of 150.
+
+      SCORE: 0
 
       A • • • • • • • • • B
 
@@ -93,7 +99,9 @@ describe('', () => {
     expect(parse('end')).toMatchInlineSnapshot(`
       "
       Ended your turn.
-      Summary of Admiral Player 1 on turn 2.
+      Summary of Admiral Player 1 on turn 2 of 150.
+
+      SCORE: 35
 
       A • • • • • • • • • B
 
@@ -112,7 +120,9 @@ describe('', () => {
     expect(parse('end')).toMatchInlineSnapshot(`
       "
       Ended your turn.
-      Summary of Admiral Player 1 on turn 3.
+      Summary of Admiral Player 1 on turn 3 of 150.
+
+      SCORE: 35
 
       A • • • • • • • • • B
 
@@ -131,7 +141,9 @@ describe('', () => {
     expect(parse('end')).toMatchInlineSnapshot(`
       "
       Ended your turn.
-      Summary of Admiral Player 1 on turn 4.
+      Summary of Admiral Player 1 on turn 4 of 150.
+
+      SCORE: 35
 
       A • • • • • • • • • B
 
@@ -165,7 +177,9 @@ describe('', () => {
     expect(parse('end')).toMatchInlineSnapshot(`
       "
       Ended your turn.
-      Summary of Admiral Player 1 on turn 2.
+      Summary of Admiral Player 1 on turn 2 of 150.
+
+      SCORE: 37
 
       A • • • • • • • • • B
 
@@ -185,7 +199,9 @@ describe('', () => {
     expect(parse('end')).toMatchInlineSnapshot(`
       "
       Ended your turn.
-      Summary of Admiral Player 1 on turn 3.
+      Summary of Admiral Player 1 on turn 3 of 150.
+
+      SCORE: 26
 
       A • • • • • • • • • B
 

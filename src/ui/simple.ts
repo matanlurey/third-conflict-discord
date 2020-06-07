@@ -88,7 +88,8 @@ export class SimpleUI extends UI<string> {
         .join('\n') + '\n';
     const controls = new Set(systems.map((s) => s.state.name));
     return [
-      `Summary of Admiral ${pointOfView.state.name} on turn ${currentTurn}.\n`,
+      `Summary of Admiral ${pointOfView.state.name} on turn ${currentTurn} of ${settings.maxGameLength}.\n`,
+      `SCORE: ${pointOfView.computeScore(fleets, systems, scouts)}\n`,
       visualize,
       `REPORTS:`,
       ...(pointOfView.state.reports.length === 0

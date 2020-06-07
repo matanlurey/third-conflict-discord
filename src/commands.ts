@@ -82,6 +82,9 @@ export default function (
       }),
     ]),
     new Command('end', 'Ends your turn.'),
+    new Command('help', 'Explains the command system.', [
+      new Option('command', 0),
+    ]),
     new Command('move', 'Reinforce a friendly system.', [
       ...basicUnits(),
       ...(options.enableNoviceMode ? [] : advancedUnits()),

@@ -30,6 +30,14 @@ export interface CliHandler {
   end(user: Player): void;
 
   /**
+   * Explains comand usage.
+   *
+   * @param user
+   * @param command
+   */
+  usage(command: string | undefined): void;
+
+  /**
    * Issues an move command.
    *
    * @param source

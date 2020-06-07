@@ -2,7 +2,7 @@
 
 - [x] Add single-player REPL support.
 - [ ] Add help.
-- [ ] Add multi-player Discord support.
+- [x] Add multi-player Discord support.
 - [ ] Add version number to save game files.
 - [x] Add seed to save game files.
 
@@ -26,11 +26,13 @@
 - [x] Redirect fleets/scouts if recalled system was conquered.
 - [x] Recall fleet.
 
-- [ ] Random combat ratings at start.
+- [x] Random combat ratings at start.
 - [ ] Change combat ratings after combat.
 - [ ] Allow building up to 50 Defenses per Planet Controlled.
 - [ ] > =150 Defenses Overwhelm StealthShips First Strike.
 - [ ] Allow defenses a chance to intercept missiles.
+- [ ] Add auto-save and loading an existing game.
+- [ ] On end turn, say remaining players.
 
 - [ ] Determine and report unrest.
 - [ ] Discontent builds on non-invaded planets, privateers.

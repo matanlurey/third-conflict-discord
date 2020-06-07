@@ -1,6 +1,6 @@
 import { Dispatch, Scout } from './fleet';
 import { DetectReport, IntelReport, Report } from './report';
-import { System, SystemState } from './system';
+import { PlanetState, System, SystemState } from './system';
 
 export class Player {
   constructor(public readonly state: PlayerState) {}
@@ -9,11 +9,75 @@ export class Player {
     this.state.reports.length = 0;
   }
 
+  computeScore(fleets: Dispatch[], systems: System[], scouts: Scout[]): number {
+    const total = {
+      warShips: 0,
+      transports: 0,
+      stealthShips: 0,
+      defenses: 0,
+      troops: 0,
+      missiles: 0,
+      systems: 0,
+      planets: 0,
+      factories: 0,
+    };
+    fleets.forEach((f) => {
+      total.warShips += f.state.warShips;
+      total.transports += f.state.transports;
+      total.stealthShips += f.state.stealthShips;
+      total.troops += f.state.troops;
+      total.missiles += f.state.missiles;
+    });
+    scouts.forEach((s) => {
+      if (s.state.scout === 'stealthship') {
+        total.stealthShips++;
+      } else {
+        total.warShips++;
+      }
+    });
+    systems.forEach((f) => {
+      total.warShips += f.state.warShips;
+      total.transports += f.state.transports;
+      total.stealthShips += f.state.stealthShips;
+      total.troops += f.state.troops;
+      total.missiles += f.state.missiles;
+      total.defenses += f.state.defenses;
+      total.factories += f.state.factories;
+      total.systems++;
+      f.state.planets.forEach((p) => {
+        if (p.owner === this.state.userId) {
+          total.planets++;
+          total.troops += p.troops;
+        }
+      });
+    });
+    const oneFifth = 1 / 5;
+    const threeFifths = 3 / 5;
+    const twoFifths = 2 / 5;
+    const oneTwentieth = 1 / 20;
+    return Math.floor(
+      0 +
+        total.warShips * oneFifth +
+        total.transports * threeFifths +
+        total.stealthShips * threeFifths +
+        total.defenses * twoFifths +
+        total.troops * oneTwentieth +
+        total.missiles * twoFifths +
+        total.systems * 25 +
+        total.planets * 3 +
+        total.factories * 1,
+    );
+  }
+
   /**
    * Filters a collection of fleets.
    */
   filterFleets(fleets: Dispatch[]): Dispatch[] {
     return fleets.filter((s) => s.state.owner === this.state.userId);
+  }
+
+  filterPlanets(planets: PlanetState[]): PlanetState[] {
+    return planets.filter((p) => p.owner === this.state.userId);
   }
 
   /**

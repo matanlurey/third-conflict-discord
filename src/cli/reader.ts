@@ -174,7 +174,6 @@ export class CliReader {
   }
 
   private process(user: string, command: string, options: OptionReader): void {
-    console.log(user, command);
     const player = this.game.player(user);
     if (!player) {
       throw new InvalidPlayerError(user);
@@ -186,6 +185,8 @@ export class CliReader {
         return this.processBuild(player, options);
       case 'end':
         return this.handler.end(player);
+      case 'help':
+        return this.handler.usage(options.optionalString('command'));
       case 'move':
         return this.processMove(player, options);
       case 'recall':
