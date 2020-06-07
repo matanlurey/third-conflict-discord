@@ -42,8 +42,7 @@ describe('', () => {
         Alfa. P: nothing, T: 25, M: 0
         Bravo. P: nothing, T: 10, M: 0
 
-      SCOUTS:
-        <None>
+      SCOUTS: 0
 
       FLEETS:
         #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)"
@@ -64,8 +63,7 @@ describe('', () => {
         Alfa. P: nothing, T: 25, M: 0
         Bravo. P: nothing, T: 10, M: 0
 
-      SCOUTS:
-        <None>
+      SCOUTS: 0
 
       FLEETS:
         #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)"
@@ -86,12 +84,13 @@ describe('', () => {
         Alfa. P: nothing, T: 25, M: 0
         Bravo. P: nothing, T: 35, M: 0
 
-      SCOUTS:
-        <None>
+      SCOUTS: 0
 
       FLEETS:
         <None>"
     `);
+    expect(game.fleets).toHaveLength(0);
+    expect(bravo.state.warShips).toEqual(25);
   });
 
   test('should recall a friendly fleet', () => {
@@ -117,8 +116,7 @@ describe('', () => {
         Alfa. P: nothing, T: 25, M: 0
         Bravo. P: nothing, T: 10, M: 0
 
-      SCOUTS:
-        <None>
+      SCOUTS: 0
 
       FLEETS:
         #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)"
@@ -144,8 +142,7 @@ describe('', () => {
         Alfa. P: nothing, T: 50, M: 0
         Bravo. P: nothing, T: 10, M: 0
 
-      SCOUTS:
-        <None>
+      SCOUTS: 0
 
       FLEETS:
         <None>"
@@ -176,8 +173,7 @@ describe('', () => {
         Alfa. P: nothing, T: 25, M: 0
         Bravo. P: nothing, T: 10, M: 0
 
-      SCOUTS:
-        <None>
+      SCOUTS: 0
 
       FLEETS:
         #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)"
@@ -198,8 +194,7 @@ describe('', () => {
       SYSTEMS:
         Alfa. P: nothing, T: 25, M: 0
 
-      SCOUTS:
-        <None>
+      SCOUTS: 0
 
       FLEETS:
         #1 Bravo -> Alfa: 25 [Returning] (ETA Turn 3)"
@@ -219,8 +214,7 @@ describe('', () => {
       SYSTEMS:
         Alfa. P: nothing, T: 50, M: 0
 
-      SCOUTS:
-        <None>
+      SCOUTS: 0
 
       FLEETS:
         <None>"
@@ -324,8 +318,7 @@ describe('', () => {
         Alfa. P: nothing, T: 0, M: 0
         Bravo. P: nothing, T: 35, M: -1
 
-      SCOUTS:
-        <None>
+      SCOUTS: 0
 
       FLEETS:
         <None>"
@@ -337,7 +330,7 @@ describe('', () => {
     expect(parse('troops invade B')).toMatchInlineSnapshot(`
       "
       System Bravo planet 1 was invaded with 151 troops.
-      System Bravo planet 2 was invaded with 125 troops."
+      System Bravo planet 2 was invaded with 112 troops."
     `);
     expect(parse('scan B')).toMatchInlineSnapshot(`
       "

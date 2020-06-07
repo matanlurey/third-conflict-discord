@@ -17,6 +17,7 @@
 - [x] Add summary.
 - [x] Add invade.
 - [x] Add load/unload.
+- [ ] Add map.
 
 - [x] Transports/troops not sending.
 - [x] Don't allow 0-size fleets.
@@ -32,6 +33,12 @@
 - [x] Redirect fleets/scouts if recalled system was conquered.
 - [x] Recall fleet.
 
+- [x] 0 fleets stick around (?).
+- [x] Scouts with ETA to <= turn.
+- [ ] Split summary and reports, separate messages.
+- [ ] Show `Scouts: 8 (3 Returning)`.
+- [ ] Merge fleets with same target/source/distance.
+- [x] Scout messages not showing up.
 - [x] Random combat ratings at start.
 - [x] Change combat ratings after combat.
 - [x] Allow building up to 50 Defenses per Planet Controlled.

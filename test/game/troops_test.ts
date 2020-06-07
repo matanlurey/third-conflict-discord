@@ -120,7 +120,7 @@ describe('', () => {
     expect(parse('troops invade B')).toMatchInlineSnapshot(`
       "
       System Bravo planet 1 was invaded with 1 troops.
-      System Bravo planet 2 was invaded with 11 troops."
+      System Bravo planet 2 was invaded with 12 troops."
     `);
   });
 
@@ -129,7 +129,16 @@ describe('', () => {
     expect(parse('troops invade B')).toMatchInlineSnapshot(`
       "
       System Bravo planet 1 defended an attack with 10 troops left.
-      System Bravo planet 2 was invaded with 1 troops."
+      System Bravo planet 2 defended an attack with 1 troops left."
     `);
+  });
+
+  test('should unload < capacity of troops, and load back', () => {
+    bravo.state.troops = 50;
+    expect(parse('troops unload B 25')).toMatchInlineSnapshot(`
+      "
+      Unloaded 24 troops equally across 2 planet(s). You now have 26 troops in orbit."
+    `);
+    expect(bravo.state.troops).toEqual(26);
   });
 });

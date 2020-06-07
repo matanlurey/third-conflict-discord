@@ -1,4 +1,3 @@
-import { Chance } from 'chance';
 import { MessageEmbed } from 'discord.js';
 import { CliHandler } from './cli/handler';
 import gameHook from './cli/hooks';
@@ -47,7 +46,7 @@ export class Session implements CliHandler {
         // Filter AI.
         if (!p.isAI) {
           this.replyTo = p.state.userId;
-          this.summary(p, true);
+          this.summary(p, false, true);
         }
       });
     });
@@ -283,12 +282,13 @@ export class Session implements CliHandler {
       if (amount < planets) {
         throw new GameStateError(`Not enough troops to automatically unload.`);
       }
-      const each = amount / planets;
+      const each = Math.floor(amount / planets);
+      const actual = each * planets;
       toUnloadTo.forEach((p) => (p.troops += each));
-      target.state.troops = amount % planets;
+      target.state.troops -= actual;
       this.reply(
         `` +
-          `Unloaded ${amount} troops equally across ${toUnloadTo.length} ` +
+          `Unloaded ${actual} troops equally across ${toUnloadTo.length} ` +
           `planet(s). You now have ${target.state.troops} troops in orbit.`,
       );
     } else {
@@ -327,7 +327,7 @@ export class Session implements CliHandler {
     // Determine results.
     const attacker = this.game.mustPlayer(target.state.owner);
     const defender = this.game.mustPlayer(planet.owner);
-    const chance = new Chance(this.game.state.seed);
+    const chance = this.game.chance;
     const results = determineGroundResults(
       {
         troops,

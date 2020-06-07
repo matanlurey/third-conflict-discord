@@ -98,13 +98,15 @@ export class Game {
 
   private readonly onTurnCallbacks: (() => void)[] = [];
   private readonly events?: Events;
+  public readonly chance: Chance.Chance;
 
   constructor(
     public readonly state: GameState,
     private readonly autoSaveDiagnostics = false,
   ) {
+    this.chance = new Chance(state.seed);
     if (state.settings.enableRandomEvents) {
-      this.events = new Events(new Chance(this.state.seed), this);
+      this.events = new Events(this.chance, this);
     }
   }
 
@@ -164,56 +166,60 @@ export class Game {
 
   private moveScouts(): void {
     const settings = this.state.settings;
-    Array.from(this.scouts)
-      .reverse()
-      .forEach((scout, i) => {
-        scout.move(settings.shipSpeedATurn);
-        if (scout.hasReachedTarget) {
-          const target = this.mustSystem(scout.state.target);
-          if (scout.shouldReveal(target)) {
-            // Reveal.
-            const source = this.mustSystem(scout.state.source);
-            this.revealSystem(scout);
-            scout.recall(target.position.distance(source.position));
-            if (scout.state.scout === 'warship') {
-              const scouter = this.mustPlayer(scout.state.owner);
-              const scoutee = this.mustPlayer(target.state.owner);
-              scouter.reportScouted(target);
-              scoutee.reportScoutedBy(target, scouter);
-            }
-          } else {
-            // Return.
-            if (scout.state.scout === 'warship') {
-              target.state.warShips++;
-            } else {
-              target.state.stealthShips++;
-            }
-            this.state.scouts.splice(i, 1);
+    const toRemove: number[] = [];
+    Array.from(this.scouts).forEach((scout, i) => {
+      scout.move(settings.shipSpeedATurn);
+      if (scout.hasReachedTarget) {
+        const target = this.mustSystem(scout.state.target);
+        if (scout.shouldReveal(target)) {
+          // Reveal.
+          const source = this.mustSystem(scout.state.source);
+          this.revealSystem(scout);
+          scout.recall(target.position.distance(source.position));
+          const scouter = this.mustPlayer(scout.state.owner);
+          scouter.reportScouted(target);
+          if (scout.state.scout === 'warship') {
+            const scoutee = this.mustPlayer(target.state.owner);
+            scoutee.reportScoutedBy(target, scouter);
           }
+        } else {
+          // Return.
+          if (scout.state.scout === 'warship') {
+            target.state.warShips++;
+          } else {
+            target.state.stealthShips++;
+          }
+          toRemove.push(i);
         }
-      });
+      }
+    });
+    toRemove.reverse().forEach((i) => {
+      this.state.scouts.splice(i, 1);
+    });
   }
 
   private moveFleets(): void {
     const settings = this.state.settings;
-    Array.from(this.fleets)
-      .reverse()
-      .forEach((fleet, i) => {
-        fleet.move(settings.shipSpeedATurn);
-        const target = this.mustSystem(fleet.state.target);
-        if (
-          fleet.state.mission === 'reinforce' &&
-          target.state.owner !== fleet.state.owner
-        ) {
-          this.recallUnit(fleet);
-        } else if (fleet.hasReachedTarget) {
-          // TODO: Gif.
-          this.state.fleets.splice(i, 1);
-          this.resolveCombatOrMovement(fleet);
-        } else {
-          this.detectIncoming(fleet, target);
-        }
-      });
+    const toRemove: number[] = [];
+    Array.from(this.fleets).forEach((fleet, i) => {
+      fleet.move(settings.shipSpeedATurn);
+      const target = this.mustSystem(fleet.state.target);
+      if (
+        fleet.state.mission === 'reinforce' &&
+        target.state.owner !== fleet.state.owner
+      ) {
+        this.recallUnit(fleet);
+      } else if (fleet.hasReachedTarget) {
+        // TODO: Gif.
+        toRemove.push(i);
+        this.resolveCombatOrMovement(fleet);
+      } else {
+        this.detectIncoming(fleet, target);
+      }
+    });
+    toRemove.reverse().forEach((i) => {
+      this.state.fleets.splice(i, 1);
+    });
   }
 
   findClosest(
@@ -279,7 +285,7 @@ export class Game {
       return this.resolveMoveFinished(fleet);
     }
     if (fleet.state.mission === 'conquest') {
-      const conquest = new Conquest(new Chance(this.state.seed));
+      const conquest = new Conquest(this.chance);
       const attacker = this.mustPlayer(fleet.state.owner);
       const system = this.mustSystem(fleet.state.target);
       const defender = this.mustPlayer(system.state.owner);
@@ -344,7 +350,7 @@ export class Game {
       this.mustPlayer(target.state.owner).reportIncoming(
         from,
         this.state.settings.shipSpeedATurn,
-        new Chance(this.state.seed),
+        this.chance,
       );
     }
   }
@@ -371,7 +377,7 @@ export class Game {
     if (this.state.settings.enableNoviceMode) {
       system.change('warships');
     } else {
-      const chance = new Chance(this.state.seed);
+      const chance = this.chance;
       const target = chance.weighted(
         ['warships', 'stealthships', 'defenses', 'missiles'],
         [5, 3, 3, 2],
@@ -452,7 +458,7 @@ export class Game {
     // Easy  = up to ~3%
     // Hard  = up to ~5%
     // Tough = up to ~10%
-    const chance = new Chance(this.state.seed);
+    const chance = this.chance;
     if (system.state.warShips) {
       let percent;
       switch (this.state.settings.gameDifficulty) {
@@ -498,6 +504,9 @@ export class Game {
       };
       const defender = {
         system: System.create({
+          name: '<TEMPORARY>',
+          owner: '<PRIVATEERS>',
+          position: [-1, -1],
           warShips: system.state.warShips,
           stealthShips: system.state.stealthShips,
         }),
@@ -584,7 +593,7 @@ export class Game {
   }
 
   createPlanet(owner: string, morale = 0): PlanetState {
-    const chance = new Chance(this.state.seed);
+    const chance = this.chance;
     const troops = chance.integer({ min: 40, max: 100 });
     return {
       owner,

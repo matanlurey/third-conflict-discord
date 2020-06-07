@@ -38,8 +38,7 @@ describe('', () => {
       SYSTEMS:
         Alfa. P: nothing, T: 0, M: 0
 
-      SCOUTS:
-        <None>
+      SCOUTS: 0
 
       FLEETS:
         <None>"
@@ -59,8 +58,7 @@ describe('', () => {
       SYSTEMS:
         Alfa. P: nothing, T: 0, M: 0
 
-      SCOUTS:
-        <None>
+      SCOUTS: 0
 
       FLEETS:
         <None>"
@@ -84,8 +82,7 @@ describe('', () => {
       SYSTEMS:
         <None>
 
-      SCOUTS:
-        <None>
+      SCOUTS: 0
 
       FLEETS:
         <None>"
@@ -111,8 +108,7 @@ describe('', () => {
       SYSTEMS:
         Alfa. P: nothing, T: 0, M: 0
 
-      SCOUTS:
-        <None>
+      SCOUTS: 0
 
       FLEETS:
         <None>"
@@ -132,8 +128,7 @@ describe('', () => {
       SYSTEMS:
         Alfa. P: nothing, T: 0, M: 0
 
-      SCOUTS:
-        <None>
+      SCOUTS: 0
 
       FLEETS:
         <None>"
@@ -157,8 +152,7 @@ describe('', () => {
       SYSTEMS:
         Alfa. P: nothing, T: 0, M: 0
 
-      SCOUTS:
-        <None>
+      SCOUTS: 0
 
       FLEETS:
         <None>"
@@ -190,8 +184,7 @@ describe('', () => {
       SYSTEMS:
         Alfa. P: nothing, T: 0, M: 0
 
-      SCOUTS:
-        <None>
+      SCOUTS: 0
 
       FLEETS:
         <None>"
@@ -218,8 +211,7 @@ describe('', () => {
       SYSTEMS:
         Alfa. P: nothing, T: 0, M: 0
 
-      SCOUTS:
-        <None>
+      SCOUTS: 0
 
       FLEETS:
         <None>"

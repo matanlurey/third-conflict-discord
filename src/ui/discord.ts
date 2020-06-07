@@ -243,7 +243,12 @@ export class DiscordUI implements UI<string | MessageEmbed> {
     message.addField('**Scouts**', scouts.length ? `${scouts.length}` : 'None');
     if (showScouts) {
       message.addFields(
-        this.writeScouts(scouts, currentTurn, settings.shipSpeedATurn),
+        this.writeScouts(
+          scouts,
+          currentTurn,
+          settings.shipSpeedATurn,
+          new Set(systems.map((s) => s.state.name)),
+        ),
       );
     }
 
@@ -388,11 +393,16 @@ export class DiscordUI implements UI<string | MessageEmbed> {
     scouts: Scout[],
     turn: number,
     speed: number,
+    controls: Set<string>,
   ): EmbedField[] {
     return scouts.map((scout, index) => {
+      let recall = ``;
+      if (controls.has(scout.state.target)) {
+        recall = `[Returning] `;
+      }
       return {
         name: `#${index + 1} ${scout.state.source} -> ${scout.state.target}`,
-        value: `ETA Turn ${turn + scout.eta(speed)}`,
+        value: `${recall}ETA Turn ${turn + scout.eta(speed)}`,
         inline: false,
       };
     });

@@ -99,7 +99,7 @@ describe('', () => {
       "
       Scout \\"WarShip\\" sent from \\"Bravo\\" to \\"Alfa\\"; eta 2 turns."
     `);
-    expect(parse('summary')).toMatchInlineSnapshot(`
+    expect(parse('summary --show-scouts')).toMatchInlineSnapshot(`
       "
       Summary of Admiral Player 1 on turn 1 of 150.
 
@@ -113,7 +113,8 @@ describe('', () => {
       SYSTEMS:
         Alfa. P: nothing, T: 0, M: 0
 
-      SCOUTS: 1
+      SCOUTS:
+        #1 Alfa -> Bravo (ETA Turn 3)
 
       FLEETS:
         <None>"
@@ -134,14 +135,13 @@ describe('', () => {
       SYSTEMS:
         Alfa. P: nothing, T: 0, M: 0
 
-      SCOUTS:
-        #1 Alfa -> Bravo (ETA Turn 3)
+      SCOUTS: 1
 
       FLEETS:
         <None>"
     `);
     expect(game.state.turn).toEqual(2);
-    expect(parse('summary')).toMatchInlineSnapshot(`
+    expect(parse('summary --show-scouts')).toMatchInlineSnapshot(`
       "
       Summary of Admiral Player 1 on turn 2 of 150.
 
@@ -155,7 +155,8 @@ describe('', () => {
       SYSTEMS:
         Alfa. P: nothing, T: 0, M: 0
 
-      SCOUTS: 1
+      SCOUTS:
+        #1 Alfa -> Bravo (ETA Turn 3)
 
       FLEETS:
         <None>"
@@ -175,14 +176,13 @@ describe('', () => {
       SYSTEMS:
         Alfa. P: nothing, T: 0, M: 0
 
-      SCOUTS:
-        #1 Bravo -> Alfa [Returning] (ETA Turn 5)
+      SCOUTS: 1
 
       FLEETS:
         <None>"
     `);
     expect(game.state.turn).toEqual(3);
-    expect(parse('summary')).toMatchInlineSnapshot(`
+    expect(parse('summary --show-scouts')).toMatchInlineSnapshot(`
       "
       Summary of Admiral Player 1 on turn 3 of 150.
 
@@ -196,7 +196,8 @@ describe('', () => {
       SYSTEMS:
         Alfa. P: nothing, T: 0, M: 0
 
-      SCOUTS: 1
+      SCOUTS:
+        #1 Bravo -> Alfa [Returning] (ETA Turn 5)
 
       FLEETS:
         <None>"
@@ -222,12 +223,155 @@ describe('', () => {
 
     // Dispatch
     parse('end');
-    parse('end');
+    expect(parse('end')).toMatchInlineSnapshot(`
+      "
+      Ended your turn.
+      Summary of Admiral Player 1 on turn 3 of 150.
+
+      SCORE: 25
+
+      A • • • • • • • • • B
+
+      REPORTS:
+        Scout reaches system Bravo
+
+      SYSTEMS:
+        Alfa. P: nothing, T: 0, M: 0
+
+      SCOUTS: 1
+
+      FLEETS:
+        <None>"
+    `);
     expect(alfa.state.warShips).toEqual(0);
 
     // Return
-    parse('end');
-    parse('end');
+    expect(parse('end')).toMatchInlineSnapshot(`
+      "
+      Ended your turn.
+      Summary of Admiral Player 1 on turn 4 of 150.
+
+      SCORE: 25
+
+      A • • • • • • • • • B
+
+      REPORTS:
+        <None>
+
+      SYSTEMS:
+        Alfa. P: nothing, T: 0, M: 0
+
+      SCOUTS: 1
+
+      FLEETS:
+        <None>"
+    `);
+    expect(parse('end')).toMatchInlineSnapshot(`
+      "
+      Ended your turn.
+      Summary of Admiral Player 1 on turn 5 of 150.
+
+      SCORE: 25
+
+      A • • • • • • • • • B
+
+      REPORTS:
+        <None>
+
+      SYSTEMS:
+        Alfa. P: nothing, T: 1, M: 0
+
+      SCOUTS: 0
+
+      FLEETS:
+        <None>"
+    `);
     expect(alfa.state.warShips).toEqual(1);
+  });
+
+  test('stress test scouting', () => {
+    alfa.state.stealthShips = 5;
+    parse('scout B');
+    parse('scout B');
+    parse('scout B');
+    parse('scout B');
+    parse('scout B');
+    expect(parse('summary --show-scouts')).toMatchInlineSnapshot(`
+      "
+      Summary of Admiral Player 1 on turn 1 of 150.
+
+      SCORE: 28
+
+      A • • • • • • • • • B
+
+      REPORTS:
+        <None>
+
+      SYSTEMS:
+        Alfa. P: nothing, T: 0, M: 0
+
+      SCOUTS:
+        #1 Alfa -> Bravo (ETA Turn 3)
+        #2 Alfa -> Bravo (ETA Turn 3)
+        #3 Alfa -> Bravo (ETA Turn 3)
+        #4 Alfa -> Bravo (ETA Turn 3)
+        #5 Alfa -> Bravo (ETA Turn 3)
+
+      FLEETS:
+        <None>"
+    `);
+    parse('end');
+    parse('end');
+    expect(parse('summary --show-scouts')).toMatchInlineSnapshot(`
+      "
+      Summary of Admiral Player 1 on turn 3 of 150.
+
+      SCORE: 28
+
+      A • • • • • • • • • B
+
+      REPORTS:
+        Scout reaches system Bravo
+        Scout reaches system Bravo
+        Scout reaches system Bravo
+        Scout reaches system Bravo
+        Scout reaches system Bravo
+
+      SYSTEMS:
+        Alfa. P: nothing, T: 0, M: 0
+
+      SCOUTS:
+        #1 Bravo -> Alfa [Returning] (ETA Turn 5)
+        #2 Bravo -> Alfa [Returning] (ETA Turn 5)
+        #3 Bravo -> Alfa [Returning] (ETA Turn 5)
+        #4 Bravo -> Alfa [Returning] (ETA Turn 5)
+        #5 Bravo -> Alfa [Returning] (ETA Turn 5)
+
+      FLEETS:
+        <None>"
+    `);
+    parse('end');
+    parse('end');
+    expect(parse('summary --show-scouts')).toMatchInlineSnapshot(`
+      "
+      Summary of Admiral Player 1 on turn 5 of 150.
+
+      SCORE: 28
+
+      A • • • • • • • • • B
+
+      REPORTS:
+        <None>
+
+      SYSTEMS:
+        Alfa. P: nothing, T: 5, M: 0
+
+      SCOUTS:
+        <None>
+
+      FLEETS:
+        <None>"
+    `);
+    expect(game.scouts).toHaveLength(0);
   });
 });
