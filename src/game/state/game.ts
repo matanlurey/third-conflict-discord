@@ -3,7 +3,7 @@ import { GameStateError } from '../../cli/reader';
 import { Conquest } from '../combat/naval';
 import { Events } from '../events';
 import { NewlyCreatedGame } from '../save';
-import { Dispatch, DispatchState, Scout, ScoutState } from './fleet';
+import { Dispatch, DispatchState, Fleet, Scout, ScoutState } from './fleet';
 import { Player, PlayerState } from './player';
 import { CombatReport } from './report';
 import { PlanetState, Production, System, SystemState } from './system';
@@ -124,11 +124,6 @@ export class Game {
   }
 
   private pushTurnEnded(): void {
-    this.players.forEach((p) => {
-      if (!p.isAI) {
-        p.state.endedTurn = false;
-      }
-    });
     this.onTurnCallbacks.forEach((c) => c());
   }
 
@@ -155,12 +150,12 @@ export class Game {
             const source = this.mustSystem(scout.state.source);
             this.revealSystem(scout);
             scout.recall(target.position.distance(source.position));
-            const scouter = this.mustPlayer(scout.state.owner);
             if (scout.state.scout === 'warship') {
+              const scouter = this.mustPlayer(scout.state.owner);
               const scoutee = this.mustPlayer(target.state.owner);
+              scouter.reportScouted(target);
               scoutee.reportScoutedBy(target, scouter);
             }
-            scouter.reportScouted(target);
           } else {
             // Return.
             if (scout.state.scout === 'warship') {
@@ -295,7 +290,7 @@ export class Game {
         attacker: false,
       });
       if (result.winner === 'attacker') {
-        this.transferOwnership(attacker, system);
+        this.transferOwnership(attacker, system, fleet);
       }
     } else {
       throw new GameStateError(
@@ -309,8 +304,11 @@ export class Game {
     target.add(fleet.state);
   }
 
-  private transferOwnership(to: Player, target: System): void {
+  private transferOwnership(to: Player, target: System, fleet?: Fleet): void {
     target.state.owner = to.state.userId;
+    if (fleet) {
+      target.add(fleet.state);
+    }
   }
 
   private detectIncoming(from: Dispatch, target: System): void {
