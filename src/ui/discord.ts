@@ -381,7 +381,7 @@ export class DiscordUI implements UI<string | MessageEmbed> {
 
   private writeReinforcementReport(report: EmpireReinforced): EmbedField {
     return {
-      name: `Emperor Reinforces ${report.system}`,
+      name: `Emperor Reinforces ${report.system.name}`,
       value: render({
         warShips: report.system.warShips,
         stealthShips: report.system.stealthShips,

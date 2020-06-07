@@ -23,10 +23,15 @@ async function startGame(
   game.onTurnEnded(() => {
     fs.writeJson(path.join('data', 'autosave.json'), game.state, { spaces: 2 });
   });
+  let saved = false;
   process.once('SIGINT', () => {
+    if (saved) {
+      return;
+    }
     fs.writeJsonSync(path.join('data', 'sigint.json'), game.state, {
       spaces: 2,
     });
+    saved = true;
   });
   const session = new Session(game, new DiscordUI(), {
     message: (user, message): void => {

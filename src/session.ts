@@ -109,7 +109,12 @@ export class Session implements CliHandler {
   end(user: Player): void {
     this.reply(
       this.ui.ackEndTurn(
-        this.game.players.filter((p) => !p.isAI && !p.state.endedTurn),
+        this.game.players.filter(
+          (p) =>
+            !p.isAI &&
+            !p.state.endedTurn &&
+            p.state.userId !== user.state.userId,
+        ),
       ),
     );
     this.game.endTurn(user);

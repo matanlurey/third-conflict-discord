@@ -647,7 +647,8 @@ export class Game {
     const match =
       nameOrInitial.length === 1
         ? (input: string): boolean => input[0] === nameOrInitial.toUpperCase()
-        : (input: string): boolean => input === nameOrInitial;
+        : (input: string): boolean =>
+            input.toUpperCase() === nameOrInitial.toUpperCase();
 
     for (const system of this.state.systems) {
       if (match(system.name)) {
