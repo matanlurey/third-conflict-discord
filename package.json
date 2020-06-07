@@ -7,8 +7,9 @@
     "lint": "prettier --ignore-path .gitignore --list-different src && eslint src test --ext .ts",
     "start": "ts-node src/index.ts",
     "watch": "nodemon src/index.ts",
-    "test": "jest",
-    "tool:repl": "nodemon ./tool/repl.ts"
+    "repl": "nodemon ./tool/repl.ts",
+    "save": "ts-node ./tool/save.ts",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/chance": "^1.1.0",
+    "@types/columnify": "^1.5.0",
     "@types/fs-extra": "^8.1.1",
     "@types/jest": "^25.2.1",
     "@types/minimist": "^1.2.0",
@@ -38,12 +40,17 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
+    "camel-case": "^4.1.1",
     "capital-case": "^1.0.3",
     "chance": "^1.1.6",
+    "change-case": "^4.1.1",
+    "columnify": "^1.5.4",
     "discord.js": "^12.2.0",
     "fs-extra": "^9.0.0",
     "hook-std": "^2.0.0",
     "minimist": "^1.2.5",
-    "string-argv": "^0.3.1"
+    "string-argv": "^0.3.1",
+    "title-case": "^3.0.2",
+    "ts-mixer": "^5.3.0"
   }
 }
