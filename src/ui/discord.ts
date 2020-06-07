@@ -195,6 +195,19 @@ export class DiscordUI implements UI<string | MessageEmbed> {
     return message;
   }
 
+  displayMap(systems: System[], controlled: System[]): MessageEmbed {
+    const map =
+      simpleVisualize(
+        systems,
+        controlled.map((s) => s.state.name),
+      )
+        .map((row) => row.map((col) => (col === '' ? '•' : col)).join(' '))
+        .join('\n') + '\n';
+    return this.template()
+      .setTitle('Map')
+      .setDescription('```\n' + map + '\n```');
+  }
+
   displaySummary(
     settings: Settings,
     pointOfView: Player,
@@ -205,6 +218,8 @@ export class DiscordUI implements UI<string | MessageEmbed> {
     fleets: Dispatch[],
     showScouts: boolean,
   ): MessageEmbed {
+    const owned = new Set(systems.map((s) => s.state.name));
+
     const map =
       simpleVisualize(
         allSystems,
@@ -240,7 +255,13 @@ export class DiscordUI implements UI<string | MessageEmbed> {
     message.addFields(this.writeSystems(systems));
 
     // Scouts.
-    message.addField('**Scouts**', scouts.length ? `${scouts.length}` : 'None');
+    const returning = scouts.length
+      ? `(${scouts.map((s) => owned.has(s.state.target)).length} Returning)`
+      : '';
+    message.addField(
+      '**Scouts**',
+      scouts.length ? `${scouts.length} ${returning}` : 'None',
+    );
     if (showScouts) {
       message.addFields(
         this.writeScouts(
@@ -339,7 +360,7 @@ export class DiscordUI implements UI<string | MessageEmbed> {
     } else if (report.overthrown) {
       value =
         `System ${report.system} overthrows ${report.overthrown.who}, ` +
-        `reverting to ${report.overthrown.reverted}`;
+        `control reverting to ${report.overthrown.reverted}`;
     } else {
       value = `System ${report.system} garrison reports unrest`;
     }

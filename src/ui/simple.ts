@@ -73,6 +73,14 @@ export class SimpleUI extends UI<string> {
     }
   }
 
+  displayMap(systems: System[]): string {
+    return (
+      simpleVisualize(systems)
+        .map((row) => row.map((col) => (col === '' ? '•' : col)).join(' '))
+        .join('\n') + '\n'
+    );
+  }
+
   displaySummary(
     settings: Settings,
     pointOfView: Player,
@@ -120,7 +128,7 @@ export class SimpleUI extends UI<string> {
                   return `  Discontent builds on planet ${r.planet} of ${r.system}`;
                 }
                 if (r.overthrown) {
-                  return `  System ${r.system} overthrows ${r.overthrown.who}, control reverst to ${r.overthrown.reverted}`;
+                  return `  System ${r.system} overthrows ${r.overthrown.who}, control reverts to ${r.overthrown.reverted}`;
                 }
                 return `  System ${r.system} garrison reports unrest`;
               case 'privateer':

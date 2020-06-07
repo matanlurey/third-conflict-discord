@@ -22,6 +22,9 @@ test('getSimpleUsage() of Commands', () => {
     help <command>
     Explains the command system.
 
+    map
+    Show a map only.
+
     move <target> [options]
     Reinforce a friendly system.
 
@@ -140,6 +143,11 @@ test('getRichUsage() of Commands', () => {
         {
           \\"name\\": \\"help <command>\\",
           \\"value\\": \\"Explains the command system.\\",
+          \\"inline\\": false
+        },
+        {
+          \\"name\\": \\"map\\",
+          \\"value\\": \\"Show a map only.\\",
           \\"inline\\": false
         },
         {

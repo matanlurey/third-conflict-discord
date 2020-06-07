@@ -1,7 +1,10 @@
 import { Chance } from 'chance';
 import fs from 'fs-extra';
 import path from 'path';
-import { GameStateError } from '../../cli/reader';
+import { CliMessenger, GameStateError } from '../../cli/reader';
+import { UI } from '../../ui/interface';
+import { EmpireAI } from '../ai/empire';
+import { determineGroundResults } from '../combat/ground';
 import { Conquest } from '../combat/naval';
 import { Events } from '../events';
 import { NewlyCreatedGame } from '../save';
@@ -98,6 +101,8 @@ export class Game {
 
   private readonly onTurnCallbacks: (() => void)[] = [];
   private readonly events?: Events;
+  private readonly ai?: EmpireAI;
+
   public readonly chance: Chance.Chance;
 
   constructor(
@@ -107,6 +112,9 @@ export class Game {
     this.chance = new Chance(state.seed);
     if (state.settings.enableRandomEvents) {
       this.events = new Events(this.chance, this);
+    }
+    if (state.settings.enableEmpireBuilds) {
+      this.ai = new EmpireAI(this.chance, this);
     }
   }
 
@@ -131,6 +139,7 @@ export class Game {
     this.endTurnMoraleAndRevolt();
     this.endTurnRandomEvent();
     this.endTurnMovementAndCombat();
+    this.endTurnAI();
     this.endTurnProduce();
     this.endTurnRecruit();
     this.endTurnIncrementAndMaybeEndGame();
@@ -162,6 +171,10 @@ export class Game {
   private endTurnMovementAndCombat(): void {
     this.moveScouts();
     this.moveFleets();
+  }
+
+  private endTurnAI(): void {
+    this.ai?.runAI();
   }
 
   private moveScouts(): void {
@@ -323,9 +336,100 @@ export class Game {
       if (result.winner === 'attacker') {
         this.transferOwnership(attacker, system, fleet);
       }
+      if (attacker.isAI && system.state.troops) {
+        // TODO: Invade.
+      }
     } else {
       throw new GameStateError(
         `Unsupported mission: "${fleet.state.mission}".`,
+      );
+    }
+  }
+
+  invade(
+    target: System,
+    planet: number,
+    amount: number,
+    messenger: CliMessenger,
+    ui: UI,
+  ): void {
+    if (planet === 0) {
+      // Need at least N troops.
+      const toInvade = target.state.planets.filter(
+        (p) => p.owner !== target.state.owner,
+      );
+      const planets = toInvade.length;
+      if (amount < planets) {
+        throw new GameStateError(`Not enough troops to automatically invade.`);
+      }
+      const each = amount / planets;
+      toInvade.forEach((p, i) =>
+        this.invadePlanet(target, p, i, each, messenger, ui),
+      );
+    } else {
+      const index = planet - 1;
+      const state = target.state.planets[index];
+      if (state === undefined) {
+        throw new GameStateError(
+          `No planet #${planet} in ${target.state.name}.`,
+        );
+      }
+      if (state.owner === target.state.owner) {
+        throw new GameStateError(
+          `Cannot invade a friendly planet ("did you mean "unload"?).`,
+        );
+      }
+      this.invadePlanet(target, state, index, amount, messenger, ui);
+    }
+  }
+
+  private invadePlanet(
+    target: System,
+    planet: PlanetState,
+    index: number,
+    troops: number,
+    messenger: CliMessenger,
+    ui: UI,
+  ): void {
+    // Reduce attacking troop strength immediately.
+    target.state.troops -= troops;
+
+    // Determine results.
+    const attacker = this.mustPlayer(target.state.owner);
+    const defender = this.mustPlayer(planet.owner);
+    const chance = this.chance;
+    const results = determineGroundResults(
+      {
+        troops,
+        rating: attacker.state.ratings.ground,
+      },
+      {
+        troops: planet.troops,
+        rating: defender.state.ratings.ground,
+      },
+      chance,
+    );
+
+    if (results.winner === 'attacker') {
+      attacker.wonCombat('ground');
+      defender.lostCombat('ground');
+    } else if (results.winner === 'defender') {
+      attacker.lostCombat('ground');
+      defender.wonCombat('ground');
+    }
+
+    if (results.winner === 'attacker') {
+      messenger.message(
+        attacker.state.userId,
+        ui.invadedPlanet(target, index, results.attacker),
+      );
+      planet.morale = -planet.morale;
+      planet.troops = results.attacker;
+      planet.owner = attacker.state.userId;
+    } else {
+      messenger.message(
+        attacker.state.userId,
+        ui.defendedPlanet(target, index, results.defender),
       );
     }
   }
@@ -460,21 +564,10 @@ export class Game {
     // Tough = up to ~10%
     const chance = this.chance;
     if (system.state.warShips) {
-      let percent;
-      switch (this.state.settings.gameDifficulty) {
-        case 'easy':
-          percent = 0.03;
-          break;
-        case 'hard':
-          percent = 0.05;
-          break;
-        case 'tough':
-          percent = 0.1;
-          break;
-      }
+      const percent = 0.05;
       const capture = chance.integer({
-        min: 0.01 * system.state.warShips,
-        max: percent * system.state.warShips,
+        min: Math.max(1, 0.01 * system.state.warShips),
+        max: Math.max(1, percent * system.state.warShips),
       });
       if (capture > 0) {
         system.add({ warShips: -capture });

@@ -2,7 +2,6 @@
 import { Fleet } from './state/fleet';
 import { Game } from './state/game';
 import { Player } from './state/player';
-import { System } from './state/system';
 
 export class Events {
   constructor(
@@ -66,10 +65,6 @@ export class Events {
     }
   }
 
-  private doRandomAIEvent(player: Player): void {
-    // TODO: Implement.
-  }
-
   private antiPlayerMovementStrikes(player: Player): void {
     const systems = player.filterSystems(this.game.systems);
     if (systems.length === 0) {
@@ -125,10 +120,6 @@ export class Events {
 
   private fleetStrikesIonStorm(player: Player): void {
     return this.doRandomEvent(player);
-  }
-
-  private imperialReinforcement(system: System): void {
-    // TODO: The Emperor reinforces SYSTEM with N Warships, N StealthShips, N Missiles, N Troops, N Defenses.
   }
 
   private independenceMovementStrikes(player: Player): void {

@@ -92,6 +92,7 @@ export default function (
     new Command('help', 'Explains the command system.', [
       new Option('command', 0),
     ]),
+    new Command('map', 'Show a map only.'),
     new Command('move', 'Reinforce a friendly system.', [
       ...basicUnits(),
       ...(options.enableNoviceMode ? [] : advancedUnits()),

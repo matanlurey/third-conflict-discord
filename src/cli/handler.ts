@@ -72,6 +72,13 @@ export interface CliHandler {
   scout(target: System, source: System): void;
 
   /**
+   * Issues a map request.
+   *
+   * @param user
+   */
+  map(user: Player): void;
+
+  /**
    * Issues a summary request command.
    *
    * @param user

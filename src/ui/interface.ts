@@ -15,6 +15,8 @@ export abstract class UI<
     target: SystemState | HiddenSystemState,
   ): T;
 
+  abstract displayMap(systems: System[], owned: System[]): T;
+
   abstract displaySummary(
     setting: Settings,
     pointOfView: Player,

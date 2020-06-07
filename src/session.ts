@@ -11,16 +11,10 @@ import { Command } from './command/config';
 import { parse } from './command/parser';
 import { getRichUsage } from './command/usage';
 import commands from './commands';
-import { determineGroundResults } from './game/combat/ground';
 import { Fleet } from './game/state/fleet';
 import { Game } from './game/state/game';
 import { HiddenSystemState, Player } from './game/state/player';
-import {
-  PlanetState,
-  Production,
-  System,
-  SystemState,
-} from './game/state/system';
+import { Production, System, SystemState } from './game/state/system';
 import { UI } from './ui/interface';
 
 export class Session implements CliHandler {
@@ -156,38 +150,9 @@ export class Session implements CliHandler {
     }
 
     if (command === 'invade') {
-      return this.invadeSystem(target, planet, amount);
+      return this.game.invade(target, planet, amount, this.messenger, this.ui);
     } else {
       return this.unloadTroops(target, planet, amount);
-    }
-  }
-
-  private invadeSystem(target: System, planet: number, amount: number): void {
-    if (planet === 0) {
-      // Need at least N troops.
-      const toInvade = target.state.planets.filter(
-        (p) => p.owner !== target.state.owner,
-      );
-      const planets = toInvade.length;
-      if (amount < planets) {
-        throw new GameStateError(`Not enough troops to automatically invade.`);
-      }
-      const each = amount / planets;
-      toInvade.forEach((p, i) => this.invadePlanet(target, p, i, each));
-    } else {
-      const index = planet - 1;
-      const state = target.state.planets[index];
-      if (state === undefined) {
-        throw new GameStateError(
-          `No planet #${planet} in ${target.state.name}.`,
-        );
-      }
-      if (state.owner === target.state.owner) {
-        throw new GameStateError(
-          `Cannot invade a friendly planet ("did you mean "unload"?).`,
-        );
-      }
-      this.invadePlanet(target, state, index, amount);
     }
   }
 
@@ -315,55 +280,6 @@ export class Session implements CliHandler {
     }
   }
 
-  private invadePlanet(
-    target: System,
-    planet: PlanetState,
-    index: number,
-    troops: number,
-  ): void {
-    // Reduce attacking troop strength immediately.
-    target.state.troops -= troops;
-
-    // Determine results.
-    const attacker = this.game.mustPlayer(target.state.owner);
-    const defender = this.game.mustPlayer(planet.owner);
-    const chance = this.game.chance;
-    const results = determineGroundResults(
-      {
-        troops,
-        rating: attacker.state.ratings.ground,
-      },
-      {
-        troops: planet.troops,
-        rating: defender.state.ratings.ground,
-      },
-      chance,
-    );
-
-    if (results.winner === 'attacker') {
-      attacker.wonCombat('ground');
-      defender.lostCombat('ground');
-    } else if (results.winner === 'defender') {
-      attacker.lostCombat('ground');
-      defender.wonCombat('ground');
-    }
-
-    if (results.winner === 'attacker') {
-      this.messenger.message(
-        attacker.state.userId,
-        this.ui.invadedPlanet(target, index, results.attacker),
-      );
-      planet.morale = -planet.morale;
-      planet.troops = results.attacker;
-      planet.owner = attacker.state.userId;
-    } else {
-      this.messenger.message(
-        attacker.state.userId,
-        this.ui.defendedPlanet(target, index, results.defender),
-      );
-    }
-  }
-
   move(source: System, target: System, fleet: Fleet): void {
     const dispatch = source.moveTo(target, fleet);
     this.game.state.fleets.push(dispatch.state);
@@ -436,6 +352,11 @@ export class Session implements CliHandler {
         select.state.target
       }.`,
     );
+  }
+
+  map(user: Player): void {
+    const systems = user.filterSystems(this.game.systems);
+    return this.reply(this.ui.displayMap(this.game.systems, systems));
   }
 
   summary(user: Player, showScouts: boolean, dm = false): void {

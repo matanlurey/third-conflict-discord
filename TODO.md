@@ -1,7 +1,7 @@
 # TODO
 
 - [x] Add single-player REPL support.
-- [ ] Add help.
+- [x] Add help.
 - [x] Add multi-player Discord support.
 - [ ] Add version number to save game files.
 - [x] Add seed to save game files.
@@ -17,7 +17,7 @@
 - [x] Add summary.
 - [x] Add invade.
 - [x] Add load/unload.
-- [ ] Add map.
+- [x] Add map.
 
 - [x] Transports/troops not sending.
 - [x] Don't allow 0-size fleets.
@@ -36,7 +36,7 @@
 - [x] 0 fleets stick around (?).
 - [x] Scouts with ETA to <= turn.
 - [ ] Split summary and reports, separate messages.
-- [ ] Show `Scouts: 8 (3 Returning)`.
+- [x] Show `Scouts: 8 (3 Returning)`.
 - [ ] Merge fleets with same target/source/distance.
 - [x] Scout messages not showing up.
 - [x] Random combat ratings at start.
@@ -48,7 +48,7 @@
 - [x] On end turn, say remaining players.
 
 - [x] DM Summary on Game Start.
-- [ ] Troops unload does not have output; also give more information!
+- [x] Troops unload does not have output; also give more information!
 - [x] Shuffle players on Start.
 - [x] Have help build say valid options.
 - [x] Self-scan is missing Defenses.
@@ -58,7 +58,7 @@
 - [x] Determine and report unrest.
 - [x] Discontent builds on non-invaded planets, privateers.
 - [x] Add overthrow/revert control.
-- [ ] Test privateers.
+- [x] Test privateers.
 
 - [x] Start of turn: Score, Morale, Ratings.
 
@@ -68,11 +68,12 @@
 - [ ] End of turn: End of Game.
 - [x] End of turn: Random Event.
 - [x] End of turn: Produce.
-- [ ] End of turn: Morale Check / Revolts / Unrest.
+- [x] End of turn: Morale Check / Revolts / Unrest.
 
+- [ ] Max troops at 1K per planet.
 - [ ] More details to combat report.
 - [x] Invert morale of planets when invaded.
-- [ ] Privateers.
+- [x] Privateers.
 - [x] Scrape random events from game and add them.
 - [ ] Move homeworld (50pts).
 

@@ -187,6 +187,8 @@ export class CliReader {
         return this.handler.end(player);
       case 'help':
         return this.handler.usage(options.optionalString('command'));
+      case 'map':
+        return this.handler.map(player);
       case 'move':
         return this.processMove(player, options);
       case 'recall':

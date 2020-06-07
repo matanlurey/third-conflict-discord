@@ -21,7 +21,10 @@ beforeAll(() => {
       },
     ],
     scouts: [],
-    settings: defaultSettings,
+    settings: {
+      ...defaultSettings,
+      enableEmpireBuilds: false,
+    },
     systems: [
       {
         buildPoints: 0,
@@ -34,6 +37,7 @@ beforeAll(() => {
         planets: [],
         position: [0, 1],
         production: 'nothing',
+        privateers: 0,
         stealthShips: 0,
         transports: 0,
         troops: 0,
