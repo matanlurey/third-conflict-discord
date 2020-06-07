@@ -139,7 +139,7 @@ describe('', () => {
 
       FLEETS:
         <None>
-      2 of 150
+      SCORE SO FAR: Turn 2 of 150
 
       Empire: 61
       Player 1: 25"
@@ -184,7 +184,7 @@ describe('', () => {
 
       FLEETS:
         <None>
-      3 of 150
+      SCORE SO FAR: Turn 3 of 150
 
       Empire: 61
       Player 1: 25"
@@ -250,7 +250,7 @@ describe('', () => {
 
       FLEETS:
         <None>
-      3 of 150
+      SCORE SO FAR: Turn 3 of 150
 
       Empire: 61
       Player 1: 25"
@@ -277,7 +277,7 @@ describe('', () => {
 
       FLEETS:
         <None>
-      4 of 150
+      SCORE SO FAR: Turn 4 of 150
 
       Empire: 61
       Player 1: 25"
@@ -301,7 +301,7 @@ describe('', () => {
 
       FLEETS:
         <None>
-      5 of 150
+      SCORE SO FAR: Turn 5 of 150
 
       Empire: 61
       Player 1: 25"

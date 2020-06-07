@@ -87,7 +87,7 @@ export class SimpleUI extends UI<string> {
     max: number,
   ): string {
     return (
-      `${turn} of ${max}\n\n` +
+      `SCORE SO FAR: Turn ${turn} of ${max}\n\n` +
       Object.entries(scores)
         .sort((a, b) => b[1] - a[1])
         .map((v) => {

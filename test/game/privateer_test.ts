@@ -47,7 +47,7 @@ describe('', () => {
 
       FLEETS:
         <None>
-      2 of 150
+      SCORE SO FAR: Turn 2 of 150
 
       Empire: 61
       Player 1: 42"
@@ -93,7 +93,7 @@ describe('', () => {
 
       FLEETS:
         <None>
-      2 of 150
+      SCORE SO FAR: Turn 2 of 150
 
       Empire: 110
       Player 1: 0"

@@ -46,7 +46,7 @@ describe('', () => {
 
       FLEETS:
         #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)
-      2 of 150
+      SCORE SO FAR: Turn 2 of 150
 
       Player 1: 96
       Empire: 0"
@@ -71,7 +71,7 @@ describe('', () => {
 
       FLEETS:
         #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)
-      3 of 150
+      SCORE SO FAR: Turn 3 of 150
 
       Player 1: 96
       Empire: 0"
@@ -96,7 +96,7 @@ describe('', () => {
 
       FLEETS:
         <None>
-      4 of 150
+      SCORE SO FAR: Turn 4 of 150
 
       Player 1: 96
       Empire: 0"
@@ -132,7 +132,7 @@ describe('', () => {
 
       FLEETS:
         #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)
-      2 of 150
+      SCORE SO FAR: Turn 2 of 150
 
       Player 1: 96
       Empire: 0"
@@ -162,7 +162,7 @@ describe('', () => {
 
       FLEETS:
         <None>
-      3 of 150
+      SCORE SO FAR: Turn 3 of 150
 
       Player 1: 96
       Empire: 0"
@@ -197,7 +197,7 @@ describe('', () => {
 
       FLEETS:
         #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)
-      2 of 150
+      SCORE SO FAR: Turn 2 of 150
 
       Player 1: 96
       Empire: 0"
@@ -222,7 +222,7 @@ describe('', () => {
 
       FLEETS:
         #1 Bravo -> Alfa: 25 [Returning] (ETA Turn 3)
-      3 of 150
+      SCORE SO FAR: Turn 3 of 150
 
       Empire: 61
       Player 1: 35"
@@ -246,7 +246,7 @@ describe('', () => {
 
       FLEETS:
         <None>
-      4 of 150
+      SCORE SO FAR: Turn 4 of 150
 
       Empire: 61
       Player 1: 35"
@@ -355,7 +355,7 @@ describe('', () => {
 
       FLEETS:
         <None>
-      4 of 150
+      SCORE SO FAR: Turn 4 of 150
 
       Player 1: 91
       Empire: 0"
