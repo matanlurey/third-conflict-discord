@@ -345,7 +345,7 @@ export class CliReader {
 
   private processScan(user: Player, options: OptionReader): void {
     const target = this.requireSystem(options.requireString('target'));
-    return this.handler.scan(user, target);
+    return this.handler.scan(user, target, options.requireBoolean('planets'));
   }
 }
 

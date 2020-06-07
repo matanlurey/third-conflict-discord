@@ -13,6 +13,7 @@ export abstract class UI<
   abstract displaySystem(
     pointOfView: Player,
     target: SystemState | HiddenSystemState,
+    showPlanets: boolean,
   ): T;
 
   abstract displayMap(systems: System[], owned: System[]): T;

@@ -298,7 +298,7 @@ export class Session implements CliHandler {
     );
   }
 
-  scan(user: Player, target: System): void {
+  scan(user: Player, target: System, showPlanets: boolean): void {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const owner = this.game.findPlayer(target.state.owner)!;
     let reveal: SystemState | HiddenSystemState;
@@ -312,7 +312,7 @@ export class Session implements CliHandler {
       };
     }
     // TODO: Filter visibility here versus in the UI layer.
-    this.reply(this.ui.displaySystem(user, reveal));
+    this.reply(this.ui.displaySystem(user, reveal, showPlanets));
   }
 
   scout(target: System, source: System): void {

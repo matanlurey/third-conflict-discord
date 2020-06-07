@@ -31,7 +31,7 @@ test('getSimpleUsage() of Commands', () => {
     recall <number> [options]
     Recall a fleet or scount.
 
-    scan <target>
+    scan <target> [options]
     Show intelligence about aother system.
 
     scout <target> [options]
@@ -89,9 +89,10 @@ describe('getSimpleUsage() of command: ', () => {
   test('scan', () => {
     expect('\n' + getSimpleUsage(keyed['scan'])).toMatchInlineSnapshot(`
       "
-      scan <target>
+      scan <target> [options]
       Show intelligence about aother system.
-      "
+
+      --planets, -p        Whether to show planets."
     `);
   });
 
@@ -161,7 +162,7 @@ test('getRichUsage() of Commands', () => {
           \\"inline\\": false
         },
         {
-          \\"name\\": \\"scan <target>\\",
+          \\"name\\": \\"scan <target> [options]\\",
           \\"value\\": \\"Show intelligence about aother system.\\",
           \\"inline\\": false
         },
@@ -313,9 +314,14 @@ describe('getRichUsage() of command: ', () => {
       {
         \\"title\\": \\"Usage\\",
         \\"type\\": \\"rich\\",
-        \\"description\\": \\"scan <target>\\\\nShow intelligence about aother system.\\\\n\\",
+        \\"description\\": \\"scan <target> [options]\\\\nShow intelligence about aother system.\\\\n\\",
         \\"timestamp\\": null,
         \\"fields\\": [
+          {
+            \\"name\\": \\"--planets, -p\\",
+            \\"value\\": \\"Whether to show planets.\\\\nDefault: true\\",
+            \\"inline\\": false
+          },
           {
             \\"name\\": \\"P0 (target)\\",
             \\"value\\": \\"Target system.\\",

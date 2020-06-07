@@ -33,11 +33,12 @@
 - [x] Redirect fleets/scouts if recalled system was conquered.
 - [x] Recall fleet.
 
+- [ ] Merge fleets with same target/source/distance.
+- [ ] Add `scan A --no-planets` to hide planet information.
+
 - [x] 0 fleets stick around (?).
 - [x] Scouts with ETA to <= turn.
-- [ ] Split summary and reports, separate messages.
 - [x] Show `Scouts: 8 (3 Returning)`.
-- [ ] Merge fleets with same target/source/distance.
 - [x] Scout messages not showing up.
 - [x] Random combat ratings at start.
 - [x] Change combat ratings after combat.

@@ -259,6 +259,7 @@ describe('', () => {
       "
       Attack \\"60 ships\\" sent from \\"Alfa\\" to \\"Bravo\\"; eta 3 turns."
     `);
+    expect(alfa.state.troops).toEqual(0);
     parse('end');
     parse('end');
     expect(bravo.state).toMatchInlineSnapshot(`
@@ -348,6 +349,53 @@ describe('', () => {
       Transports: 10
       Troops: 0
       Points: 4
+      "
+    `);
+  });
+
+  test('should not remove ships if the attack was invalid', () => {
+    alfa.state.missiles = 10;
+    alfa.state.warShips = 50;
+    expect(parse('scan A')).toMatchInlineSnapshot(`
+      "
+      Report on \\"Alfa\\" (You control this system):
+
+      Home System: No
+      Producing: nothing
+
+      Factories: 0
+      Planets: 0
+
+      WarShips: 50
+      StealthShips: 0
+      Missiles: 10
+      Transports: 0
+      Troops: 0
+      Points: 0
+      "
+    `);
+    expect(parse('attack B -w 30 -m 20')).toMatchInlineSnapshot(`
+      "
+      Would make missiles < 0"
+    `);
+    expect(alfa.state.missiles).toEqual(10);
+    expect(alfa.state.warShips).toEqual(50);
+    expect(parse('scan A')).toMatchInlineSnapshot(`
+      "
+      Report on \\"Alfa\\" (You control this system):
+
+      Home System: No
+      Producing: nothing
+
+      Factories: 0
+      Planets: 0
+
+      WarShips: 50
+      StealthShips: 0
+      Missiles: 10
+      Transports: 0
+      Troops: 0
+      Points: 0
       "
     `);
   });

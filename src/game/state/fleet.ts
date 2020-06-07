@@ -176,40 +176,49 @@ export abstract class Combatable {
    */
   add(units: Partial<FleetState>): void {
     const state = this.state;
-    if (units.buildPoints) {
-      if (state.buildPoints + units.buildPoints < 0) {
-        throw new GameStateError(`Would make buildPoints < 0`);
+    if (state.buildPoints + (units.buildPoints || 0) < 0) {
+      throw new GameStateError(`Would make buildPoints < 0`);
+    }
+    if (state.missiles + (units.missiles || 0) < 0) {
+      throw new GameStateError(`Would make missiles < 0`);
+    }
+    if (state.stealthShips + (units.stealthShips || 0) < 0) {
+      throw new GameStateError(`Would make stealthShips < 0`);
+    }
+    if (state.transports + (units.transports || 0) < 0) {
+      throw new GameStateError(`Would make transports < 0`);
+    }
+    if (units.transports) {
+      const space = (state.transports + units.transports) * 50;
+      const total = state.troops + (units?.troops || 0);
+      if (total > space) {
+        throw new GameStateError(
+          `Not enough Transports remaining to hold Troops`,
+        );
       }
+    }
+    if (state.troops + (units.troops || 0) < 0) {
+      throw new GameStateError(`Would make troops < 0`);
+    }
+    if (state.warShips + (units.warShips || 0) < 0) {
+      throw new GameStateError(`Would make warShips < 0`);
+    }
+    if (units.buildPoints) {
       state.buildPoints += units.buildPoints;
     }
     if (units.missiles) {
-      if (state.missiles + units.missiles < 0) {
-        throw new GameStateError(`Would make missiles < 0`);
-      }
       state.missiles += units.missiles;
     }
     if (units.stealthShips) {
-      if (state.stealthShips + units.stealthShips < 0) {
-        throw new GameStateError(`Would make stealthShips < 0`);
-      }
       state.stealthShips += units.stealthShips;
     }
     if (units.transports) {
-      if (state.transports + units.transports < 0) {
-        throw new GameStateError(`Would make transports < 0`);
-      }
       state.transports += units.transports;
     }
     if (units.troops) {
-      if (state.troops + units.troops < 0) {
-        throw new GameStateError(`Would make troops < 0`);
-      }
       state.troops += units.troops;
     }
     if (units.warShips) {
-      if (state.warShips + units.warShips < 0) {
-        throw new GameStateError(`Would make warShips < 0`);
-      }
       state.warShips += units.warShips;
     }
   }

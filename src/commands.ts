@@ -112,6 +112,10 @@ export default function (
     ]),
     new Command('scan', 'Show intelligence about aother system.', [
       new Option('target', 0, { description: 'Target system.' }),
+      new Option('planets', 'p', {
+        default: true,
+        description: 'Whether to show planets.',
+      }),
     ]),
     new Command(
       'scout',

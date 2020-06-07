@@ -141,6 +141,7 @@ export class DiscordUI implements UI<string | MessageEmbed> {
   displaySystem(
     pointOfView: Player,
     target: SystemState | HiddenSystemState,
+    showPlanets: boolean,
   ): MessageEmbed {
     const message = this.template();
     if ('name' in target) {
@@ -157,24 +158,27 @@ export class DiscordUI implements UI<string | MessageEmbed> {
         .addField('Transports', target.transports, true)
         .addField('Troops', target.troops, true)
         .addField('Build Points', target.buildPoints, true)
-        .addField('Defenses', target.defenses, true)
-        .addField(
+        .addField('Defenses', target.defenses, true);
+
+      if (showPlanets) {
+        message.addField(
           'Planets',
           `You control ${friendly.length} of ${target.planets.length} planets`,
         );
-      target.planets.forEach((planet, index) => {
-        message.addField(
-          `Planet ${index + 1}`,
-          '' +
-            `Controlled: ${
-              planet.owner === pointOfView.state.userId ? 'Yes' : 'No'
-            }\n` +
-            `Morale:     ${planet.morale}\n` +
-            `Troops:     ${planet.troops}\n` +
-            `Recruit:    ${planet.recruit}`,
-          true,
-        );
-      });
+        target.planets.forEach((planet, index) => {
+          message.addField(
+            `Planet ${index + 1}`,
+            '' +
+              `Controlled: ${
+                planet.owner === pointOfView.state.userId ? 'Yes' : 'No'
+              }\n` +
+              `Morale:     ${planet.morale}\n` +
+              `Troops:     ${planet.troops}\n` +
+              `Recruit:    ${planet.recruit}`,
+            true,
+          );
+        });
+      }
     } else {
       message.setTitle('Enemy System');
       if (target.updated === undefined) {
@@ -397,11 +401,12 @@ export class DiscordUI implements UI<string | MessageEmbed> {
   private writeSystems(systems: System[]): EmbedField[] {
     return systems.map((system) => {
       const value =
-        '' +
-        `P: ${capitalCase(system.state.production)}\n` +
-        `S: ${system.offensiveShips}\n` +
-        `D: ${system.state.defenses}\n` +
-        `M: ${system.morale}`;
+        '\n```\n' +
+        `Producing:   ${capitalCase(system.state.production)}\n` +
+        `Total Ships: ${system.offensiveShips}\n` +
+        `Defenses:    ${system.state.defenses}\n` +
+        `Morale:      ${system.morale}\n` +
+        '```';
       return {
         name: `${system.state.name}`,
         value,

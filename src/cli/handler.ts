@@ -60,8 +60,9 @@ export interface CliHandler {
    *
    * @param user
    * @param target
+   * @param showPlanets
    */
-  scan(user: Player, target: System): void;
+  scan(user: Player, target: System, showPlanets: boolean): void;
 
   /**
    * Issues a scout command.
