@@ -1,5 +1,5 @@
 import { Dispatch, Scout } from './fleet';
-import { DetectReport, IntelReport, Report } from './report';
+import { DetectReport, IntelReport, PrivateerReport, Report } from './report';
 import { PlanetState, System, SystemState } from './system';
 
 export class Player {
@@ -112,6 +112,15 @@ export class Player {
       missiles: fleet.isMissilesOnly,
       size: size,
       system: fleet.state.target,
+    };
+    this.report(report);
+  }
+
+  reportPrivateers(system: System, warships: number): void {
+    const report: PrivateerReport = {
+      kind: 'privateer',
+      system: system.state.name,
+      warships,
     };
     this.report(report);
   }

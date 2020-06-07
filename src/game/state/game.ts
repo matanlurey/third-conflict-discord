@@ -43,6 +43,9 @@ export class Game {
   static start(state: NewlyCreatedGame, players: PlayerState[]): Game {
     if (players.length < 1) {
       throw new Error(`Invalid game: At least one player required.`);
+    } else {
+      const chance = new Chance(state.seed);
+      chance.shuffle(players);
     }
     const systems = state.systems.map((s) => {
       if (s.owner.startsWith(userPrefix)) {
@@ -405,6 +408,8 @@ export class Game {
       });
       if (enablePrivateers) {
         this.unrestPrivateers(player, s);
+      } else {
+        s.state.privateers = 0;
       }
     });
   }
@@ -430,6 +435,7 @@ export class Game {
     // Easy  = up to ~3%
     // Hard  = up to ~5%
     // Tough = up to ~10%
+    const chance = new Chance(this.state.seed);
     if (system.state.warShips) {
       let percent;
       switch (this.state.settings.gameDifficulty) {
@@ -443,15 +449,74 @@ export class Game {
           percent = 0.1;
           break;
       }
-      const chance = new Chance(this.state.seed);
       const capture = chance.integer({
         min: 0.01 * system.state.warShips,
         max: percent * system.state.warShips,
       });
       if (capture > 0) {
-        // player.reportUnrest();
+        system.add({ warShips: -capture });
+        system.state.privateers += capture;
+        player.reportPrivateers(system, capture);
       }
     }
+    let rating;
+    switch (this.state.settings.gameDifficulty) {
+      case 'easy':
+        rating = 50;
+        break;
+      case 'hard':
+        rating = 65;
+        break;
+      case 'tough':
+        rating = 80;
+        break;
+    }
+    if (system.state.privateers) {
+      const combat = new Conquest(chance);
+      const attacker = {
+        fleet: Fleet.create({
+          warShips: system.state.privateers,
+        }),
+        rating,
+      };
+      const defender = {
+        system: System.create({
+          warShips: system.state.warShips,
+          stealthShips: system.state.stealthShips,
+        }),
+        rating: this.mustPlayer(system.state.owner).state.ratings.naval,
+      };
+      const result = combat.simulate(attacker, defender);
+      if (result.winner === 'attacker') {
+        this.overthrowSystem(player, system, system.state.privateers, chance);
+      }
+    }
+  }
+
+  private overthrowSystem(
+    player: Player,
+    system: System,
+    warShips: number,
+    chance: Chance.Chance,
+  ): void {
+    // TODO: Overthrow returns to original player control, not always Empire.
+    system.state.privateers = 0;
+    this.transferOwnership(
+      new Player(this.state.players[0]),
+      system,
+      Fleet.create({ warShips }),
+    );
+    system.state.planets.forEach((p) => {
+      p.morale = 1;
+      p.troops = chance.integer({ min: p.troops * 0.25, max: p.troops * 0.75 });
+      p.owner = system.state.owner;
+    });
+    player.reportUnrest(system, {
+      overthrown: {
+        who: player.state.name,
+        reverted: 'Empire',
+      },
+    });
   }
 
   /**

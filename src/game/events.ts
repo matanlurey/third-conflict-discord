@@ -66,7 +66,9 @@ export class Events {
     }
   }
 
-  private doRandomAIEvent(player: Player): void {}
+  private doRandomAIEvent(player: Player): void {
+    // TODO: Implement.
+  }
 
   private antiPlayerMovementStrikes(player: Player): void {
     const systems = player.filterSystems(this.game.systems);
@@ -108,7 +110,7 @@ export class Events {
     player.reportEvent(
       `` +
         `Epidemic strikes at ${system.state.name} ` +
-        `planet ${player}, killing ${troops}.`,
+        `planet ${player.state.name}, killing ${troops}.`,
     );
   }
 

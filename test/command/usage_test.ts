@@ -32,7 +32,7 @@ test('getSimpleUsage() of Commands', () => {
     Show intelligence about aother system.
 
     scout <target> [options]
-    Send a scout to another system.
+    Send a scout to another system. Will send a StealthShip if available, otherwise a WarShip. WarShips can be detected!
 
     summary [options]
     Shows a summary of your game.
@@ -96,7 +96,7 @@ describe('getSimpleUsage() of command: ', () => {
     expect('\n' + getSimpleUsage(keyed['scout'])).toMatchInlineSnapshot(`
       "
       scout <target> [options]
-      Send a scout to another system.
+      Send a scout to another system. Will send a StealthShip if available, otherwise a WarShip. WarShips can be detected!
 
       --source, -o         Source system. Defaults to the closest system you control."
     `);
@@ -159,7 +159,7 @@ test('getRichUsage() of Commands', () => {
         },
         {
           \\"name\\": \\"scout <target> [options]\\",
-          \\"value\\": \\"Send a scout to another system.\\",
+          \\"value\\": \\"Send a scout to another system. Will send a StealthShip if available, otherwise a WarShip. WarShips can be detected!\\",
           \\"inline\\": false
         },
         {
@@ -329,7 +329,7 @@ describe('getRichUsage() of command: ', () => {
       {
         \\"title\\": \\"Usage\\",
         \\"type\\": \\"rich\\",
-        \\"description\\": \\"scout <target> [options]\\\\nSend a scout to another system.\\\\n\\",
+        \\"description\\": \\"scout <target> [options]\\\\nSend a scout to another system. Will send a StealthShip if available, otherwise a WarShip. WarShips can be detected!\\\\n\\",
         \\"timestamp\\": null,
         \\"fields\\": [
           {

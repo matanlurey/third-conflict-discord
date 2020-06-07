@@ -473,6 +473,8 @@ export class DiscordUI implements UI<string | MessageEmbed> {
         shipType === `StealthShip` ? thumbnails.stealth : thumbnails.warship,
       )
       .setTitle(`Scouting ${to.state.name}`)
-      .setDescription(`ETA ${etaTurns} turns.`);
+      .setDescription(
+        `Sent a ${capitalCase(shipType)}; ETA ${etaTurns} turns.`,
+      );
   }
 }

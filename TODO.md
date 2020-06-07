@@ -41,9 +41,11 @@
 - [x] On end turn, say remaining players.
 
 - [x] DM Summary on Game Start.
-- [ ] Have help build say valid options.
+- [ ] Troops unload does not have output; also give more information!
+- [x] Shuffle players on Start.
+- [x] Have help build say valid options.
 - [x] Self-scan is missing Defenses.
-- [ ] Epidemic strikes [object Object].
+- [x] Epidemic strikes [object Object].
 - [x] `troops unload D 50 -p 6` had no response, unloaded all troops!
 - [ ] Discontent kills troops.
 - [x] Determine and report unrest.

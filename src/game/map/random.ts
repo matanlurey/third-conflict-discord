@@ -41,6 +41,7 @@ export class RandomMap extends Generator {
             transports: 0,
             troops: 0,
             warShips: 0,
+            privateers: 0,
           },
           this.chance,
           settings,

@@ -112,15 +112,21 @@ export default function (
     new Command('scan', 'Show intelligence about aother system.', [
       new Option('target', 0, { description: 'Target system.' }),
     ]),
-    new Command('scout', 'Send a scout to another system.', [
-      new Option('target', 0, { description: 'Target system.' }),
-      new Option('source', 'o', {
-        description:
-          '' +
-          'Source system. ' +
-          'Defaults to the closest system you control.',
-      }),
-    ]),
+    new Command(
+      'scout',
+      '' +
+        'Send a scout to another system. Will send a StealthShip if available, ' +
+        'otherwise a WarShip. WarShips can be detected!',
+      [
+        new Option('target', 0, { description: 'Target system.' }),
+        new Option('source', 'o', {
+          description:
+            '' +
+            'Source system. ' +
+            'Defaults to the closest system you control.',
+        }),
+      ],
+    ),
     new Command('summary', 'Shows a summary of your game.', [
       new Option('show-scouts', 's', {
         description: 'Show outgoing scouts.',
