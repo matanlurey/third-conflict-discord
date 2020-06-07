@@ -228,7 +228,11 @@ export class Session implements CliHandler {
         }
       }
       target.state.troops += t;
-      this.reply(`Loaded ${t} troop(s) from ${controlled.length} planet(s).`);
+      this.reply(
+        `` +
+          `Loaded ${t} troop(s) from ${controlled.length} planet(s). ` +
+          `You now have ${target.state.troops} troops in orbit.`,
+      );
       return;
     } else {
       const state = target.state.planets[planet - 1];
@@ -244,7 +248,11 @@ export class Session implements CliHandler {
         const loading = Math.min(capacity, state.troops);
         target.state.troops += loading;
         state.troops = 0;
-        this.reply(`Loaded ${loading} troop(s) from planet ${planet}.`);
+        this.reply(
+          `` +
+            `Loaded ${loading} troop(s) from planet ${planet}. You ` +
+            `now have ${target.state.troops} in orbit.`,
+        );
       } else if (state.troops < amount) {
         throw new GameStateError(`Not enough troops at planet ${planet}.`);
       } else {
@@ -255,7 +263,12 @@ export class Session implements CliHandler {
         }
         target.state.troops += amount;
         state.troops -= amount;
-        this.reply(`Loaded ${amount} troop(s) from planet ${planet}.`);
+        this.reply(
+          `` +
+            `Loaded ${amount} troop(s) from planet ${planet}. You now ` +
+            `have ${state.troops} troops remaining on the planet and ` +
+            `${target.state.troops} in orbit.`,
+        );
       }
     }
   }
@@ -274,7 +287,9 @@ export class Session implements CliHandler {
       toUnloadTo.forEach((p) => (p.troops += each));
       target.state.troops = amount % planets;
       this.reply(
-        `Unloaded ${amount} troops equally across ${toUnloadTo.length} planet(s).`,
+        `` +
+          `Unloaded ${amount} troops equally across ${toUnloadTo.length} ` +
+          `planet(s). You now have ${target.state.troops} troops in orbit.`,
       );
     } else {
       const index = planet - 1;
@@ -291,6 +306,12 @@ export class Session implements CliHandler {
       }
       state.troops += amount;
       target.state.troops -= amount;
+      this.reply(
+        `` +
+          `Unloaded ${amount} troops to planet ${planet} in system ` +
+          `${target.state.name}. You now have ${state.troops} on the planet ` +
+          `and ${target.state.troops} troops in orbit.`,
+      );
     }
   }
 

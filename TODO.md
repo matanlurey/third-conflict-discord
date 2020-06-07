@@ -49,8 +49,9 @@
 - [x] `troops unload D 50 -p 6` had no response, unloaded all troops!
 - [ ] Discontent kills troops.
 - [x] Determine and report unrest.
-- [ ] Discontent builds on non-invaded planets, privateers.
-- [ ] Add overthrow/revert control.
+- [x] Discontent builds on non-invaded planets, privateers.
+- [x] Add overthrow/revert control.
+- [ ] Test privateers.
 
 - [x] Start of turn: Score, Morale, Ratings.
 

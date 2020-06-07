@@ -1,4 +1,6 @@
 import { Chance } from 'chance';
+import fs from 'fs-extra';
+import path from 'path';
 import { GameStateError } from '../../cli/reader';
 import { Conquest } from '../combat/naval';
 import { Events } from '../events';
@@ -40,7 +42,11 @@ export class Game {
    * @param systems
    * @param players
    */
-  static start(state: NewlyCreatedGame, players: PlayerState[]): Game {
+  static start(
+    state: NewlyCreatedGame,
+    players: PlayerState[],
+    autoSaveDiagnostics?: boolean,
+  ): Game {
     if (players.length < 1) {
       throw new Error(`Invalid game: At least one player required.`);
     } else {
@@ -65,15 +71,18 @@ export class Game {
       }
     }) as SystemState[];
     players.splice(0, 0, this.createEmpire());
-    return new Game({
-      seed: state.seed,
-      settings: state.settings,
-      systems,
-      players,
-      fleets: [],
-      scouts: [],
-      turn: 1,
-    });
+    return new Game(
+      {
+        seed: state.seed,
+        settings: state.settings,
+        systems,
+        players,
+        fleets: [],
+        scouts: [],
+        turn: 1,
+      },
+      autoSaveDiagnostics,
+    );
   }
 
   private static createEmpire(): PlayerState {
@@ -90,7 +99,10 @@ export class Game {
   private readonly onTurnCallbacks: (() => void)[] = [];
   private readonly events?: Events;
 
-  constructor(public readonly state: GameState) {
+  constructor(
+    public readonly state: GameState,
+    private readonly autoSaveDiagnostics = false,
+  ) {
     if (state.settings.enableRandomEvents) {
       this.events = new Events(new Chance(this.state.seed), this);
     }
@@ -108,6 +120,11 @@ export class Game {
   }
 
   private computeNextTurn(): void {
+    if (this.autoSaveDiagnostics) {
+      fs.writeJsonSync(path.join('data', 'temp.json'), this.state, {
+        spaces: 2,
+      });
+    }
     this.clearLastTurnReports();
     this.endTurnMoraleAndRevolt();
     this.endTurnRandomEvent();

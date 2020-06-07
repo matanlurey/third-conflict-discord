@@ -48,7 +48,7 @@ describe('', () => {
     bravo.state.troops = 0;
     expect(parse('troops load B')).toMatchInlineSnapshot(`
       "
-      Loaded 150 troop(s) from 2 planet(s)."
+      Loaded 150 troop(s) from 2 planet(s). You now have 150 troops in orbit."
     `);
     expect(bravo.state.troops).toEqual(150);
   });
@@ -58,7 +58,7 @@ describe('', () => {
     bravo.state.troops = 50;
     expect(parse('troops load B')).toMatchInlineSnapshot(`
       "
-      Loaded 100 troop(s) from 2 planet(s)."
+      Loaded 100 troop(s) from 2 planet(s). You now have 150 troops in orbit."
     `);
     expect(bravo.state.troops).toEqual(150);
     expect(bravo.state.planets.map((p) => p.troops)).toEqual([30, 20, 50, 0]);
@@ -69,7 +69,7 @@ describe('', () => {
     bravo.state.troops = 0;
     expect(parse('troops load B -p 3')).toMatchInlineSnapshot(`
       "
-      Loaded 50 troop(s) from planet 3."
+      Loaded 50 troop(s) from planet 3. You now have 50 in orbit."
     `);
     expect(bravo.state.planets.map((p) => p.troops)).toEqual([30, 20, 0, 50]);
   });
@@ -80,7 +80,7 @@ describe('', () => {
     expect(bravo.state.troops).toBe(0);
     expect(parse('troops load B 50 -p 3')).toMatchInlineSnapshot(`
       "
-      Loaded 50 troop(s) from planet 3."
+      Loaded 50 troop(s) from planet 3. You now have 50 troops remaining on the planet and 50 in orbit."
     `);
     expect(bravo.state.troops).toBe(50);
   });
@@ -88,7 +88,7 @@ describe('', () => {
   test('should unload troops automatically', () => {
     expect(parse('troops unload B')).toMatchInlineSnapshot(`
       "
-      Unloaded 500 troops equally across 2 planet(s)."
+      Unloaded 500 troops equally across 2 planet(s). You now have 0 troops in orbit."
     `);
     expect(bravo.state.troops).toEqual(0);
     expect(bravo.state.planets.map((p) => p.troops)).toEqual([

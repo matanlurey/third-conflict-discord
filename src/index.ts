@@ -71,7 +71,7 @@ async function loadGame(client: discord.Client): Promise<void> {
         .map((u) => `<@${u}>`)
         .join(', ')}`,
     );
-    const game = new Game(json);
+    const game = new Game(json, true);
     startGame(game, client, broadcast);
   } else {
     const userIds = Object.keys(players);
@@ -97,7 +97,7 @@ async function loadGame(client: discord.Client): Promise<void> {
         endedTurn: false,
       });
     }
-    const game = Game.start(json, inputPlayers);
+    const game = Game.start(json, inputPlayers, true);
     startGame(game, client, broadcast);
   }
 }
