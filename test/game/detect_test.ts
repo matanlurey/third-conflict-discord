@@ -184,8 +184,8 @@ describe('', () => {
       [A] • • • • • • • • •  B 
 
       REPORTS:
-        Incoming approximately 22 missile(s) to Alfa; eta turn 3
         System Alfa garrison reports unrest
+        Incoming approximately 22 missile(s) to Alfa; eta turn 3
 
       SYSTEMS:
         Alfa. P: nothing, T: 0, M: 0
@@ -207,13 +207,13 @@ describe('', () => {
       [A] • • • • • • • • •  B 
 
       REPORTS:
+        System Alfa garrison reports unrest
         Combat @ Alfa resulted in victory.
         YOU:
           Defenses: -25
           Factories: -1
         THEM:
           Missiles: -30
-        System Alfa garrison reports unrest
 
       SYSTEMS:
         Alfa. P: nothing, T: 0, M: 0

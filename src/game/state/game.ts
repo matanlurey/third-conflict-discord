@@ -106,11 +106,11 @@ export class Game {
 
   private computeNextTurn(): void {
     this.clearLastTurnReports();
-    this.endTurnMovementAndCombat();
+    this.endTurnMoraleAndRevolt();
     this.endTurnRandomEvent();
+    this.endTurnMovementAndCombat();
     this.endTurnProduce();
     this.endTurnRecruit();
-    this.endTurnMoraleAndRevolt();
     this.endTurnIncrementAndMaybeEndGame();
     this.pushTurnEnded();
   }
@@ -382,6 +382,7 @@ export class Game {
         player.reportUnrest(s);
         s.adjustMorale(-1);
       }
+      let enablePrivateers = false;
       s.state.planets.forEach((p, i) => {
         if (p.owner === s.state.owner) {
           if (s.isGarrisonMet(p)) {
@@ -390,9 +391,37 @@ export class Game {
             player.reportUnrest(s, { planet: i });
             s.adjustMorale(-1, { planet: p });
           }
+        } else {
+          player.reportUnrest(s, { planet: i });
+          s.adjustMorale(-1, { planet: p });
+          // At least one planet is not captured.
+          enablePrivateers = true;
         }
       });
+      if (enablePrivateers) {
+        this.unrestPrivateers(player, s);
+      }
     });
+  }
+
+  /**
+   * Privateers are planet-based raiders and saboteurs.
+   *
+   * Capture WarShips in an attempt to overthrow your rule, gaining strength
+   * each turn (e.g. as morale drops). The only way to guard against privateers
+   * is to secure all planets in a system.
+   *
+   * Damage is based on:
+   * - Number of WarShips you have.
+   * - Number of Planets there.
+   * - Number of Ships previously captured.
+   * - Difficulty Setting.
+   *
+   * @param player
+   * @param system
+   */
+  private unrestPrivateers(player: Player, system: System): void {
+    // TODO: Implement.
   }
 
   /**

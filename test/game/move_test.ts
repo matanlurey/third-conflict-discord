@@ -80,7 +80,7 @@ describe('', () => {
       [A] • • • • • • • • • [B]
 
       REPORTS:
-        <None>
+        System Bravo garrison reports unrest
 
       SYSTEMS:
         Alfa. P: nothing, T: 25, M: 0
