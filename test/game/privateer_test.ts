@@ -46,7 +46,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        <None>"
+        <None>
+      2 of 150
+
+      Empire: 61
+      Player 1: 42"
     `);
     expect(alfa.state.privateers).toBeGreaterThan(0);
   });
@@ -88,7 +92,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        <None>"
+        <None>
+      2 of 150
+
+      Empire: 110
+      Player 1: 0"
     `);
     expect(alfa.state.owner).toBe('Empire');
     expect(alfa.state.planets.map((p) => p.owner)).toEqual([

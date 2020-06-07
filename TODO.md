@@ -34,7 +34,9 @@
 - [x] Recall fleet.
 
 - [ ] Merge fleets with same target/source/distance.
-- [ ] Add `scan A --no-planets` to hide planet information.
+- [ ] Expontential backoff "still waiting on <@...>".
+- [ ] Score summary to broadcast.
+- [x] Add `scan A --no-planets` to hide planet information.
 
 - [x] 0 fleets stick around (?).
 - [x] Scouts with ETA to <= turn.

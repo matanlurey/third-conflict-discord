@@ -36,14 +36,31 @@ export class Session implements CliHandler {
     });
     this.reader = new CliReader(gameHook(game), this);
     game.onTurnEnded((): void => {
-      game.players.forEach((p) => {
-        // Filter AI.
-        if (!p.isAI) {
-          this.replyTo = p.state.userId;
-          this.summary(p, false, true);
-        }
-      });
+      this.notifyPlayers();
     });
+  }
+
+  private notifyPlayers(): void {
+    const scores: { [key: string]: number } = {};
+    this.game.players.forEach((p) => {
+      // Filter AI.
+      if (!p.isAI) {
+        this.replyTo = p.state.userId;
+        this.summary(p, false, true);
+      }
+      scores[p.state.name] = p.computeScore(
+        p.filterFleets(this.game.fleets),
+        p.filterSystems(this.game.systems),
+        p.filterScouts(this.game.scouts),
+      );
+    });
+    this.messenger.broadcast(
+      this.ui.displayScores(
+        scores,
+        this.game.state.turn,
+        this.game.state.settings.maxGameLength,
+      ),
+    );
   }
 
   private reply(message: string | MessageEmbed): void {

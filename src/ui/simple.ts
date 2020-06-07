@@ -81,6 +81,22 @@ export class SimpleUI extends UI<string> {
     );
   }
 
+  displayScores(
+    scores: { [key: string]: number },
+    turn: number,
+    max: number,
+  ): string {
+    return (
+      `${turn} of ${max}\n\n` +
+      Object.entries(scores)
+        .sort((a, b) => b[1] - a[1])
+        .map((v) => {
+          return `${v[0]}: ${v[1]}`;
+        })
+        .join('\n')
+    );
+  }
+
   displaySummary(
     settings: Settings,
     pointOfView: Player,

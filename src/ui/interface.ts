@@ -29,6 +29,12 @@ export abstract class UI<
     showScouts: boolean,
   ): T;
 
+  abstract displayScores(
+    players: { [key: string]: number },
+    turn: number,
+    max: number,
+  ): T;
+
   abstract defendedPlanet(target: System, index: number, remaining: number): T;
 
   abstract invadedPlanet(target: System, index: number, remaining: number): T;

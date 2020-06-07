@@ -45,7 +45,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)"
+        #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)
+      2 of 150
+
+      Player 1: 96
+      Empire: 0"
     `);
     expect(parse('end')).toMatchInlineSnapshot(`
       "
@@ -66,7 +70,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)"
+        #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)
+      3 of 150
+
+      Player 1: 96
+      Empire: 0"
     `);
     expect(parse('end')).toMatchInlineSnapshot(`
       "
@@ -87,7 +95,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        <None>"
+        <None>
+      4 of 150
+
+      Player 1: 96
+      Empire: 0"
     `);
     expect(game.fleets).toHaveLength(0);
     expect(bravo.state.warShips).toEqual(25);
@@ -119,7 +131,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)"
+        #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)
+      2 of 150
+
+      Player 1: 96
+      Empire: 0"
     `);
     expect(parse('recall 1')).toMatchInlineSnapshot(`
       "
@@ -145,7 +161,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        <None>"
+        <None>
+      3 of 150
+
+      Player 1: 96
+      Empire: 0"
     `);
     expect(alfa.state.warShips).toEqual(50);
   });
@@ -176,7 +196,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)"
+        #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)
+      2 of 150
+
+      Player 1: 96
+      Empire: 0"
     `);
     bravo.state.owner = 'Empire';
     expect(parse('end')).toMatchInlineSnapshot(`
@@ -197,7 +221,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        #1 Bravo -> Alfa: 25 [Returning] (ETA Turn 3)"
+        #1 Bravo -> Alfa: 25 [Returning] (ETA Turn 3)
+      3 of 150
+
+      Empire: 61
+      Player 1: 35"
     `);
     expect(parse('end')).toMatchInlineSnapshot(`
       "
@@ -217,7 +245,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        <None>"
+        <None>
+      4 of 150
+
+      Empire: 61
+      Player 1: 35"
     `);
   });
 });
@@ -322,7 +354,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        <None>"
+        <None>
+      4 of 150
+
+      Player 1: 91
+      Empire: 0"
     `);
     expect(bravo.state.warShips).toEqual(25);
     expect(bravo.state.transports).toEqual(10);
