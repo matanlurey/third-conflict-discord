@@ -185,6 +185,7 @@ describe('', () => {
 
       REPORTS:
         Incoming approximately 22 missile(s) to Alfa; eta turn 3
+        System Alfa garrison reports unrest
 
       SYSTEMS:
         Alfa. P: nothing, T: 0, M: 0
@@ -212,6 +213,7 @@ describe('', () => {
           Factories: -1
         THEM:
           Missiles: -30
+        System Alfa garrison reports unrest
 
       SYSTEMS:
         Alfa. P: nothing, T: 0, M: 0

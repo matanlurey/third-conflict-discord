@@ -67,8 +67,12 @@ export class DiscordUI implements UI<string | MessageEmbed> {
     );
   }
 
-  ackEndTurn(): MessageEmbed {
-    return this.template().setDescription('Ended your turn.');
+  ackEndTurn(waitingFor: Player[]): MessageEmbed {
+    return this.template().setDescription(
+      `Ended your turn.\n\nWaiting for: ${waitingFor
+        .map((p) => `<@${p.state.userId}>`)
+        .join(', ')}`,
+    );
   }
 
   changeProduction(target: System, unitType: Production): MessageEmbed {
@@ -210,7 +214,9 @@ export class DiscordUI implements UI<string | MessageEmbed> {
         '' +
           `Turn ${currentTurn}\n` +
           `\`\`\`\n${map}\n\`\`\`\n` +
-          `Score: ${pointOfView.computeScore(fleets, systems, scouts)}`,
+          `Score: ${pointOfView.computeScore(fleets, systems, scouts)}\n` +
+          `Combat: Naval ${pointOfView.state.ratings.naval}%, ` +
+          `Ground ${pointOfView.state.ratings.ground}%`,
       );
 
     // Reports.
@@ -258,6 +264,12 @@ export class DiscordUI implements UI<string | MessageEmbed> {
           return this.writePrivateerReport(report);
         case 'reinforced':
           return this.writeReinforcementReport(report);
+        case 'event':
+          return {
+            name: 'Event',
+            value: report.text,
+            inline: false,
+          };
       }
     });
   }

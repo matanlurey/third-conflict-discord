@@ -1,4 +1,4 @@
-import { System } from '../../src/game/state/system';
+import { PlanetState, System } from '../../src/game/state/system';
 
 describe('produce', () => {
   let system: System;
@@ -56,11 +56,20 @@ describe('produce', () => {
   });
 
   test('should build Defenses', () => {
+    system.state.planets.push({
+      owner: system.state.owner,
+      morale: 0,
+    } as PlanetState);
     expect(system.state.defenses).toEqual(0);
 
     system.change('defenses');
     system.produce(noPlanetBuildSupport);
     expect(system.state.defenses).toEqual(10);
+
+    system.state.defenses = 45;
+    system.produce(noPlanetBuildSupport);
+    expect(system.state.defenses).toEqual(50);
+    expect(system.state.buildPoints).toEqual(5);
   });
 
   test('should reserve Points', () => {

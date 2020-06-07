@@ -116,6 +116,21 @@ export class Player {
     this.report(report);
   }
 
+  reportUnrest(
+    system: System,
+    options?: {
+      planet?: number;
+      overthrown?: { who: string; reverted: string };
+    },
+  ): void {
+    this.report({
+      kind: 'unrest',
+      system: system.state.name,
+      planet: options?.planet,
+      overthrown: options?.overthrown,
+    });
+  }
+
   reportScouted(system: System): void {
     const report: IntelReport = {
       kind: 'intel',
@@ -133,6 +148,20 @@ export class Player {
       scout: true,
     };
     this.report(report);
+  }
+
+  reportEvent(text: string): void {
+    this.report({ kind: 'event', text });
+  }
+
+  wonCombat(arena: 'ground' | 'naval'): void {
+    const previous = this.state.ratings[arena];
+    this.state.ratings[arena] = Math.max(25, Math.min(90, previous + 1));
+  }
+
+  lostCombat(arena: 'ground' | 'naval'): void {
+    const previous = this.state.ratings[arena];
+    this.state.ratings[arena] = Math.max(25, Math.min(90, previous - 1));
   }
 }
 

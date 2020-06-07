@@ -1,11 +1,12 @@
 import { Chance } from 'chance';
 import { GameStateError } from '../../cli/reader';
 import { Conquest } from '../combat/naval';
+import { Events } from '../events';
 import { NewlyCreatedGame } from '../save';
 import { Dispatch, DispatchState, Scout, ScoutState } from './fleet';
 import { Player, PlayerState } from './player';
 import { CombatReport } from './report';
-import { PlanetState, System, SystemState } from './system';
+import { PlanetState, Production, System, SystemState } from './system';
 
 export interface GameState extends NewlyCreatedGame {
   /**
@@ -84,8 +85,13 @@ export class Game {
   }
 
   private readonly onTurnCallbacks: (() => void)[] = [];
+  private readonly events?: Events;
 
-  constructor(public readonly state: GameState) {}
+  constructor(public readonly state: GameState) {
+    if (state.settings.enableRandomEvents) {
+      this.events = new Events(new Chance(this.state.seed), this);
+    }
+  }
 
   endTurn(player: Player): void {
     player.state.endedTurn = true;
@@ -101,9 +107,9 @@ export class Game {
   private computeNextTurn(): void {
     this.clearLastTurnReports();
     this.endTurnMovementAndCombat();
+    this.endTurnRandomEvent();
     this.endTurnProduce();
     this.endTurnRecruit();
-    this.endTurnRandomEvent();
     this.endTurnMoraleAndRevolt();
     this.endTurnIncrementAndMaybeEndGame();
     this.pushTurnEnded();
@@ -262,6 +268,14 @@ export class Game {
           rating: defender.state.ratings.naval,
         },
       );
+      // Modify Ratings.
+      if (result.winner === 'attacker') {
+        attacker.wonCombat('naval');
+        defender.lostCombat('naval');
+      } else if (result.winner === 'defender') {
+        attacker.lostCombat('naval');
+        defender.wonCombat('naval');
+      }
       // Report Attack.
       const report: CombatReport = {
         attacker: true,
@@ -308,13 +322,40 @@ export class Game {
   }
 
   private endTurnProduce(): void {
-    this.systems.forEach((s) =>
-      s.produce({
+    this.systems.forEach((s) => {
+      const p = this.mustPlayer(s.state.owner);
+      if (p.isAI) {
+        this.empireBuilds(s);
+      } else {
+        s.produce({
+          buildPlanet: () => {
+            return this.createPlanet(s.state.owner, s.morale);
+          },
+        });
+      }
+    });
+  }
+
+  private empireBuilds(system: System): void {
+    if (!this.state.settings.enableEmpireBuilds) {
+      return;
+    }
+    if (this.state.settings.enableNoviceMode) {
+      system.change('warships');
+    } else {
+      const chance = new Chance(this.state.seed);
+      const target = chance.weighted(
+        ['warships', 'stealthships', 'defenses', 'missiles'],
+        [5, 3, 3, 2],
+      ) as Production;
+      system.change(target);
+      system.produce({
         buildPlanet: () => {
-          return this.createPlanet(s.state.owner, s.morale);
+          return this.createPlanet(system.state.owner, system.morale);
         },
-      }),
-    );
+        buildRatio: 0.5,
+      });
+    }
   }
 
   private endTurnRecruit(): void {
@@ -322,11 +363,29 @@ export class Game {
   }
 
   private endTurnRandomEvent(): void {
-    // TODO: Implement.
+    this.events?.maybeAffectPlayers(this.players);
   }
 
   private endTurnMoraleAndRevolt(): void {
-    // TODO: Implement.
+    this.systems.forEach((s) => {
+      const player = this.mustPlayer(s.state.owner);
+      if (s.isGarrisonMet()) {
+        s.adjustMorale(1, { max: 1 });
+      } else {
+        player.reportUnrest(s);
+        s.adjustMorale(-1);
+      }
+      s.state.planets.forEach((p, i) => {
+        if (p.owner === s.state.owner) {
+          if (s.isGarrisonMet(p)) {
+            s.adjustMorale(1, { planet: p, max: 1 });
+          } else {
+            player.reportUnrest(s, { planet: i });
+            s.adjustMorale(-1, { planet: p });
+          }
+        }
+      });
+    });
   }
 
   /**

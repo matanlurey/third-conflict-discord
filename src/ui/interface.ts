@@ -6,7 +6,7 @@ import { Production, System, SystemState } from '../game/state/system';
 export abstract class UI<
   T extends string | MessageEmbed = string | MessageEmbed
 > {
-  abstract ackEndTurn(): T;
+  abstract ackEndTurn(players: Player[]): T;
 
   abstract changeProduction(target: System, unitType: Production): T;
 

@@ -27,30 +27,29 @@
 - [x] Recall fleet.
 
 - [x] Random combat ratings at start.
-- [ ] Change combat ratings after combat.
-- [ ] Allow building up to 50 Defenses per Planet Controlled.
-- [ ] > =150 Defenses Overwhelm StealthShips First Strike.
+- [x] Change combat ratings after combat.
+- [x] Allow building up to 50 Defenses per Planet Controlled.
+- [x] > =150 Defenses Overwhelm StealthShips First Strike.
 - [ ] Allow defenses a chance to intercept missiles.
-- [ ] Add auto-save and loading an existing game.
-- [ ] On end turn, say remaining players.
+- [x] Add auto-save and loading an existing game.
+- [x] On end turn, say remaining players.
 
-- [ ] Determine and report unrest.
+- [x] Determine and report unrest.
 - [ ] Discontent builds on non-invaded planets, privateers.
 - [ ] Add overthrow/revert control.
 
-- [ ] Start of turn: Score, Morale, Ratings.
+- [x] Start of turn: Score, Morale, Ratings.
 
 - [x] End of turn: Increment.
 - [x] End of turn: Movement.
 - [x] End of turn: Combat.
 - [ ] End of turn: End of Game.
-- [ ] End of turn: Random Event.
+- [x] End of turn: Random Event.
 - [x] End of turn: Produce.
 - [ ] End of turn: Morale Check / Revolts / Unrest.
 
 - [ ] More details to combat report.
-- [ ] Increase morale of planets when system captured.
-- [ ] Invert morale of planets when invaded.
+- [x] Invert morale of planets when invaded.
 - [ ] Privateers.
 - [x] Scrape random events from game and add them.
 - [ ] Move homeworld (50pts).

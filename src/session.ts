@@ -114,7 +114,11 @@ export class Session implements CliHandler {
   }
 
   end(user: Player): void {
-    this.reply(this.ui.ackEndTurn());
+    this.reply(
+      this.ui.ackEndTurn(
+        this.game.players.filter((p) => !p.isAI && !p.state.endedTurn),
+      ),
+    );
     this.game.endTurn(user);
   }
 
@@ -309,6 +313,14 @@ export class Session implements CliHandler {
       },
       chance,
     );
+
+    if (results.winner === 'attacker') {
+      attacker.wonCombat('ground');
+      defender.lostCombat('ground');
+    } else if (results.winner === 'defender') {
+      attacker.lostCombat('ground');
+      defender.wonCombat('ground');
+    }
 
     if (results.winner === 'attacker') {
       this.messenger.message(

@@ -36,7 +36,7 @@ describe('', () => {
       A • • • • • • • • • B
 
       REPORTS:
-        <None>
+        System Bravo garrison reports unrest
 
       SYSTEMS:
         Alfa. P: nothing, T: 25, M: 0
@@ -58,7 +58,7 @@ describe('', () => {
       A • • • • • • • • • B
 
       REPORTS:
-        <None>
+        System Bravo garrison reports unrest
 
       SYSTEMS:
         Alfa. P: nothing, T: 25, M: 0
@@ -111,7 +111,7 @@ describe('', () => {
       A • • • • • • • • • B
 
       REPORTS:
-        <None>
+        System Bravo garrison reports unrest
 
       SYSTEMS:
         Alfa. P: nothing, T: 25, M: 0
@@ -138,7 +138,7 @@ describe('', () => {
       A • • • • • • • • • B
 
       REPORTS:
-        <None>
+        System Bravo garrison reports unrest
 
       SYSTEMS:
         Alfa. P: nothing, T: 50, M: 0
@@ -170,7 +170,7 @@ describe('', () => {
       A • • • • • • • • • B
 
       REPORTS:
-        <None>
+        System Bravo garrison reports unrest
 
       SYSTEMS:
         Alfa. P: nothing, T: 25, M: 0

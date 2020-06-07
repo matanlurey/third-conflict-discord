@@ -58,6 +58,23 @@ export class System extends Combatable {
     super();
   }
 
+  adjustMorale(
+    amount: number,
+    options?: { planet?: PlanetState; max?: number },
+  ): void {
+    const max = options?.max || 5;
+    if (options?.planet) {
+      const proposed = options.planet.morale + amount;
+      options.planet.morale = Math.max(-5, Math.min(max, proposed));
+    } else {
+      this.state.planets.forEach((p) => {
+        if (p.owner === this.state.owner) {
+          this.adjustMorale(amount, { planet: p, max: max });
+        }
+      });
+    }
+  }
+
   get capableOfDefensiveMissileFire(): boolean {
     return this.state.defenses >= 50;
   }
@@ -215,12 +232,16 @@ export class System extends Combatable {
     });
   }
 
-  produce(options: { buildPlanet: (owner: string) => PlanetState }): void {
+  produce(options: {
+    buildPlanet: (owner: string) => PlanetState;
+    buildRatio?: number;
+  }): void {
     const state = this.state;
     const morale = this.morale;
     const factories = state.factories;
 
-    const perTurn = factories > 0 ? factories + morale : 0;
+    const perTurn =
+      (factories > 0 ? factories + morale : 0) * (options.buildRatio || 1);
     const available = state.buildPoints + perTurn;
 
     // Returns how many can be built at the provided cost.
@@ -246,7 +267,17 @@ export class System extends Combatable {
         state.missiles += asManyAsPossible(2);
         return;
       case 'defenses':
-        state.defenses += asManyAsPossible(1);
+        const proposed = state.defenses + asManyAsPossible(1);
+        const control = state.planets.filter(
+          (p) => p.owner === this.state.owner,
+        ).length;
+        const maximum = control * 50;
+        if (proposed > maximum) {
+          state.defenses = maximum;
+          state.buildPoints += proposed - maximum;
+        } else {
+          state.defenses = proposed;
+        }
         return;
       case 'planets':
         if (state.planets.length >= 10) {

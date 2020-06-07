@@ -11,7 +11,8 @@ export type Report =
   | DetectReport
   | UnrestReport
   | PrivateerReport
-  | EmpireReinforced;
+  | EmpireReinforced
+  | EventReport;
 
 /**
  * A report that intel was gathered at a system.
@@ -58,4 +59,9 @@ export interface PrivateerReport {
 export interface EmpireReinforced {
   readonly kind: 'reinforced';
   readonly system: Partial<SystemState>;
+}
+
+export interface EventReport {
+  readonly kind: 'event';
+  readonly text: string;
 }

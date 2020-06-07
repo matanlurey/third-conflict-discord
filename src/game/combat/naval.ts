@@ -29,6 +29,7 @@ export abstract class NavalCombat {
   ): CombatResult;
 
   protected combatRound(
+    isFirstRound: boolean,
     attacker: {
       fleet: Fleet;
       rating: number;
@@ -41,6 +42,9 @@ export abstract class NavalCombat {
     // Functions that determine if hits occur.
     const didAttackerHit = (): boolean => {
       return this.didHit(attacker.rating);
+    };
+    const modAttackerHit = (): boolean => {
+      return this.didHit(attacker.rating * 0.5);
     };
     const didDefenderHit = (): boolean => {
       return this.didHit(defender.rating);
@@ -55,7 +59,13 @@ export abstract class NavalCombat {
     // Combat round.
     this.offensiveMissiles(defender.system, attacker.fleet);
     this.defendingMissiles(defender.system, attacker.fleet);
-    this.attackingStealth(didAttackerHit, defender.system, attacker.fleet);
+
+    if (isFirstRound && mDefender.defenses >= 150) {
+      this.attackingStealth(modAttackerHit, defender.system, attacker.fleet);
+    } else {
+      this.attackingStealth(didAttackerHit, defender.system, attacker.fleet);
+    }
+
     this.defendingDefenses(didDefenderHit, defender.system, attacker.fleet);
     this.defendingStealth(didDefenderHit, defender.system, attacker.fleet);
     this.defendingWarShips(didDefenderHit, defender.system, attacker.fleet);
@@ -252,11 +262,14 @@ export class Conquest extends NavalCombat {
         attacker.fleet.state.missiles > 0 && defender.system.state.factories > 0
       );
     }
+
+    let isFirstRound = true;
     while (
       (!attacker.fleet.isEliminated && !defender.system.isEliminated) ||
       attackerHasMisslesAndDefenderHasFactories()
     ) {
-      const round = this.combatRound(attacker, defender);
+      const round = this.combatRound(isFirstRound, attacker, defender);
+      isFirstRound = false;
       winner = round.winner;
 
       // Sum up attacker results.

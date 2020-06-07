@@ -44,7 +44,11 @@ export function simpleABSession(): {
       },
     ],
     seed: '1000',
-    settings: defaultSettings,
+    settings: {
+      ...defaultSettings,
+      enableEmpireBuilds: false,
+      enableRandomEvents: false,
+    },
     systems: [
       System.create({
         name: 'Alfa',
