@@ -165,8 +165,12 @@ export abstract class NavalCombat {
         (defender.state as SystemState).defenses || 0,
       ];
       hits--;
-      const destroy = this.chance.weighted(assign, weighted);
-      destroy();
+      try {
+        const destroy = this.chance.weighted(assign, weighted);
+        destroy();
+      } catch (e) {
+        console.error(`Crash`, e, defender.state);
+      }
     }
   }
 

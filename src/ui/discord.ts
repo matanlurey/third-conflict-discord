@@ -46,7 +46,7 @@ function render(changes: { [key: string]: number | undefined }): string {
   for (const name in changes) {
     const value = changes[name];
     if (value) {
-      out.push(`${capitalCase(name)}: ${value}`);
+      out.push(`  ${capitalCase(name)}: ${value}`);
     }
   }
   if (out.length === 0) {
