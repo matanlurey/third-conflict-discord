@@ -36,14 +36,31 @@ export class Session implements CliHandler {
     });
     this.reader = new CliReader(gameHook(game), this);
     game.onTurnEnded((): void => {
-      game.players.forEach((p) => {
-        // Filter AI.
-        if (!p.isAI) {
-          this.replyTo = p.state.userId;
-          this.summary(p, false, true);
-        }
-      });
+      this.notifyPlayers();
     });
+  }
+
+  private notifyPlayers(): void {
+    const scores: { [key: string]: number } = {};
+    this.game.players.forEach((p) => {
+      // Filter AI.
+      if (!p.isAI) {
+        this.replyTo = p.state.userId;
+        this.summary(p, false, true);
+      }
+      scores[p.state.name] = p.computeScore(
+        p.filterFleets(this.game.fleets),
+        p.filterSystems(this.game.systems),
+        p.filterScouts(this.game.scouts),
+      );
+    });
+    this.messenger.broadcast(
+      this.ui.displayScores(
+        scores,
+        this.game.state.turn,
+        this.game.state.settings.maxGameLength,
+      ),
+    );
   }
 
   private reply(message: string | MessageEmbed): void {
@@ -249,6 +266,9 @@ export class Session implements CliHandler {
         (p) => p.owner === target.state.owner,
       );
       const planets = toUnloadTo.length;
+      if (planets === 0) {
+        throw new GameStateError(`No planets to unload to`);
+      }
       if (amount < planets) {
         throw new GameStateError(`Not enough troops to automatically unload.`);
       }
@@ -298,7 +318,7 @@ export class Session implements CliHandler {
     );
   }
 
-  scan(user: Player, target: System): void {
+  scan(user: Player, target: System, showPlanets: boolean): void {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const owner = this.game.findPlayer(target.state.owner)!;
     let reveal: SystemState | HiddenSystemState;
@@ -312,7 +332,7 @@ export class Session implements CliHandler {
       };
     }
     // TODO: Filter visibility here versus in the UI layer.
-    this.reply(this.ui.displaySystem(user, reveal));
+    this.reply(this.ui.displaySystem(user, reveal, showPlanets));
   }
 
   scout(target: System, source: System): void {

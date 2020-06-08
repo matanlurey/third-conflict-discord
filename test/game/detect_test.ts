@@ -41,7 +41,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        <None>"
+        <None>
+      SCORE SO FAR: Turn 2 of 150
+
+      Empire: 71
+      Player 1: 25"
     `);
     expect(parse('end')).toMatchInlineSnapshot(`
       "
@@ -61,7 +65,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        <None>"
+        <None>
+      SCORE SO FAR: Turn 3 of 150
+
+      Empire: 71
+      Player 1: 25"
     `);
     expect(parse('end')).toMatchInlineSnapshot(`
       "
@@ -85,7 +93,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        <None>"
+        <None>
+      SCORE SO FAR: Turn 4 of 150
+
+      Empire: 96
+      Player 1: 0"
     `);
   });
 
@@ -111,7 +123,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        <None>"
+        <None>
+      SCORE SO FAR: Turn 2 of 150
+
+      Empire: 63
+      Player 1: 35"
     `);
     expect(parse('end')).toMatchInlineSnapshot(`
       "
@@ -131,7 +147,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        <None>"
+        <None>
+      SCORE SO FAR: Turn 3 of 150
+
+      Empire: 63
+      Player 1: 35"
     `);
     expect(parse('end')).toMatchInlineSnapshot(`
       "
@@ -155,7 +175,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        <None>"
+        <None>
+      SCORE SO FAR: Turn 4 of 150
+
+      Empire: 61
+      Player 1: 35"
     `);
   });
 
@@ -187,7 +211,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        <None>"
+        <None>
+      SCORE SO FAR: Turn 2 of 150
+
+      Empire: 73
+      Player 1: 37"
     `);
     expect(fleet.state.distance).toEqual(2);
     expect(parse('end')).toMatchInlineSnapshot(`
@@ -214,7 +242,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        <None>"
+        <None>
+      SCORE SO FAR: Turn 3 of 150
+
+      Empire: 61
+      Player 1: 26"
     `);
   });
 });

@@ -138,7 +138,11 @@ describe('', () => {
       SCOUTS: 1
 
       FLEETS:
-        <None>"
+        <None>
+      SCORE SO FAR: Turn 2 of 150
+
+      Empire: 61
+      Player 1: 25"
     `);
     expect(game.state.turn).toEqual(2);
     expect(parse('summary --show-scouts')).toMatchInlineSnapshot(`
@@ -179,7 +183,11 @@ describe('', () => {
       SCOUTS: 1
 
       FLEETS:
-        <None>"
+        <None>
+      SCORE SO FAR: Turn 3 of 150
+
+      Empire: 61
+      Player 1: 25"
     `);
     expect(game.state.turn).toEqual(3);
     expect(parse('summary --show-scouts')).toMatchInlineSnapshot(`
@@ -241,7 +249,11 @@ describe('', () => {
       SCOUTS: 1
 
       FLEETS:
-        <None>"
+        <None>
+      SCORE SO FAR: Turn 3 of 150
+
+      Empire: 61
+      Player 1: 25"
     `);
     expect(alfa.state.warShips).toEqual(0);
 
@@ -264,7 +276,11 @@ describe('', () => {
       SCOUTS: 1
 
       FLEETS:
-        <None>"
+        <None>
+      SCORE SO FAR: Turn 4 of 150
+
+      Empire: 61
+      Player 1: 25"
     `);
     expect(parse('end')).toMatchInlineSnapshot(`
       "
@@ -284,7 +300,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        <None>"
+        <None>
+      SCORE SO FAR: Turn 5 of 150
+
+      Empire: 61
+      Player 1: 25"
     `);
     expect(alfa.state.warShips).toEqual(1);
   });

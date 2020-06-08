@@ -82,7 +82,11 @@ export class System extends Combatable {
   }
 
   get isEliminated(): boolean {
-    return super.isEliminated && this.state.defenses === 0;
+    return (
+      this.state.stealthShips === 0 &&
+      this.state.warShips === 0 &&
+      this.state.defenses === 0
+    );
   }
 
   destroyUndefendedCargo(): void {

@@ -13,6 +13,7 @@ export abstract class UI<
   abstract displaySystem(
     pointOfView: Player,
     target: SystemState | HiddenSystemState,
+    showPlanets: boolean,
   ): T;
 
   abstract displayMap(systems: System[], owned: System[]): T;
@@ -26,6 +27,12 @@ export abstract class UI<
     scouts: Scout[],
     fleets: Dispatch[],
     showScouts: boolean,
+  ): T;
+
+  abstract displayScores(
+    players: { [key: string]: number },
+    turn: number,
+    max: number,
   ): T;
 
   abstract defendedPlanet(target: System, index: number, remaining: number): T;

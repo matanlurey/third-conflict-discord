@@ -170,6 +170,7 @@ export abstract class NavalCombat {
         destroy();
       } catch (e) {
         console.error(`Crash`, e, defender.state);
+        return;
       }
     }
   }

@@ -45,7 +45,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)"
+        #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)
+      SCORE SO FAR: Turn 2 of 150
+
+      Player 1: 96
+      Empire: 0"
     `);
     expect(parse('end')).toMatchInlineSnapshot(`
       "
@@ -66,7 +70,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)"
+        #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)
+      SCORE SO FAR: Turn 3 of 150
+
+      Player 1: 96
+      Empire: 0"
     `);
     expect(parse('end')).toMatchInlineSnapshot(`
       "
@@ -87,7 +95,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        <None>"
+        <None>
+      SCORE SO FAR: Turn 4 of 150
+
+      Player 1: 96
+      Empire: 0"
     `);
     expect(game.fleets).toHaveLength(0);
     expect(bravo.state.warShips).toEqual(25);
@@ -119,7 +131,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)"
+        #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)
+      SCORE SO FAR: Turn 2 of 150
+
+      Player 1: 96
+      Empire: 0"
     `);
     expect(parse('recall 1')).toMatchInlineSnapshot(`
       "
@@ -145,7 +161,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        <None>"
+        <None>
+      SCORE SO FAR: Turn 3 of 150
+
+      Player 1: 96
+      Empire: 0"
     `);
     expect(alfa.state.warShips).toEqual(50);
   });
@@ -176,7 +196,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)"
+        #1 Alfa -> Bravo: 25 [Returning] (ETA Turn 4)
+      SCORE SO FAR: Turn 2 of 150
+
+      Player 1: 96
+      Empire: 0"
     `);
     bravo.state.owner = 'Empire';
     expect(parse('end')).toMatchInlineSnapshot(`
@@ -197,7 +221,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        #1 Bravo -> Alfa: 25 [Returning] (ETA Turn 3)"
+        #1 Bravo -> Alfa: 25 [Returning] (ETA Turn 3)
+      SCORE SO FAR: Turn 3 of 150
+
+      Empire: 61
+      Player 1: 35"
     `);
     expect(parse('end')).toMatchInlineSnapshot(`
       "
@@ -217,7 +245,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        <None>"
+        <None>
+      SCORE SO FAR: Turn 4 of 150
+
+      Empire: 61
+      Player 1: 35"
     `);
   });
 });
@@ -259,6 +291,7 @@ describe('', () => {
       "
       Attack \\"60 ships\\" sent from \\"Alfa\\" to \\"Bravo\\"; eta 3 turns."
     `);
+    expect(alfa.state.troops).toEqual(0);
     parse('end');
     parse('end');
     expect(bravo.state).toMatchInlineSnapshot(`
@@ -321,7 +354,11 @@ describe('', () => {
       SCOUTS: 0
 
       FLEETS:
-        <None>"
+        <None>
+      SCORE SO FAR: Turn 4 of 150
+
+      Player 1: 91
+      Empire: 0"
     `);
     expect(bravo.state.warShips).toEqual(25);
     expect(bravo.state.transports).toEqual(10);
@@ -348,6 +385,53 @@ describe('', () => {
       Transports: 10
       Troops: 0
       Points: 4
+      "
+    `);
+  });
+
+  test('should not remove ships if the attack was invalid', () => {
+    alfa.state.missiles = 10;
+    alfa.state.warShips = 50;
+    expect(parse('scan A')).toMatchInlineSnapshot(`
+      "
+      Report on \\"Alfa\\" (You control this system):
+
+      Home System: No
+      Producing: nothing
+
+      Factories: 0
+      Planets: 0
+
+      WarShips: 50
+      StealthShips: 0
+      Missiles: 10
+      Transports: 0
+      Troops: 0
+      Points: 0
+      "
+    `);
+    expect(parse('attack B -w 30 -m 20')).toMatchInlineSnapshot(`
+      "
+      Would make missiles < 0"
+    `);
+    expect(alfa.state.missiles).toEqual(10);
+    expect(alfa.state.warShips).toEqual(50);
+    expect(parse('scan A')).toMatchInlineSnapshot(`
+      "
+      Report on \\"Alfa\\" (You control this system):
+
+      Home System: No
+      Producing: nothing
+
+      Factories: 0
+      Planets: 0
+
+      WarShips: 50
+      StealthShips: 0
+      Missiles: 10
+      Transports: 0
+      Troops: 0
+      Points: 0
       "
     `);
   });

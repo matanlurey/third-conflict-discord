@@ -69,7 +69,7 @@ export class DiscordUI implements UI<string | MessageEmbed> {
 
   ackEndTurn(waitingFor: Player[]): MessageEmbed {
     return this.template().setDescription(
-      `Ended your turn.\n\nWaiting for: ${waitingFor
+      `⏳ Ended your turn.\n\nWaiting for: ${waitingFor
         .map((p) => `<@${p.state.userId}>`)
         .join(', ')}`,
     );
@@ -101,7 +101,7 @@ export class DiscordUI implements UI<string | MessageEmbed> {
         break;
     }
     return this.template()
-      .setTitle('Production')
+      .setTitle('🔨 Production')
       .setThumbnail(icon)
       .setDescription(
         `${target.state.name} now producing ${capitalCase(unitType)}`,
@@ -114,7 +114,7 @@ export class DiscordUI implements UI<string | MessageEmbed> {
     remaining: number,
   ): MessageEmbed {
     return this.template('bad')
-      .setTitle('Invasion Unsuccessful')
+      .setTitle('🛡️ Invasion Unsuccessful')
       .setThumbnail(thumbnails.revolt)
       .setDescription(
         `${target.state.name} planet ${
@@ -129,7 +129,7 @@ export class DiscordUI implements UI<string | MessageEmbed> {
     remaining: number,
   ): MessageEmbed {
     return this.template('good')
-      .setTitle('Invasion Successful')
+      .setTitle('🎖️ Invasion Successful')
       .setThumbnail(thumbnails.planet)
       .setDescription(
         `System ${target.state.name} planet ${
@@ -141,12 +141,13 @@ export class DiscordUI implements UI<string | MessageEmbed> {
   displaySystem(
     pointOfView: Player,
     target: SystemState | HiddenSystemState,
+    showPlanets: boolean,
   ): MessageEmbed {
     const message = this.template();
     if ('name' in target) {
       const friendly = pointOfView.filterPlanets(target.planets);
       message
-        .setTitle('Friendly System')
+        .setTitle('💛 Friendly System')
         .setDescription(`System ${target.name}`)
         .addField('Home', target.home ? 'Yes' : 'No', true)
         .addField('Producing', capitalCase(target.production), true)
@@ -157,29 +158,32 @@ export class DiscordUI implements UI<string | MessageEmbed> {
         .addField('Transports', target.transports, true)
         .addField('Troops', target.troops, true)
         .addField('Build Points', target.buildPoints, true)
-        .addField('Defenses', target.defenses, true)
-        .addField(
+        .addField('Defenses', target.defenses, true);
+
+      if (showPlanets) {
+        message.addField(
           'Planets',
           `You control ${friendly.length} of ${target.planets.length} planets`,
         );
-      target.planets.forEach((planet, index) => {
-        message.addField(
-          `Planet ${index + 1}`,
-          '' +
-            `Controlled: ${
-              planet.owner === pointOfView.state.userId ? 'Yes' : 'No'
-            }\n` +
-            `Morale:     ${planet.morale}\n` +
-            `Troops:     ${planet.troops}\n` +
-            `Recruit:    ${planet.recruit}`,
-          true,
-        );
-      });
+        target.planets.forEach((planet, index) => {
+          message.addField(
+            `🌎 Planet ${index + 1}`,
+            '' +
+              `Controlled: ${
+                planet.owner === pointOfView.state.userId ? 'Yes' : 'No'
+              }\n` +
+              `Morale:     ${planet.morale}\n` +
+              `Troops:     ${planet.troops}\n` +
+              `Recruit:    ${planet.recruit}`,
+            true,
+          );
+        });
+      }
     } else {
-      message.setTitle('Enemy System');
+      message.setTitle('👹 Enemy System');
       if (target.updated === undefined) {
         message.setDescription(
-          `No information on system ${target.system.name}.`,
+          `❔ No information on system ${target.system.name}.`,
         );
       } else {
         message
@@ -206,6 +210,22 @@ export class DiscordUI implements UI<string | MessageEmbed> {
     return this.template()
       .setTitle('Map')
       .setDescription('```\n' + map + '\n```');
+  }
+
+  displayScores(
+    scores: { [key: string]: number },
+    turn: number,
+    max: number,
+  ): MessageEmbed {
+    const message = this.template()
+      .setTitle(`Start of Turn ${turn} of ${max}`)
+      .setDescription('Here are your scores at the start of the turn.');
+    Object.entries(scores)
+      .sort((a, b) => b[1] - a[1])
+      .forEach((v) => {
+        message.addField(v[0], `${v[1]}`, false);
+      });
+    return message;
   }
 
   displaySummary(
@@ -256,7 +276,7 @@ export class DiscordUI implements UI<string | MessageEmbed> {
 
     // Scouts.
     const returning = scouts.length
-      ? `(${scouts.map((s) => owned.has(s.state.target)).length} Returning)`
+      ? `(${scouts.filter((s) => owned.has(s.state.target)).length} Returning)`
       : '';
     message.addField(
       '**Scouts**',
@@ -315,7 +335,7 @@ export class DiscordUI implements UI<string | MessageEmbed> {
       value = `Scout reaches system ${report.system}.`;
     }
     return {
-      name: `Intel at ${report.system}`,
+      name: `📝 Intel at ${report.system}`,
       value,
       inline: false,
     };
@@ -335,7 +355,7 @@ export class DiscordUI implements UI<string | MessageEmbed> {
       report.attacker ? report.result.defender : report.result.attacker,
     );
     return {
-      name: `Combat at ${report.system}: ${name}`,
+      name: `⚔️ Combat at ${report.system}: ${name}`,
       value: '' + `**You**:\n${you}\n\n` + `**Them**\n${them}`,
       inline: false,
     };
@@ -344,7 +364,7 @@ export class DiscordUI implements UI<string | MessageEmbed> {
   private writeDetectFleet(report: DetectReport, turn: number): EmbedField {
     return {
       inline: false,
-      name: `Incoming ${report.missiles ? 'Missles' : 'Fleet'} at ${
+      name: `🕵️‍♂️ Incoming ${report.missiles ? 'Missles' : 'Fleet'} at ${
         report.system
       }!`,
       value: `Approximately ${report.size} incoming; ETA ${turn + report.eta}`,
@@ -366,14 +386,14 @@ export class DiscordUI implements UI<string | MessageEmbed> {
     }
     return {
       inline: false,
-      name: `Unrest at ${report.system}`,
+      name: `🔥 Unrest at ${report.system}`,
       value,
     };
   }
 
   private writePrivateerReport(report: PrivateerReport): EmbedField {
     return {
-      name: `Privateers at ${report.system}`,
+      name: `☠️ Privateers at ${report.system}`,
       value: `Privateers capture ${report.warships}`,
       inline: false,
     };
@@ -381,7 +401,7 @@ export class DiscordUI implements UI<string | MessageEmbed> {
 
   private writeReinforcementReport(report: EmpireReinforced): EmbedField {
     return {
-      name: `Emperor Reinforces ${report.system.name}`,
+      name: `🛡️ Emperor Reinforces ${report.system.name}`,
       value: render({
         warShips: report.system.warShips,
         stealthShips: report.system.stealthShips,
@@ -397,13 +417,14 @@ export class DiscordUI implements UI<string | MessageEmbed> {
   private writeSystems(systems: System[]): EmbedField[] {
     return systems.map((system) => {
       const value =
-        '' +
-        `P: ${capitalCase(system.state.production)}\n` +
-        `S: ${system.offensiveShips}\n` +
-        `D: ${system.state.defenses}\n` +
-        `M: ${system.morale}`;
+        '\n```\n' +
+        `Producing:   ${capitalCase(system.state.production)}\n` +
+        `Total Ships: ${system.offensiveShips}\n` +
+        `Defenses:    ${system.state.defenses}\n` +
+        `Morale:      ${system.morale}\n` +
+        '```';
       return {
-        name: `${system.state.name}`,
+        name: `🌌 ${system.state.name}`,
         value,
         inline: false,
       };
@@ -422,7 +443,7 @@ export class DiscordUI implements UI<string | MessageEmbed> {
         recall = `[Returning] `;
       }
       return {
-        name: `#${index + 1} ${scout.state.source} -> ${scout.state.target}`,
+        name: `🔍 #${index + 1} ${scout.state.source} -> ${scout.state.target}`,
         value: `${recall}ETA Turn ${turn + scout.eta(speed)}`,
         inline: false,
       };
@@ -442,7 +463,7 @@ export class DiscordUI implements UI<string | MessageEmbed> {
         `Ships:   ${total}\n` +
         `Troops:  ${fleet.state.troops}`;
       return {
-        name: `#${index + 1} ${fleet.state.source} -> ${fleet.state.target}`,
+        name: `🚀 #${index + 1} ${fleet.state.source} -> ${fleet.state.target}`,
         value,
         inline: false,
       };
@@ -461,7 +482,7 @@ export class DiscordUI implements UI<string | MessageEmbed> {
       unitTypes.state.missiles +
       unitTypes.state.transports;
     return this.template()
-      .setTitle(`Attacking ${to.state.name} with ${total} ships`)
+      .setTitle(`⚔️ Attacking ${to.state.name} with ${total} ships`)
       .setDescription(`ETA ${etaTurns} turns.`)
       .addField('WarShips', `${unitTypes.state.warShips}`, true)
       .addField('StealthShips', `${unitTypes.state.stealthShips}`, true)
@@ -483,7 +504,7 @@ export class DiscordUI implements UI<string | MessageEmbed> {
       unitTypes.state.missiles +
       unitTypes.state.transports;
     return this.template()
-      .setTitle(`Reinforcing ${to.state.name} with ${total} ships`)
+      .setTitle(`📦 Reinforcing ${to.state.name} with ${total} ships`)
       .setDescription(`ETA ${etaTurns} turns.`)
       .addField('WarShips', `${unitTypes.state.warShips}`, true)
       .addField('StealthShips', `${unitTypes.state.stealthShips}`, true)
@@ -503,7 +524,7 @@ export class DiscordUI implements UI<string | MessageEmbed> {
       .setThumbnail(
         shipType === `StealthShip` ? thumbnails.stealth : thumbnails.warship,
       )
-      .setTitle(`Scouting ${to.state.name}`)
+      .setTitle(`🔍 Scouting ${to.state.name}`)
       .setDescription(
         `Sent a ${capitalCase(shipType)}; ETA ${etaTurns} turns.`,
       );
