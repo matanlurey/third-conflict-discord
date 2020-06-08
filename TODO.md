@@ -33,9 +33,10 @@
 - [x] Redirect fleets/scouts if recalled system was conquered.
 - [x] Recall fleet.
 
+- [ ] "Invaded with 19 (lost X)".
 - [ ] Merge fleets with same target/source/distance.
 - [ ] Expontential backoff "still waiting on <@...>".
-- [ ] Score summary to broadcast.
+- [x] Score summary to broadcast.
 - [x] Add `scan A --no-planets` to hide planet information.
 
 - [x] 0 fleets stick around (?).

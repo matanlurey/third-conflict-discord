@@ -359,10 +359,13 @@ export class Game {
         (p) => p.owner !== target.state.owner,
       );
       const planets = toInvade.length;
+      if (planets === 0) {
+        throw new GameStateError(`No planets to invade.`);
+      }
       if (amount < planets) {
         throw new GameStateError(`Not enough troops to automatically invade.`);
       }
-      const each = amount / planets;
+      const each = Math.floor(amount / planets);
       toInvade.forEach((p, i) =>
         this.invadePlanet(target, p, i, each, messenger, ui),
       );

@@ -110,6 +110,8 @@ export class EmpireAI {
         if (fleet.isEliminated) {
           return false;
         }
+        // Cheat a bit, add 50 troops per Transport.
+        system.state.troops = 0;
         const sent = system.attack(
           enemy,
           Fleet.create({

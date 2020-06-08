@@ -266,6 +266,9 @@ export class Session implements CliHandler {
         (p) => p.owner === target.state.owner,
       );
       const planets = toUnloadTo.length;
+      if (planets === 0) {
+        throw new GameStateError(`No planets to unload to`);
+      }
       if (amount < planets) {
         throw new GameStateError(`Not enough troops to automatically unload.`);
       }
